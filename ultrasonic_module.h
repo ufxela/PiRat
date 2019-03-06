@@ -9,4 +9,8 @@ int get_time_of_flight_basic(unsigned int trig_pin, unsigned int echo_pin);
 
 int ultrasonic_test(void);
 
+unsigned int get_distance(void);
+
+void pat_main(void);
+
 #endif
