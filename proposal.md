@@ -1,3 +1,22 @@
+#Pi Rat
+**Team members:** Alex Fu
+
+**Description**
+PiRat is loosely inspired by Tolman and Honzik’s psychology experiments (1930) 
+in which a live rat was placed in a maze and given the task to find a reward 
+(stereotypically cheese) within the maze. PiRat will model the rat, and attempt 
+to solve a maze given little prior information about the structure of the maze.
+
+PiRat will have two primary abilities: the first is the ability to move around.
+The second is to sense its environment. To move around, the Pi Rat will utilize
+continuous rotation servos and a rotary encoder. To sense its environment,
+the Pi Rat will use a time of flight sensor (either ultrasonic or optical).
+
+With these two abilities, the PiRat can use a depth first search path finder 
+algorithm to navigate through a maze, and find a solution. At the same time, 
+the PiRat will keep an internal model of the maze, updating the model with each 
+measurement it takes with it’s time of flight sensor. 
+
 
 Here is a suggested outline for your proposal. You don't need to follow this
 outline, but it may help you focus your project.
