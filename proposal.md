@@ -91,3 +91,6 @@ https://github.com/cs107e/cs107e.github.io/blob/master/cs107e/src/i2c.c
 *ultrasonic sensor*
 https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf
 https://github.com/cs107e/cs107e.github.io/blob/master/lectures/Sensors/code/sonar/sonar.c
+
+*servos*
+https://learn.sparkfun.com/tutorials/pulse-width-modulation/all
