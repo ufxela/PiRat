@@ -4,6 +4,8 @@
 
 /* sets up interrupts and all as well as # of interrupts per pwm cycle and the length of the cycle
  * interrupts_per_cycle is basically the resolution
+ * Basically sets the frequency and resolution of pwm signals. TODO: write functions which allow
+ * user to change frequency and resolution!
  */
 void pwm_init(unsigned int interrupts_per_cycle, unsigned int cycle_length_in_us);
 
@@ -25,8 +27,11 @@ int pwm_change_duty_cycle(unsigned int pin, unsigned int new_duty_cycle);
 /* returns the duty cycle of a pin, measured out of 0 from interrupts_per_cycle (resolution
  * -1 if error
  */
+
+/* returns the duty cycle, as simple as it gets */
 int get_duty_cycle(unsigned int pin);
 
+/* returns the PWM resolution for each cycle */
 int get_resolution(void);
 
 #endif
