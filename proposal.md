@@ -57,6 +57,7 @@ besides a Raspberry Pi,
    1. Communicate through I2C to optical time of flight sensor
    1. Read/write through GPIO to communicate with ultrasonic time of flight sensor
 1. Write module to communicate via I2C with the line follower module
+   1. Will use libpiextra i2c modules
 1. Module to move support movement of rat and keep track of position.
    1. Will exist a forward movement function which adjusts movement based on line follower's output 
 1. Code to use all modules to sense environment and move the rat in response based on
