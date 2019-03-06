@@ -92,6 +92,7 @@ int get_number_pwm_outputs(void){
   return number_of_pwm_outputs;
 } 
 
+/* THIS FUNCTION ALSO NEEDS TO ENABLE GPIO OUTPUT LOL*/
 int pwm_add_output(unsigned int pin, unsigned int starting_duty_cycle){
   if(number_of_pwm_outputs < MAX_PWM_OUTPUTS){
     //make more room in data structure
