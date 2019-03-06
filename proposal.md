@@ -11,20 +11,20 @@ to solve a maze given little prior information about the structure of the maze.
 PiRat will have two primary abilities: the first is the ability to move around.
 The second is to sense its environment. To move around, the Pi Rat will utilize
 continuous rotation servos and a rotary encoder. To sense its environment,
-the Pi Rat will use a time of flight sensor (either ultrasonic or optical). The
+the Pi Rat will use a dinstance sensor (either ultrasonic or time of flight). The
 Pi Rat will also use a line sensor to keep it's position/orientation correct, so
 that it does not stray off the path and run into the sides of the maze. 
 
 With these two abilities, the PiRat can use a depth first search path finder 
 algorithm to navigate through a maze, and find a solution. At the same time, 
 the PiRat will keep an internal model of the maze, updating the model with each 
-measurement it takes with it’s time of flight sensor. 
+measurement it takes with it’s ultrasonic distance/time of flight sensor. 
 
 **Hardware Required:** 
 besides a Raspberry Pi,
 
 * 2x parallax feedback 360 servo motors
-* 1x time of flight sensor (either optical or ultrasonic)
+* 1x time of flight sensor / ultrasonic distance sensor
 * 1x 9g servo
 * 1x Line Follower Module
 * 3D printed chassis
@@ -55,7 +55,7 @@ besides a Raspberry Pi,
 1. Write module to read PWM communications from Parallax Feedback 360 servos
 1. Either:
    1. Communicate through I2C to optical time of flight sensor
-   1. Read/write through GPIO to communicate with ultrasonic time of flight sensor
+   1. Read/write through GPIO to communicate with ultrasonic distance sensor
 1. Write module to communicate via I2C with the line follower module
    1. Will use libpiextra i2c modules
 1. Module to move support movement of rat and keep track of position.
@@ -70,7 +70,7 @@ besides a Raspberry Pi,
 *Hardware:*
 
 1. Model and 3D print chassis for rat
-1. Mount time of flight sensor
+1. Mount time of flight sensor / ultrasonic distance sensor
 1. Find / make wheels which have really good grip
 1. Make maze, ideally with configurability. (slot and fit walls)
 
