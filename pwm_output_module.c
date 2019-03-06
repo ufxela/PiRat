@@ -7,6 +7,7 @@
 #include "interrupts.h"
 #include "armtimer.h"
 #include "malloc.h"
+#include "printf.h"
 
 /* idk... just a placeholder for now, can definitely do more outputs
  */
@@ -25,11 +26,44 @@ unsigned int pwm_output_resolution = 0;
 unsigned int pwm_output_cycle_length_us = 0; //Q: is this variable necessary?
 
 //keeps track of which timer interrupt we're currently on, to compare against thresholds
-unsigned int current_timer_interrupt_count = 0;
+volatile unsigned int current_timer_interrupt_count = 0;
+
+/* is this time sensitive enough that we have to worry? servo cycle length is 20ms
+ * but duty cycle is typically 5 - 10 % = 1 - 2 ms
+ * if we have a resolution of 180, this means time between interrupts ~5 us
+ * the pi runs at 700 mhz => 700 instructions per microsecond. Yeah I think we're good
+ * as the handler only takes 100 instructions max I think
+ */
+static bool pwm_output_handler(unsigned int pc){
+  //check if we cause the interrupt:
+  if(armtimer_check_and_clear_overflow()){
+    //increment timer interrupt count
+    current_timer_interrupt_count++;
+    //if cycle is finished, wraparound
+    if(current_timer_interrupt_count >= pwm_output_resolution){ 
+      current_timer_interrupt_count = 0;
+    }
+
+    //for each pwm output
+    for(int i = 0; i < number_of_pwm_outputs; i++){
+      //write 0 if we're above the threshold
+      if(pwm_output_thresholds[i] < current_timer_interrupt_count){
+	gpio_write(pwm_output_pins[i], 0);
+      }//otherwise, write 1, to make the duty cycle
+      else{
+	gpio_write(pwm_output_pins[i], 1);
+      }
+    }
+
+    return true;
+  }else{
+    return false;
+  }
+}
 
 //will calculate the time between interrupts, and then setup interrupts to trigger then
 //Q: should I have checks for the parameters? also should I have default values?
-void pwm_init(unsigned int interrupts_per_cycle, unsigned int cycle_length_in_us){
+void pwm_output_init(unsigned int interrupts_per_cycle, unsigned int cycle_length_in_us){
   //setup data structure
   //Q: function for this?
   pwm_output_pins = malloc(4 * number_of_pwm_outputs);
@@ -57,41 +91,6 @@ int get_resolution(void){
 int get_number_pwm_outputs(void){
   return number_of_pwm_outputs;
 } 
-
-
-/* is this time sensitive enough that we have to worry? servo cycle length is 20ms
- * but duty cycle is typically 5 - 10 % = 1 - 2 ms
- * if we have a resolution of 180, this means time between interrupts ~5 us
- * the pi runs at 700 mhz => 700 instructions per microsecond. Yeah I think we're good
- * as the handler only takes 100 instructions max I think
- */
-static bool pwm_output__handler(unsigned int pc){
-  //check if we cause the interrupt:
-  if(armtimer_check_and_clear_overflow()){
-    //increment timer interrupt count
-    current_timer_interrupt_count++;
-
-    //if cycle is finished, wraparound
-    if(current_timer_interrupt_count >= pwm_output_resolution){ 
-      current_timer_interrupt_count = 0;
-    }
-
-    //for each pwm output
-    for(int i = 0; i < number_of_pwm_outputs; i++){
-      //write 0 if we're above the threshold
-      if(pwm_output_thresholds[i] < current_timer_interrupt_count){
-	gpio_write(pwm_output_pins[i], 0);
-      }//otherwise, write 1, to make the duty cycle
-      else{
-	gpio_write(pwm_output_pins[i], 1);
-      }
-    }
-
-    return true;
-  }else{
-    return false;
-  }
-}
 
 int pwm_add_output(unsigned int pin, unsigned int starting_duty_cycle){
   if(number_of_pwm_outputs < MAX_PWM_OUTPUTS){
@@ -142,4 +141,22 @@ int get_duty_cycle(unsigned int pin){
     }
   }
   return -1; //not found
+}
+
+int pwm_output_test(void){
+  //add a servo on signal line 4, default duty cycle is 6%
+  pwm_add_output(GPIO_PIN4, 2000 * 6 / 100);
+  while(1){
+    //set duty cycle to 6%
+    pwm_change_duty_cycle(GPIO_PIN4, 2000 * 6 / 100);
+
+    //wait
+    timer_delay(1);
+    
+    //set duty cycle to 9 %
+    pwm_change_duty_cycle(GPIO_PIN4, 2000 * 9 /100);    
+    printf("%d", current_timer_interrupt_count);
+    //wait
+    timer_delay(1);
+  }
 }

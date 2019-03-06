@@ -7,7 +7,7 @@
  * Basically sets the frequency and resolution of pwm signals. TODO: write functions which allow
  * user to change frequency and resolution!
  */
-void pwm_init(unsigned int interrupts_per_cycle, unsigned int cycle_length_in_us);
+void pwm_output_init(unsigned int interrupts_per_cycle, unsigned int cycle_length_in_us);
 
 /* adds another pwm output source, located at pin pin and with a duty cycle
  * starting_duty_cycle is an int from 0 to interrupts_per_cycle, which is the resolution
@@ -33,5 +33,8 @@ int get_duty_cycle(unsigned int pin);
 
 /* returns the PWM resolution for each cycle */
 int get_resolution(void);
+
+//a test file
+int pwm_output_test(void);
 
 #endif
