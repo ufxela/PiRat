@@ -83,3 +83,5 @@ besides a Raspberry Pi,
 **Reference and Resources**
 https://docs.google.com/document/d/10EH3p42lqzU2tbl3T3y5yWcG4yZZ02CRSOTUqFnZRl0/edit?usp=sharing
 http://wiki.sunfounder.cc/index.php?title=Line_Follower_Module
+https://github.com/cs107e/cs107e.github.io/blob/master/cs107e/src/i2c.c
+https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf
