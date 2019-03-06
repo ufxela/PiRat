@@ -117,6 +117,9 @@ int pwm_remove_output(unsigned int pin){
   return 0;
 }
 
+/* BIG NOTE: should this function wait until the current cycle is completed before changing
+ * the duty cycle? Probably
+ */
 int pwm_change_duty_cycle(unsigned int pin, unsigned int new_duty_cycle){
   if(new_duty_cycle < get_resolution()){
     //loop over, find pin, change threshold. 
