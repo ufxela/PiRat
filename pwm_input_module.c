@@ -49,8 +49,8 @@ bool pwm_input_handler(){
 }
 
 void pwm_input_init(){
-  gpio_set_input(INPUT_PIN);
   gpio_set_pullup(INPUT_PIN);
+  gpio_set_input(INPUT_PIN);
   gpio_enable_event_detection(INPUT_PIN, GPIO_DETECT_FALLING_EDGE);
   gpio_enable_event_detection(INPUT_PIN, GPIO_DETECT_RISING_EDGE);
   interrupts_attach_handler(pwm_input_handler);
