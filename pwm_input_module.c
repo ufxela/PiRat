@@ -42,7 +42,7 @@ int pwm_input_remove_source(unsigned int pin);
 
 int pwm_input_read(unsigned int pin);
 
-int pwm_input_get_cycle_length(unsignedint pin);
+int pwm_input_get_cycle_length(unsigned int pin);
 
 int pwm_input_get_number_sources();
 
