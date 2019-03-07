@@ -128,6 +128,7 @@ int pwm_input_test(){
   while(1){
     printf("angle 1: %d ", (pwm_input_get_threshold(GPIO_PIN26)-30) * 360 / 1060);
     printf("angle 2: %d\n", (pwm_input_get_threshold(GPIO_PIN16)-30) * 360 / 1060);
+    printf("cycle length: %d\n", pwm_input_get_cycle_length(GPIO_PIN26));
   }
   return 1;
 }
