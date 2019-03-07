@@ -46,16 +46,17 @@ static bool pwm_output_handler(unsigned int pc){
     //if cycle is finished, wraparound
     if(current_timer_interrupt_count >= pwm_output_resolution){ 
       current_timer_interrupt_count = 0;
+      //write 1 to each output, to starty cycle
+      for(int i = 0; i < number_of_pwm_outputs; i++){
+	gpio_write(pwm_output_pins[i], 1);
+      }
     }
 
     //for each pwm output
     for(int i = 0; i < number_of_pwm_outputs; i++){
-      //write 0 if we're above the threshold
-      if(pwm_output_thresholds[i] < current_timer_interrupt_count){
+      //write 0 when we reach the threshold
+      if(pwm_output_thresholds[i] == current_timer_interrupt_count){
 	gpio_write(pwm_output_pins[i], 0);
-      }//otherwise, write 1, to make the duty cycle
-      else{
-	gpio_write(pwm_output_pins[i], 1);
       }
     }
 
@@ -79,6 +80,10 @@ void pwm_output_init(unsigned int interrupts_per_cycle, unsigned int cycle_lengt
   //calculate the time between each interrupt
   //hopefully cycle_length_in_us is a multiple of interrupts_per_cycle
   unsigned int time_between_pwm_output_interrupts = cycle_length_in_us / interrupts_per_cycle; 
+
+  //remove this later, it's to manually set the timer interrupt for every 10 us
+  time_between_pwm_output_interrupts = 10;
+  pwm_output_resolution = 6950;
 
   //initialize interrupts 
   armtimer_init(time_between_pwm_output_interrupts);
@@ -129,6 +134,7 @@ int pwm_remove_output(unsigned int pin){
  */
 int pwm_change_duty_cycle(unsigned int pin, unsigned int new_duty_cycle){
   if(new_duty_cycle < get_resolution()){
+    while(current_timer_interrupt_count != 0){ /* wait for next cycle to begin */}
     //loop over, find pin, change threshold. 
     for(int i = 0; i < get_number_pwm_outputs(); i++){
       if(pwm_output_pins[i] == pin){
@@ -136,7 +142,7 @@ int pwm_change_duty_cycle(unsigned int pin, unsigned int new_duty_cycle){
 	break; //ugly, but safes unnecessary looping
       }
     }
-
+    
     //should return 0 if looped over and pin wasn't in use.
     return 1;
   }else{
@@ -155,16 +161,17 @@ int get_duty_cycle(unsigned int pin){
 
 int pwm_output_test(void){
   //add a servo on signal line 4, default duty cycle is 6%
-  pwm_add_output(GPIO_PIN4, 2000 * 60 / 1000);
+  pwm_add_output(GPIO_PIN4, 6800 * 10 / 1000);
   while(1){
     //set duty cycle to 6%
-    pwm_change_duty_cycle(GPIO_PIN4, 2000 * 50 / 100);
+    pwm_change_duty_cycle(GPIO_PIN4, 6800 * 60 / 1000);
+    pwm_output_thresholds[0] = 6800;
 
     //wait
     timer_delay_ms(100);
-    
+
     //set duty cycle to 9 %
-    pwm_change_duty_cycle(GPIO_PIN4, 2000 * 10 /100);    
+    pwm_change_duty_cycle(GPIO_PIN4, 6800 * 90 /1000);    
 
     //wait
     timer_delay(100);
