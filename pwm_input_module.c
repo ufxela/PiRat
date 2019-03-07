@@ -2,6 +2,7 @@
 #include "gpioextra.h"
 #include "timer.h"
 #include "interrupts.h"
+#include "printf.h"
 
 /* internal data structure to keep track of what gpio pins
  * we're reading PWM inputs from.
@@ -20,20 +21,41 @@ unsigned int * pwm_input_time_at_rising_edge;
 unsigned int * pwm_input_time_at_previous_rising_edge;
 unsigned int * pwm_input_time_at_falling_edge; 
 
-bool pwm_input_rising_edge_handler(){
-  int did_we_trigger = 0;
-  for(int i = 0; i < number_of_pwm_inputs; i++){
-    if(gpio_check_and_clear_event(pwm_input_pins[i])){
-      did_we_trigger = 1;
-      //crap this is a problem. How do we know if we're at a falling or a rising edge
-      //I guess I'll have to intergrate pwm read with pwm write, with the timer interrupts
-      //and in addition to writing, also include reading. 
+unsigned int INPUT_PIN = GPIO_PIN26;
+
+volatile unsigned int rising_edge_count = 0;
+volatile unsigned int falling_edge_count = 0;
+
+volatile unsigned int time_at_rising_edge = 0;
+volatile unsigned int time_at_previous_rising_edge = 0;
+volatile unsigned int time_at_falling_edge = 0;
+
+/* for now just check one input */
+bool pwm_input_handler(){
+  if(gpio_check_and_clear_event(INPUT_PIN)){
+    if(gpio_read(INPUT_PIN) == 0){
+      falling_edge_count++;
+      time_at_falling_edge = timer_get_ticks();
+    }else{
+      rising_edge_count++;
+      time_at_previous_rising_edge = time_at_rising_edge;
+      time_at_rising_edge = timer_get_ticks();
     }
+    return true;
+  }    
+  else{
+    return false;
   }
 }
 
 void pwm_input_init(){
-  
+  gpio_set_input(INPUT_PIN);
+  gpio_set_pullup(INPUT_PIN);
+  gpio_enable_event_detection(INPUT_PIN, GPIO_DETECT_FALLING_EDGE);
+  gpio_enable_event_detection(INPUT_PIN, GPIO_DETECT_RISING_EDGE);
+  interrupts_attach_handler(pwm_input_handler);
+  interrupts_enable_source(INTERRUPTS_GPIO3);
+  interrupts_global_enable();
 }
 
 int pwm_input_add_source(unsigned int pin);
@@ -46,4 +68,16 @@ int pwm_input_get_cycle_length(unsigned int pin);
 
 int pwm_input_get_number_sources();
 
-int pwm_input_test();
+int pwm_input_test(){
+  int cur_rising_edge_cnt = 0;
+  int cur_falling_edge_cnt = 0;
+  printf("starting test \n");
+  while(1){
+    if(cur_falling_edge_cnt != falling_edge_count || cur_rising_edge_cnt != rising_edge_count){
+      cur_falling_edge_cnt = falling_edge_count;
+      cur_rising_edge_cnt = rising_edge_count;
+      printf("RE cnt %d; FE cnt: %d \n", cur_falling_edge_cnt, cur_rising_edge_cnt);
+    }
+  }
+  return 1;
+}
