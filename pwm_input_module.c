@@ -76,7 +76,10 @@ int pwm_input_test(){
     if(cur_falling_edge_cnt != falling_edge_count || cur_rising_edge_cnt != rising_edge_count){
       cur_falling_edge_cnt = falling_edge_count;
       cur_rising_edge_cnt = rising_edge_count;
-      printf("RE cnt %d; FE cnt: %d \n", cur_falling_edge_cnt, cur_rising_edge_cnt);
+      int threshold = time_at_falling_edge - time_at_rising_edge;
+      if(threshold > 0){
+	printf("angle: %d\n", (threshold-30) * 360 / 1060);
+      }
     }
   }
   return 1;
