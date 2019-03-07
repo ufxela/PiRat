@@ -23,21 +23,21 @@ unsigned int * pwm_input_time_at_falling_edge;
 
 unsigned int INPUT_PIN = GPIO_PIN26;
 
-volatile unsigned int rising_edge_count = 0;
-volatile unsigned int falling_edge_count = 0;
-
 volatile unsigned int time_at_rising_edge = 0;
 volatile unsigned int time_at_previous_rising_edge = 0;
 volatile unsigned int time_at_falling_edge = 0;
 
-/* for now just check one input */
 bool pwm_input_handler(){
+  /* int did_we_trigger = 0;
+  for(int i = 0; i < number_of_pwm_inputs; i++){
+    if(gpio_check_and_clear_event(pwm_input_pins[i])){
+      if(gpio_read(pwm_input_pins[i]) == 0){
+	pwm
+	}*/
   if(gpio_check_and_clear_event(INPUT_PIN)){
     if(gpio_read(INPUT_PIN) == 0){
-      falling_edge_count++;
       time_at_falling_edge = timer_get_ticks();
     }else{
-      rising_edge_count++;
       time_at_previous_rising_edge = time_at_rising_edge;
       time_at_rising_edge = timer_get_ticks();
     }
@@ -73,13 +73,10 @@ int pwm_input_test(){
   int cur_falling_edge_cnt = 0;
   printf("starting test \n");
   while(1){
-    if(cur_falling_edge_cnt != falling_edge_count || cur_rising_edge_cnt != rising_edge_count){
-      cur_falling_edge_cnt = falling_edge_count;
-      cur_rising_edge_cnt = rising_edge_count;
-      int threshold = time_at_falling_edge - time_at_rising_edge;
-      if(threshold > 0){
-	printf("angle: %d\n", (threshold-30) * 360 / 1060);
-      }
+    int threshold = time_at_falling_edge - time_at_rising_edge;
+    if(threshold > 0){
+      printf("angle: %d\n", (threshold-30) * 360 / 1060);
+      timer_delay_ms(100);
     }
   }
   return 1;
