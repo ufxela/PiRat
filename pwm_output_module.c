@@ -99,6 +99,9 @@ int pwm_add_output(unsigned int pin, unsigned int starting_duty_cycle){
     pwm_output_pins = realloc((void *) pwm_output_pins, 4 * (number_of_pwm_outputs + 1));
     pwm_output_thresholds = realloc((void *) pwm_output_thresholds, 4 * (number_of_pwm_outputs + 1));
 
+    //set the proper pin to output
+    pwm_set_function(pin, GPIO_FUNC_OUTPUT);
+
     //initialize data
     pwm_output_pins[number_of_pwm_outputs] = pin;
     pwm_output_thresholds[number_of_pwm_outputs] = starting_duty_cycle;
