@@ -17,9 +17,9 @@ const unsigned int MAX_PWM_OUTPUTS = 8;
  * for each pin.
  * thresholds are when in the pwm cycle that we should output 1 and when we should do 0.
  */
-unsigned int number_of_pwm_outputs = 0;
-unsigned int * pwm_output_pins; 
-unsigned int * pwm_output_thresholds;
+volatile unsigned int number_of_pwm_outputs = 0;
+volatile unsigned int * pwm_output_pins; 
+volatile unsigned int * pwm_output_thresholds;
 
 //number of interrupts per pwm cycle & length of cycle in us
 unsigned int pwm_output_resolution = 0;
@@ -33,12 +33,16 @@ volatile unsigned int current_timer_interrupt_count = 0;
  * if we have a resolution of 180, this means time between interrupts ~5 us
  * the pi runs at 700 mhz => 700 instructions per microsecond. Yeah I think we're good
  * as the handler only takes 100 instructions max I think
+ * well I tried doing it with a resolution of 2000 and cycle length of 20000 and it did not work...
+ * it would just halt after global interrupts were enabled.
+ * dumming it down to 200 made it run. Hmm.
  */
 static bool pwm_output_handler(unsigned int pc){
   //check if we cause the interrupt:
-  if(armtimer_check_and_clear_overflow()){
+  if(armtimer_check_interrupt()){
     //increment timer interrupt count
     current_timer_interrupt_count++;
+
     //if cycle is finished, wraparound
     if(current_timer_interrupt_count >= pwm_output_resolution){ 
       current_timer_interrupt_count = 0;
@@ -75,9 +79,10 @@ void pwm_output_init(unsigned int interrupts_per_cycle, unsigned int cycle_lengt
   //calculate the time between each interrupt
   //hopefully cycle_length_in_us is a multiple of interrupts_per_cycle
   unsigned int time_between_pwm_output_interrupts = cycle_length_in_us / interrupts_per_cycle; 
-  
-  //initialize interrupts
+
+  //initialize interrupts 
   armtimer_init(time_between_pwm_output_interrupts);
+  armtimer_enable();
   armtimer_enable_interrupts();
   interrupts_enable_basic(INTERRUPTS_BASIC_ARM_TIMER_IRQ);
   interrupts_attach_handler(pwm_output_handler);
@@ -108,14 +113,12 @@ int pwm_add_output(unsigned int pin, unsigned int starting_duty_cycle){
 
     //update number of pwm outputs, done at end to avoid messyness is interrupt happens in the middle
     number_of_pwm_outputs++;
-    
     return 1;
   }
   else{
     return 0;
   }
 }
-
 
 int pwm_remove_output(unsigned int pin){
   return 0;
@@ -152,18 +155,18 @@ int get_duty_cycle(unsigned int pin){
 
 int pwm_output_test(void){
   //add a servo on signal line 4, default duty cycle is 6%
-  pwm_add_output(GPIO_PIN4, 2000 * 6 / 100);
+  pwm_add_output(GPIO_PIN4, 2000 * 60 / 1000);
   while(1){
     //set duty cycle to 6%
-    pwm_change_duty_cycle(GPIO_PIN4, 2000 * 6 / 100);
+    pwm_change_duty_cycle(GPIO_PIN4, 2000 * 50 / 100);
 
     //wait
-    timer_delay(1);
+    timer_delay_ms(100);
     
     //set duty cycle to 9 %
-    pwm_change_duty_cycle(GPIO_PIN4, 2000 * 9 /100);    
-    printf("%d", current_timer_interrupt_count);
+    pwm_change_duty_cycle(GPIO_PIN4, 2000 * 10 /100);    
+
     //wait
-    timer_delay(1);
+    timer_delay(100);
   }
 }
