@@ -3,6 +3,7 @@
 #include "timer.h"
 #include "interrupts.h"
 #include "printf.h"
+#include "malloc.h"
 
 /* internal data structure to keep track of what gpio pins
  * we're reading PWM inputs from.
@@ -27,57 +28,106 @@ volatile unsigned int time_at_rising_edge = 0;
 volatile unsigned int time_at_previous_rising_edge = 0;
 volatile unsigned int time_at_falling_edge = 0;
 
+//helper to search data structure for index of pin, returns -1 if pin not in data structure
+static int get_pin_index(unsigned int pin){
+  for(int i = 0; i < number_of_pwm_inputs; i++){
+    if(pin == pwm_input_pins[i]){
+      return i;
+    }
+  }
+  return -1;
+}
+
 bool pwm_input_handler(){
-  /* int did_we_trigger = 0;
+  int did_we_trigger = 0;
+
+  //go through each input pin and check / read the event
   for(int i = 0; i < number_of_pwm_inputs; i++){
     if(gpio_check_and_clear_event(pwm_input_pins[i])){
+      did_we_trigger = 1;
       if(gpio_read(pwm_input_pins[i]) == 0){
-	pwm
-	}*/
-  if(gpio_check_and_clear_event(INPUT_PIN)){
-    if(gpio_read(INPUT_PIN) == 0){
-      time_at_falling_edge = timer_get_ticks();
-    }else{
-      time_at_previous_rising_edge = time_at_rising_edge;
-      time_at_rising_edge = timer_get_ticks();
+	pwm_input_time_at_falling_edge[i] = timer_get_ticks();
+      }else{
+	pwm_input_time_at_previous_rising_edge[i] = pwm_input_time_at_rising_edge[i];
+	pwm_input_time_at_rising_edge[i] = timer_get_ticks();
+      }
     }
+  }
+
+  //if any events were detected
+  if(did_we_trigger){
     return true;
-  }    
-  else{
+  }else{
     return false;
   }
 }
 
 void pwm_input_init(){
-  gpio_set_pullup(INPUT_PIN);
-  gpio_set_input(INPUT_PIN);
-  gpio_enable_event_detection(INPUT_PIN, GPIO_DETECT_FALLING_EDGE);
-  gpio_enable_event_detection(INPUT_PIN, GPIO_DETECT_RISING_EDGE);
+  //enable interrupts
   interrupts_attach_handler(pwm_input_handler);
   interrupts_enable_source(INTERRUPTS_GPIO3);
   interrupts_global_enable();
+
+  //initialize data structure
+  pwm_input_pins = malloc(4 * (number_of_pwm_inputs));
+  pwm_input_time_at_rising_edge = malloc(4 * (number_of_pwm_inputs));
+  pwm_input_time_at_previous_rising_edge = malloc(4 * (number_of_pwm_inputs));
+  pwm_input_time_at_falling_edge = malloc(4 * (number_of_pwm_inputs));
 }
 
-int pwm_input_add_source(unsigned int pin);
+int pwm_input_add_source(unsigned int pin){
+  //enable pin reading / interrupts
+  gpio_set_pullup(pin);
+  gpio_set_input(pin);
+  gpio_enable_event_detection(pin, GPIO_DETECT_FALLING_EDGE);
+  gpio_enable_event_detection(pin, GPIO_DETECT_RISING_EDGE);
 
+  //make room in data structure
+  pwm_input_pins = realloc(pwm_input_pins, 4 * (number_of_pwm_inputs + 1));
+  pwm_input_time_at_rising_edge = realloc(pwm_input_time_at_rising_edge, 4 * (number_of_pwm_inputs +1));
+  pwm_input_time_at_previous_rising_edge = realloc(pwm_input_time_at_previous_rising_edge,
+						   4 * (number_of_pwm_inputs +1));
+  pwm_input_time_at_falling_edge = realloc(pwm_input_time_at_falling_edge, 
+					   4 * (number_of_pwm_inputs +1));
+  
+  //initialize data
+  pwm_input_pins[number_of_pwm_inputs] = pin;
+  pwm_input_time_at_previous_rising_edge[number_of_pwm_inputs] = timer_get_ticks();
+
+  //update size, so that interrupt handler knows to read new input
+  number_of_pwm_inputs++;
+}
 int pwm_input_remove_source(unsigned int pin);
 
-int pwm_input_read(unsigned int pin);
+int pwm_input_get_threshold(unsigned int pin){
+  //wait till you get a vaild data point
+  int threshold = -1;
+  int i = get_pin_index(pin);
+  while(threshold < 0){
+    threshold = pwm_input_time_at_falling_edge[i] - pwm_input_time_at_rising_edge[i];
+  }
+  return threshold;
+}
 
-int pwm_input_get_cycle_length(unsigned int pin);
+int pwm_input_get_cycle_length(unsigned int pin){
+  //wait for valid data
+  int cycle_length = -1;
+  int i = get_pin_index(pin);
+  while(cycle_length < 0){
+    cycle_length = pwm_input_time_at_rising_edge[i] - pwm_input_time_at_previous_rising_edge[i];
+  }
+  return cycle_length;
+}
 
 int pwm_input_get_number_sources();
 
 int pwm_input_test(){
-  int cur_rising_edge_cnt = 0;
-  int cur_falling_edge_cnt = 0;
   printf("starting test \n");
+  pwm_input_add_source(GPIO_PIN26);
+  pwm_input_add_source(GPIO_PIN16);
   while(1){
-    int threshold = time_at_falling_edge - time_at_rising_edge;
-    if(threshold > 0){
-      printf("angle: %d\n", (threshold-30) * 360 / 1060);
-      timer_delay_ms(100);
-    }
+    printf("angle 1: %d ", (pwm_input_get_threshold(GPIO_PIN26)-30) * 360 / 1060);
+    printf("angle 2: %d\n", (pwm_input_get_threshold(GPIO_PIN16)-30) * 360 / 1060);
   }
   return 1;
 }

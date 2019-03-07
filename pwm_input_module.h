@@ -20,7 +20,7 @@ int pwm_input_remove_source(unsigned int pin);
  * units of thresholds is microseconds (us)
  * -1 if invalid
  */
-int pwm_input_read(unsigned int pin);
+int pwm_input_get_threshold(unsigned int pin);
 
 /* gets the cycle length for a PWM source
  * value returned is in units of microseconds (us)
