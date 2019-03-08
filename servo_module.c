@@ -37,6 +37,7 @@ servo *servo_new(unsigned int pin){
   return srvo;
 }
 
+/* this can probably be functionally decomposed, but I am also lazy */
 void servo_setup(servo *servo){
   printf("let's find the 0 degree mark.\n");
 
