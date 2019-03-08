@@ -35,6 +35,7 @@ void main(void)
   */
 
   test_pwm_IO(GPIO_PIN17, GPIO_PIN27, GPIO_PIN4, GPIO_PIN18); 
+  //test_pwm_IO2(GPIO_PIN27, GPIO_PIN18);  
 }
 
 void test_pwm_IO(unsigned int input_pin1, unsigned int input_pin2, unsigned int output_pin1,
@@ -45,25 +46,53 @@ void test_pwm_IO(unsigned int input_pin1, unsigned int input_pin2, unsigned int 
   
   //add pwm outputs
   pwm_add_output(output_pin1, 1500);
-  //  pwm_add_output(output_pin2, 1500);
+  pwm_add_output(output_pin2, 1500);
   pwm_input_add_source(input_pin1);
-  //pwm_input_add_source(input_pin2);
+  pwm_input_add_source(input_pin2);
 
   while(1){
     printf("new loop \n");
     pwm_change_threshold(output_pin1, 1200);
-    //pwm_change_threshold(output_pin2, 1000);
+    pwm_change_threshold(output_pin2, 1000);
     for(int i = 0; i < 10; i++){
       timer_delay_ms(100);
       printf("Output 1 angle: %d, Output 2 angle %d \n", (pwm_input_get_threshold(input_pin1)-30) * 360 
-	     / 1060, (/*pwm_input_get_threshold(input_pin2)*/-30) * 360 / 1060);
+	     / 1060, (pwm_input_get_threshold(input_pin2)-30) * 360 / 1060);
     }
     pwm_change_threshold(output_pin1, 1800);
     pwm_change_threshold(output_pin2, 2000);
     for(int i =0; i < 10; i++){
       timer_delay_ms(100);
       printf("Output 1 angle: %d, Output 2 angle %d \n", (pwm_input_get_threshold(input_pin1)-30) * 360
-             / 1060, (/*pwm_input_get_threshold(input_pin2)*/-30) * 360 / 1060);
+             / 1060, (pwm_input_get_threshold(input_pin2)-30) * 360 / 1060);
     }
+  }
+}
+
+void test_pwm_IO2(unsigned int input_pin, unsigned int output_pin){
+  printf("Beginning PWM IO Test 2 \n");
+  pwm_output_init();
+  pwm_input_init();
+
+  pwm_add_output(output_pin, 1500);
+  pwm_input_add_source(input_pin);
+
+  int angle = 0;
+  while(1){
+    if(angle >= 360){
+      angle = 0;
+    }
+    
+    printf("going to angle %d", angle);
+
+    pwm_change_threshold(output_pin, 1700);
+    while(((pwm_input_get_threshold(input_pin)-30) * 360 / 1060) > angle + 5 ||
+	  ((pwm_input_get_threshold(input_pin)-30) * 360 / 1060) < angle - 5){
+    }
+    pwm_change_threshold(output_pin, 1500);
+
+    printf("current angle: %d\n", (pwm_input_get_threshold(input_pin)-30) * 360 / 1060);
+    timer_delay(2);
+    angle += 30;
   }
 }
