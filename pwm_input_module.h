@@ -7,12 +7,12 @@ void pwm_input_init();
 /* adds an input channel for PWM reading
  * returns 0 if failure, 1 if success
  */
-int pwm_input_add_source(unsigned int pin);
+int pwm_add_input(unsigned int pin);
 
 /* removes an input channel for PWM reading
  * 0 if failure, 1 if success
  */
-int pwm_input_remove_source(unsigned int pin);
+int pwm_remove_input(unsigned int pin);
 
 /* gets current threshold value for PWM source
  * it's returned as an int from 0 to cycle_length

@@ -75,7 +75,7 @@ void pwm_input_init(){
   pwm_input_time_at_falling_edge = malloc(4 * (number_of_pwm_inputs));
 }
 
-int pwm_input_add_source(unsigned int pin){
+int pwm_add_input(unsigned int pin){
   //enable pin reading / interrupts
   gpio_set_pullup(pin);
   gpio_set_input(pin);
@@ -97,7 +97,7 @@ int pwm_input_add_source(unsigned int pin){
   //update size, so that interrupt handler knows to read new input
   number_of_pwm_inputs++;
 }
-int pwm_input_remove_source(unsigned int pin);
+int pwm_remove_input(unsigned int pin);
 
 int pwm_input_get_threshold(unsigned int pin){
   //wait till you get a vaild data point
@@ -124,8 +124,8 @@ int pwm_input_get_number_sources();
 
 int pwm_input_test(){
   printf("starting test \n");
-  pwm_input_add_source(GPIO_PIN26);
-  pwm_input_add_source(GPIO_PIN16);
+  pwm_add_input(GPIO_PIN26);
+  pwm_add_input(GPIO_PIN16);
   while(1){
     printf("angle 1: %d ", (pwm_input_get_threshold(GPIO_PIN26)-30) * 360 / 1060);
     printf("angle 2: %d\n", (pwm_input_get_threshold(GPIO_PIN16)-30) * 360 / 1060);

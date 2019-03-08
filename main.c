@@ -47,8 +47,8 @@ void test_pwm_IO(unsigned int input_pin1, unsigned int input_pin2, unsigned int 
   //add pwm outputs
   pwm_add_output(output_pin1, 1500);
   pwm_add_output(output_pin2, 1500);
-  pwm_input_add_source(input_pin1);
-  pwm_input_add_source(input_pin2);
+  pwm_add_input(input_pin1);
+  pwm_add_input(input_pin2);
 
   while(1){
     printf("new loop \n");
@@ -75,7 +75,7 @@ void test_pwm_IO2(unsigned int input_pin, unsigned int output_pin){
   pwm_input_init();
 
   pwm_add_output(output_pin, 1500);
-  pwm_input_add_source(input_pin);
+  pwm_add_input(input_pin);
 
   int angle = 0;
   while(1){
