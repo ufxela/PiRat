@@ -6,7 +6,8 @@
 #include "timer.h"
 
 const unsigned int DEFAULT_THRESHOLD = 1500;
-
+const unsigned int MAX_SERVO_THRESHOLD = 2400;
+const unsigned int MIN_SERVO_THRESHOLD = 500;
 struct servo_motor{
   unsigned int pin;
   unsigned int current_threshold;
@@ -53,8 +54,8 @@ void servo_setup(servo *servo){
   /* while user doesn't think we're at zero degrees, move towards zero degrees */
   while(user_response != 'Y'){
     new_threshold = new_threshold - 10;
-    if(new_threshold <= 1000){
-      new_threshold = 1000;
+    if(new_threshold <= MIN_SERVO_THRESHOLD){
+      new_threshold = MIN_SERVO_THRESHOLD;
       user_response = 'Y';
     }
     servo->current_threshold = new_threshold;
@@ -86,8 +87,8 @@ void servo_setup(servo *servo){
   /* while user doesn't think we're at 180 degrees, move towards 180 degrees */
   while(user_response != 'Y'){
     new_threshold = new_threshold + 10;
-    if(new_threshold >= 2000){
-      new_threshold = 2000;
+    if(new_threshold >= MAX_SERVO_THRESHOLD){
+      new_threshold = MAX_SERVO_THRESHOLD;
       user_response = 'Y';
     }
     servo->current_threshold = new_threshold;

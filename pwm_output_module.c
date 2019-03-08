@@ -25,8 +25,10 @@ volatile unsigned int * pwm_output_thresholds;
 //TODO:
 //make functions to allow for these to be changed
 const unsigned int pwm_output_cycle_length_us = 20000; //20 ms, for servos.
-const unsigned int pwm_output_max_threshold = 2000; //2ms, corresponds to max of 10% duty cycle
-const unsigned int pwm_output_min_threshold = 1000;
+/* changed this to 3000 because 2000 wasn't enough */
+const unsigned int pwm_output_max_threshold = 3000; //2ms should correspond to max of 10% duty cycle
+/* expanded this down from 1000 because 1000 wasn't enough */
+const unsigned int pwm_output_min_threshold = 0;
 
 /* helper function which gets the index of a pin. -1 if not existent */
 static int pwm_output_get_pin_index(unsigned int pin){
