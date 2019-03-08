@@ -81,16 +81,21 @@ besides a Raspberry Pi,
 1. Test accuracy of ultrasonic sensor
 
 **Reference and Resources**
+
 *another document that goes into more detail about my project*
+
 https://docs.google.com/document/d/10EH3p42lqzU2tbl3T3y5yWcG4yZZ02CRSOTUqFnZRl0/edit?usp=sharing
 
 *line follower*
+
 http://wiki.sunfounder.cc/index.php?title=Line_Follower_Module
 https://github.com/cs107e/cs107e.github.io/blob/master/cs107e/src/i2c.c
 
 *ultrasonic sensor*
+
 https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf
 https://github.com/cs107e/cs107e.github.io/blob/master/lectures/Sensors/code/sonar/sonar.c
 
 *servos*
+
 https://learn.sparkfun.com/tutorials/pulse-width-modulation/all
