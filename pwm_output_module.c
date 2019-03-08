@@ -32,7 +32,7 @@ volatile unsigned int * pwm_output_thresholds;
 
 //TODO:
 //make functions to allow for these to be changed
-const unsigned int pwm_output_cycle_length_us = 4000000; //20 ms, for servos.
+const unsigned int pwm_output_cycle_length_us = 20000; //20 ms, for servos.
 const unsigned int pwm_output_max_threshold = 2000; //2ms, corresponds to max of 10% duty cycle
 const unsigned int pwm_output_min_threshold = 1000;
 
@@ -49,15 +49,15 @@ static int pwm_output_get_pin_index(unsigned int pin){
 
 static bool pwm_output_handler(unsigned int pc){
   //check if we cause the interrupt:
-  if(armtimer_check_interrupt()){
-    printf("in handler. Time: %d\n", timer_get_ticks());
+  if(armtimer_check_and_clear_interrupt()){
+    //    printf("in handler. Time: %d\n", timer_get_ticks());
     //get the current time. QUESTION Is this limited by the 35 minute wraparound?
     unsigned int start_time = timer_get_ticks();
 
     //write 1 to all servo channels to start duty cycle
     for(int i = 0; i < number_of_pwm_outputs; i++){
       gpio_write(pwm_output_pins[i], 1);
-      printf("written 1 to pin %d, time %d\n", pwm_output_pins[i], timer_get_ticks());
+      //  printf("written 1 to pin %d, time %d\n", pwm_output_pins[i], timer_get_ticks());
     }
     
     //loop through and set output to zero once threshold is reached
@@ -70,7 +70,7 @@ static bool pwm_output_handler(unsigned int pc){
 	//check if we should kill the output
 	if(pwm_output_thresholds[i] <= current_time){
 	  gpio_write(pwm_output_pins[i], 0); //this is writing 0 an unnecessary large number of times...
-	  printf("written 0 to pin %d, time %d\n", pwm_output_pins[i], timer_get_ticks());
+	  //  printf("written 0 to pin %d, time %d\n", pwm_output_pins[i], timer_get_ticks());
 	}
       }
     }
@@ -79,7 +79,7 @@ static bool pwm_output_handler(unsigned int pc){
     for(int i = 0; i < number_of_pwm_outputs; i++){
       gpio_write(pwm_output_pins[i], 0);
     }
-    printf("exiting handler, time: %d\n", timer_get_ticks()); 
+    //    printf("exiting handler, time: %d\n", timer_get_ticks()); 
     return true;
   }else{
     return false;
@@ -161,20 +161,20 @@ int get_threshold(unsigned int pin){
 }
 
 int pwm_output_test(void){
-  printf("starting pwm output test\n");
+  // printf("starting pwm output test\n");
   pwm_add_output(GPIO_PIN4, 1200);
-  printf("output added");
+  //printf("output added");
   while(1){
-    printf("in loop \n");
+    //printf("in loop \n");
     pwm_change_threshold(GPIO_PIN4, 1200);
-    printf("1");
+    //printf("1");
     timer_delay_ms(100);
-    printf("2");
+    //printf("2");
     pwm_change_threshold(GPIO_PIN4, 1700);
-    printf("3");
+    //printf("3");
     timer_delay_ms(100);
-    printf("GPIO_PIN%d threshold: %d", GPIO_PIN4, get_threshold(GPIO_PIN4));
-    printf("beginning next iteration");
+    //    printf("GPIO_PIN%d threshold: %d", GPIO_PIN4, get_threshold(GPIO_PIN4));
+    //printf("beginning next iteration");
   }
   return 1;
 }
