@@ -83,7 +83,7 @@ void pwm_output_init(unsigned int interrupts_per_cycle, unsigned int cycle_lengt
 
   //remove this later, it's to manually set the timer interrupt for every 10 us
   time_between_pwm_output_interrupts = 10;
-  pwm_output_resolution = 6950;
+  pwm_output_resolution = 6700;
 
   //initialize interrupts 
   armtimer_init(time_between_pwm_output_interrupts);
@@ -161,7 +161,8 @@ int get_duty_cycle(unsigned int pin){
 
 int pwm_output_test(void){
   //add a servo on signal line 4, default duty cycle is 6%
-  pwm_add_output(GPIO_PIN4, 6800 * 10 / 1000);
+  pwm_add_output(GPIO_PIN4, 6800 * 70 / 1000);
+  //the code freezes at the above line.
   while(1){
     //set duty cycle to 6%
     pwm_change_duty_cycle(GPIO_PIN4, 6800 * 60 / 1000);

@@ -25,9 +25,12 @@ void main(void)
   timer_init();
   //servos have cycle length 20 ms, with a 5% range of that being from 0 to 180 degrees
   //(duty cycle of 5% = 0, 10% = 180. So I'm alloting 100 steps in the workable range)  
-  //pwm_output_init(2000, 20000);
-  //pwm_output_test();
+  pwm_output_init(2000, 20000);
+  pwm_output_test();
 
+  /* test pwm input module (works) */
+  /*
   pwm_input_init();
   pwm_input_test();
+  */
 }
