@@ -103,7 +103,8 @@ int pwm_input_get_threshold(unsigned int pin){
   //wait till you get a vaild data point
   int threshold = -1;
   int i = get_pin_index(pin);
-  while(threshold < 0){
+  //wait till we get a good valued threshold
+  while(threshold < 0 || threshold > 1100){
     threshold = pwm_input_time_at_falling_edge[i] - pwm_input_time_at_rising_edge[i];
   }
   return threshold;

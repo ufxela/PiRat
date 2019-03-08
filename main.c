@@ -25,12 +25,45 @@ void main(void)
   timer_init();
   //servos have cycle length 20 ms, with a 5% range of that being from 0 to 180 degrees
   //(duty cycle of 5% = 0, 10% = 180. So I'm alloting 100 steps in the workable range)  
-  pwm_output_init();
+  /*pwm_output_init();
   pwm_output_test();
-
+  */
   /* test pwm input module (works) */
   /*
   pwm_input_init();
   pwm_input_test();
   */
+
+  test_pwm_IO(GPIO_PIN17, GPIO_PIN27, GPIO_PIN4, GPIO_PIN18); 
+}
+
+void test_pwm_IO(unsigned int input_pin1, unsigned int input_pin2, unsigned int output_pin1,
+		 unsigned int output_pin2){
+  printf("Beginning PWM IO Test \n");
+  pwm_output_init();
+  pwm_input_init();
+  
+  //add pwm outputs
+  pwm_add_output(output_pin1, 1500);
+  //  pwm_add_output(output_pin2, 1500);
+  pwm_input_add_source(input_pin1);
+  //pwm_input_add_source(input_pin2);
+
+  while(1){
+    printf("new loop \n");
+    pwm_change_threshold(output_pin1, 1200);
+    //pwm_change_threshold(output_pin2, 1000);
+    for(int i = 0; i < 10; i++){
+      timer_delay_ms(100);
+      printf("Output 1 angle: %d, Output 2 angle %d \n", (pwm_input_get_threshold(input_pin1)-30) * 360 
+	     / 1060, (/*pwm_input_get_threshold(input_pin2)*/-30) * 360 / 1060);
+    }
+    pwm_change_threshold(output_pin1, 1800);
+    pwm_change_threshold(output_pin2, 2000);
+    for(int i =0; i < 10; i++){
+      timer_delay_ms(100);
+      printf("Output 1 angle: %d, Output 2 angle %d \n", (pwm_input_get_threshold(input_pin1)-30) * 360
+             / 1060, (/*pwm_input_get_threshold(input_pin2)*/-30) * 360 / 1060);
+    }
+  }
 }
