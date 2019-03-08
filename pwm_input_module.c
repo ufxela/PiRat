@@ -22,11 +22,7 @@ unsigned int * pwm_input_time_at_rising_edge;
 unsigned int * pwm_input_time_at_previous_rising_edge;
 unsigned int * pwm_input_time_at_falling_edge; 
 
-unsigned int INPUT_PIN = GPIO_PIN26;
-
-volatile unsigned int time_at_rising_edge = 0;
-volatile unsigned int time_at_previous_rising_edge = 0;
-volatile unsigned int time_at_falling_edge = 0;
+const unsigned int MAX_PWM_INPUTS = 8;
 
 //helper to search data structure for index of pin, returns -1 if pin not in data structure
 static int get_pin_index(unsigned int pin){
@@ -38,6 +34,11 @@ static int get_pin_index(unsigned int pin){
   return -1;
 }
 
+/* the handler 
+ * uses gpioextra to detect events
+ * and to identify events, samples the input line
+ * quickly after the event occurs (credit for idea goes to Pat)
+ */
 bool pwm_input_handler(){
   int did_we_trigger = 0;
 
@@ -76,51 +77,69 @@ void pwm_input_init(){
 }
 
 int pwm_add_input(unsigned int pin){
-  //enable pin reading / interrupts
-  gpio_set_pullup(pin);
-  gpio_set_input(pin);
-  gpio_enable_event_detection(pin, GPIO_DETECT_FALLING_EDGE);
-  gpio_enable_event_detection(pin, GPIO_DETECT_RISING_EDGE);
-
-  //make room in data structure
-  pwm_input_pins = realloc(pwm_input_pins, 4 * (number_of_pwm_inputs + 1));
-  pwm_input_time_at_rising_edge = realloc(pwm_input_time_at_rising_edge, 4 * (number_of_pwm_inputs +1));
-  pwm_input_time_at_previous_rising_edge = realloc(pwm_input_time_at_previous_rising_edge,
-						   4 * (number_of_pwm_inputs +1));
-  pwm_input_time_at_falling_edge = realloc(pwm_input_time_at_falling_edge, 
-					   4 * (number_of_pwm_inputs +1));
-  
-  //initialize data
-  pwm_input_pins[number_of_pwm_inputs] = pin;
-  pwm_input_time_at_previous_rising_edge[number_of_pwm_inputs] = timer_get_ticks();
-
-  //update size, so that interrupt handler knows to read new input
-  number_of_pwm_inputs++;
+  if(number_of_pwm_inputs < MAX_PWM_INPUTS){
+    //enable pin reading / interrupts
+    gpio_set_pullup(pin);
+    gpio_set_input(pin);
+    gpio_enable_event_detection(pin, GPIO_DETECT_FALLING_EDGE);
+    gpio_enable_event_detection(pin, GPIO_DETECT_RISING_EDGE);
+    
+    //make room in data structure
+    pwm_input_pins = realloc(pwm_input_pins, 4 * (number_of_pwm_inputs + 1));
+    pwm_input_time_at_rising_edge = realloc(pwm_input_time_at_rising_edge, 4* (number_of_pwm_inputs +1));
+    pwm_input_time_at_previous_rising_edge = realloc(pwm_input_time_at_previous_rising_edge,
+						     4 * (number_of_pwm_inputs +1));
+    pwm_input_time_at_falling_edge = realloc(pwm_input_time_at_falling_edge, 
+					     4 * (number_of_pwm_inputs +1));
+    
+    //initialize data
+    pwm_input_pins[number_of_pwm_inputs] = pin;
+    pwm_input_time_at_previous_rising_edge[number_of_pwm_inputs] = timer_get_ticks();
+    
+    //update size, so that interrupt handler knows to read new input
+    number_of_pwm_inputs++;
+    
+    return 1;
+  }else{
+    return 0;
+  }
 }
-int pwm_remove_input(unsigned int pin);
+ 
+/* again, I'm too lazy to write this */
+int pwm_remove_input(unsigned int pin){
+  return 0;
+}
 
 int pwm_input_get_threshold(unsigned int pin){
-  //wait till you get a vaild data point
   int threshold = -1;
   int i = get_pin_index(pin);
+
   //wait till we get a good valued threshold
   while(threshold < 0 || threshold > 1100){
     threshold = pwm_input_time_at_falling_edge[i] - pwm_input_time_at_rising_edge[i];
   }
+
   return threshold;
 }
 
+/* this function is a fossil from my old implementation of this module that didn't work
+ * which had a variable cycle length and resolution
+ */
 int pwm_input_get_cycle_length(unsigned int pin){
-  //wait for valid data
   int cycle_length = -1;
   int i = get_pin_index(pin);
+ 
+  //wait for a good piece of data
   while(cycle_length < 0){
     cycle_length = pwm_input_time_at_rising_edge[i] - pwm_input_time_at_previous_rising_edge[i];
   }
+
   return cycle_length;
 }
 
-int pwm_input_get_number_sources();
+int pwm_input_get_number_sources(){
+  return number_of_pwm_inputs;
+}
 
 int pwm_input_test(){
   printf("starting test \n");
