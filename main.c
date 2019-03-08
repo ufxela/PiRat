@@ -5,6 +5,7 @@
 #include "gpio.h"
 #include "pwm_output_module.h"
 #include "pwm_input_module.h"
+#include "servo_module.h"
 
 const unsigned int ULTRASONIC_TRIGGER = GPIO_PIN23;
 const unsigned int ULTRASONIC_ECHO = GPIO_PIN24;
@@ -34,10 +35,35 @@ void main(void)
   pwm_input_test();
   */
 
-  test_pwm_IO(GPIO_PIN17, GPIO_PIN27, GPIO_PIN4, GPIO_PIN18); 
+  //test_pwm_IO(GPIO_PIN17, GPIO_PIN27, GPIO_PIN4, GPIO_PIN18); 
   //test_pwm_IO2(GPIO_PIN27, GPIO_PIN18);  
+
+  test_servo_module(GPIO_PIN4);
+
 }
 
+void test_servo_module(unsigned int pin){
+  printf("Beginning servo module test \n");
+  servo_module_init();
+  servo * my_servo = servo_new(pin);
+
+  servo_setup(my_servo);
+
+  int angle = 0;
+
+  while(1){
+    while(angle < 180){
+      servo_go_to_angle(my_servo, angle);
+      angle++;
+      timer_delay_ms(50);
+    }
+    while(angle > 0){
+      servo_go_to_angle(my_servo, angle);
+      angle--;
+      timer_delay_ms(50);
+    }
+  }
+}
 void test_pwm_IO(unsigned int input_pin1, unsigned int input_pin2, unsigned int output_pin1,
 		 unsigned int output_pin2){
   printf("Beginning PWM IO Test \n");

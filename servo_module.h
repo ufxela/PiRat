@@ -1,7 +1,7 @@
 #ifndef SERVO_MODULE_H
 #define SERVO_MODULE_H
 
-void servo_init();
+void servo_module_init();
 
 /* Servo object has the following information:
  * pin number 
