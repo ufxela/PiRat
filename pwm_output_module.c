@@ -10,25 +10,17 @@
 #include "malloc.h"
 #include "printf.h"
 
-/* idk... just a placeholder for now, can definitely do more outputs
- */
+/* just a placeholder for now, can definitely do more outputs */
 const unsigned int MAX_PWM_OUTPUTS = 8;
 
 /* this data structure holds each of the pins which are available for use, and the "thresholds"
  * for each pin.
- * thresholds are the marker, in microseconds, of when we should write 0 instead of 1 in the 
+ * thresholds are markers, in microseconds, of when we should write 0 instead of 1 in the 
  * pwm cycle.
  */
 volatile unsigned int number_of_pwm_outputs = 0;
 volatile unsigned int * pwm_output_pins; 
 volatile unsigned int * pwm_output_thresholds;
-
-/*TODO:
- * WRITE A FUNCTION CALLED SET DUTY CYCLE which sets duty cycle
- * or an angle function
- * or a throttle function
- * perhaps these are better to do in a different module that adds a layer of abstraction.
- */
 
 //TODO:
 //make functions to allow for these to be changed
@@ -36,8 +28,7 @@ const unsigned int pwm_output_cycle_length_us = 20000; //20 ms, for servos.
 const unsigned int pwm_output_max_threshold = 2000; //2ms, corresponds to max of 10% duty cycle
 const unsigned int pwm_output_min_threshold = 1000;
 
-//helper function which gets the index of a pin. -1 if not existent
-//TODO: use this function in this module
+/* helper function which gets the index of a pin. -1 if not existent */
 static int pwm_output_get_pin_index(unsigned int pin){
   for(int i = 0; i < number_of_pwm_outputs; i++){
     if(pwm_output_pins[i] == pin){
@@ -47,17 +38,19 @@ static int pwm_output_get_pin_index(unsigned int pin){
   return -1; 
 }
 
+/* handler for pwm output. 
+ * occurs once every 20 miliseconds and lasts for 2 miliseconds
+ * outputs duty cycles for each pwm output line
+ */
 static bool pwm_output_handler(unsigned int pc){
   //check if we cause the interrupt:
   if(armtimer_check_and_clear_interrupt()){
-    //    printf("in handler. Time: %d\n", timer_get_ticks());
     //get the current time. QUESTION Is this limited by the 35 minute wraparound?
     unsigned int start_time = timer_get_ticks();
 
     //write 1 to all servo channels to start duty cycle
     for(int i = 0; i < number_of_pwm_outputs; i++){
       gpio_write(pwm_output_pins[i], 1);
-      //  printf("written 1 to pin %d, time %d\n", pwm_output_pins[i], timer_get_ticks());
     }
     
     //loop through and set output to zero once threshold is reached
@@ -70,7 +63,6 @@ static bool pwm_output_handler(unsigned int pc){
 	//check if we should kill the output
 	if(pwm_output_thresholds[i] <= current_time){
 	  gpio_write(pwm_output_pins[i], 0); //this is writing 0 an unnecessary large number of times...
-	  //  printf("written 0 to pin %d, time %d\n", pwm_output_pins[i], timer_get_ticks());
 	}
       }
     }
@@ -79,7 +71,6 @@ static bool pwm_output_handler(unsigned int pc){
     for(int i = 0; i < number_of_pwm_outputs; i++){
       gpio_write(pwm_output_pins[i], 0);
     }
-    //    printf("exiting handler, time: %d\n", timer_get_ticks()); 
     return true;
   }else{
     return false;
@@ -127,25 +118,24 @@ int pwm_add_output(unsigned int pin, unsigned int starting_threshold){
   }
 }
 
+/* I don't really need this, and I'm too lazy to write it */
 int pwm_remove_output(unsigned int pin){
   return 0;
 }
 
-/* BIG NOTE: should this function wait until the current cycle is completed before changing
- * the duty cycle? Probably
+/* changes the threshold for an existing pin
+ * will wait until pwm write is finished before updating threshold
+ * checks if pin is valid
  */
 int pwm_change_threshold(unsigned int pin, unsigned int new_threshold){
   if(new_threshold >= pwm_output_min_threshold && new_threshold <= pwm_output_max_threshold){
-    //loop over, find pin, change threshold. 
-    for(int i = 0; i < get_number_pwm_outputs(); i++){
-      if(pwm_output_pins[i] == pin){
-	pwm_output_thresholds[i] = new_threshold;
-	break; //ugly, but safes unnecessary looping
-      }
+    int pin_index = pwm_output_get_pin_index(pin);
+    if(pin_index >= 0){
+      pwm_output_thresholds[pin_index] = new_threshold;
+      return 1;
+    }else{
+      return 0;
     }
-    
-    //should return 0 if looped over and pin wasn't in use.
-    return 1;
   }else{
     return 0;
   }
