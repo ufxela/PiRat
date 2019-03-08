@@ -52,15 +52,15 @@ void test_pwm_IO(unsigned int input_pin1, unsigned int input_pin2, unsigned int 
 
   while(1){
     printf("new loop \n");
-    pwm_change_threshold(output_pin1, 1200);
-    pwm_change_threshold(output_pin2, 1000);
+    pwm_change_threshold(output_pin1, 1400);
+    pwm_change_threshold(output_pin2, 1450);
     for(int i = 0; i < 10; i++){
       timer_delay_ms(100);
       printf("Output 1 angle: %d, Output 2 angle %d \n", (pwm_input_get_threshold(input_pin1)-30) * 360 
 	     / 1060, (pwm_input_get_threshold(input_pin2)-30) * 360 / 1060);
     }
-    pwm_change_threshold(output_pin1, 1800);
-    pwm_change_threshold(output_pin2, 2000);
+    pwm_change_threshold(output_pin1, 1600);
+    pwm_change_threshold(output_pin2, 1550);
     for(int i =0; i < 10; i++){
       timer_delay_ms(100);
       printf("Output 1 angle: %d, Output 2 angle %d \n", (pwm_input_get_threshold(input_pin1)-30) * 360

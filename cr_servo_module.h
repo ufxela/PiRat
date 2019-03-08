@@ -1,15 +1,11 @@
 #ifndef CR_SERVO_MODULE_H
 #define CR_SERVO_MODULE_H
 
-/* this module rebrands servo_module as well as adds pwm_input feedback
- * to create a driver for the parallax feedback 360 servo
+/* this module rebrands servo_module 
+ * to create a driver for continuous rotation servos
  */
 
 /* this internal data structure keeps track of a servo object
- * but also has two ints, one which keeps track of 
- * how many rotations the servo motor is at (from -infinity to infinity)
- * as well as the relative angle that the servo is at [0, 360).
- * These two parameters together keep track of the absolute position of the servo
  */
 typedef volatile struct cr_servo_motor cr_servo;
 
@@ -42,16 +38,6 @@ static unsigned int get_cr_servo_throttle(cr_servo *cr_servo);
 
 /* internally watch threshold */
 static unsigned int get_cr_servo_threshold(cr_servo *cr_servo);
-
-/* moves the servo arm to the specified absolute position, using throttle management and feedback
- * angle is from -infinity to infinity
- * this function is the MEAT: it updates the rotations / angle as it goes. 
- */
-int go_to_absolute_position(cr_servo * cr_servo, int angle);
-
-/* returns the absolute angle, in degrees that we're at
- */
-int get_absolute_position(cr_servo * cr_servo);
 
 #endif
 
