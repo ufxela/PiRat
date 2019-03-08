@@ -27,14 +27,13 @@ servo *servo_new(unsigned int pin);
 void servo_setup(servo *servo);
 
 /* automatically sets up servo to inputter parameters */
-void servo_auto_setup(servo *servo, unsigned int center_threshold, unsigned int min_threshold,
-		      unsigned int max_threshold); 
+void servo_auto_setup(servo *servo, unsigned int min_threshold, unsigned int max_threshold); 
 
-/* writes angle to servo, 1 if succcess 0 if fail */
-int servo_write_angle(servo *servo, unsigned int angle);
+/* writes current_threshold to servo, 1 if success, 0 if fail */
+int servo_write_threshold(servo *servo);
 
-/* writes a threshold to servo, 1 if success, 0 if fail */
-int servo_write_threshold(servo *servo, unsigned int threshold);
+/* goes to an angle */
+int servo_go_to_angle(servo *servo, unsigned int angle);
 
 /* returns the angle that the servo is currently at */
 unsigned int get_servo_position(servo *servo);

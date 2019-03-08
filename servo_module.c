@@ -1,7 +1,9 @@
+#include "servo_module.h"
 #include "pwm_output_module.h"
 #include "timer.h"
 #include "malloc.h"
 #include "printf.h"
+#include "uart.h"
 
 const unsigned int DEFAULT_THRESHOLD = 1500;
 
@@ -12,45 +14,118 @@ struct servo_motor{
   unsigned int max_threshold;
   unsigned int min_threshold;
   unsigned int threshold_range;
-}
+};
 
-void servo_init();
+void servo_init(){
+  pwm_output_init();
+  uart_init();
+}
 
 servo *servo_new(unsigned int pin){
   servo * srvo = malloc(sizeof(struct servo_motor));
   srvo->pin = pin;
+
+  /* default servo setup */
   srvo->current_threshold = DEFAULT_THRESHOLD;
+  srvo->max_threshold = 1600;
+  srvo->min_threshold = 1400;
+  srvo->threshold_range = 200;
+  srvo->current_angle = threshold_to_angle(srvo, srvo->current_threshold);
+
   pwm_add_output(pin, srvo->current_threshold);
+
+  return srvo;
 }
 
-void servo_setup(servo *servo);
+void servo_setup(servo *servo){
+  printf("let's find the 0 degree mark.\n");
 
+  servo->current_threshold = servo->min_threshold;
+  servo_write_threshold(servo);  
+
+  printf("are we there yet? (Y/N)");
+  char user_response = uart_getchar();
+  
+  unsigned int new_threshold = servo->current_threshold;
+  
+  /* while user doesn't think we're at zero degrees, move towards zero degrees */
+  while(user_response != 'Y' || user_response != 'y'){
+    new_threshold = new_threshold - 10;
+    if(new_threshold < 1000){
+      new_threshold = 1000;
+    }
+    servo->current_threshold = new_threshold;
+    printf("setting threshold to %d \n", new_threshold);
+    
+    servo_write_threshold(servo);
+    
+    printf("are we at the zero degree mark? (Y/N)\n");
+    user_response = uart_getchar();
+  }
+
+  /* update servo info */
+  servo->min_threshold = new_threshold;
+  
+  /* now find max angle */
+  printf("\nnow, let's go for the 180 mark \n");
+
+  servo->current_threshold = servo->max_threshold;
+  servo_write_threshold(servo); 
+
+  printf("are we there yet? (Y/N)");
+  user_response = uart_getchar();
+
+  new_threshold = servo->current_threshold;
+
+  /* while user doesn't think we're at 180 degrees, move towards 180 degrees */
+  while(user_response != 'Y' || user_response != 'y'){
+    new_threshold = new_threshold + 10;
+    if(new_threshold > 2000){
+      new_threshold = 2000;
+    }
+    servo->current_threshold = new_threshold;
+    printf("setting threshold to %d \n", new_threshold);
+
+    servo_write_threshold(servo);
+
+    printf("are we at the 180 degree mark? (Y/N)\n");
+    user_response = uart_getchar();
+  }
+
+  /* update servo info */
+  servo->max_threshold = new_threshold;
+
+  /* now, complete the setup */
+  printf("setup complete, going to 90 degrees \n");
+  servo->threshold_range = servo->max_threshold - servo->min_threshold;
+  servo->current_threshold = angle_to_threshold(servo, 90);
+  servo->current_angle = 90;
+  printf("For reference, here's your servo setup info: \n");
+  printf("Max_threshold: %d\n", servo->max_threshold);
+  printf("Min_threshold: %d\n", servo->min_threshold);
+}
 /* check that we have valid values? */
-void servo_auto_setup(servo *servo, unsigned int min_threshold,
-                      unsigned int max_threshold){
+void servo_auto_setup(servo *servo, unsigned int min_threshold, unsigned int max_threshold){
   servo->threshold_range = max_threshold - min_threshold;
-  unsigned int center_threshold = servo->threshold_range / 2 + min_threshold;
-  servo->current_threshold = center_threshold;
   servo->max_threshold = max_threshold;
   servo->min_threshold = min_threshold;
-  servo->current_angle = threshold_to_angle(servo, servo->current_threshold);
-  servo_write_angle(servo, servo->current_angle);
+  servo_go_to_angle(servo, 90);
 }
 
 /* add in checks */
-int servo_write_angle(servo *servo, unsigned int angle){
-  servo->current_angle = angle;
-  servo->current_threshold = angle_to_threshold(servo, angle);
-  return servo_write_threshold(servo, servo->current_threshold); /* a lot of jumping through hoops. */
-  /* could simplify by just calling pwm_output_module directly here */
-}
-
-/* add in checks */
-int servo_write_threshold(servo *servo, unsigned int threshold){
-  servo->current_threshold = threshold;
-  servo->current_angle = threshold_to_angle(servo, threshold);
+int servo_write_threshold(servo *servo){
   pwm_change_threshold(servo->pin, servo->current_threshold);
   return 1;
+}
+
+/* add in checks */
+int servo_go_to_angle(servo *servo, unsigned int angle){
+  servo->current_angle = angle;
+  servo->current_threshold = angle_to_threshold(servo, angle);
+  return servo_write_threshold(servo);
+  /* ok this is terrible ordering: what if servo_write_threshold fails. Then the angles will be off 
+     still, as you set them before you knew if it failed 
+  */
 }
 
 unsigned int get_servo_position(servo *servo){
