@@ -5,12 +5,13 @@ void servo_init();
 
 /* Servo object has the following information:
  * pin number 
- * input pin number (if applicable)
  * threshold value (1000 to 2000)
  * angle (0 to 180, maybe 0 to 360)
  * max threshold (1000 to 2000)
  * min threshold (1000 to 2000)
- * center threshold (1000 to 2000)
+ * threshold range (from 0 to 1000). Equals max - min
+ * servo angles are calcualted as follows:
+ * min threshold + threshold range * angle / 180
  */
 typedef volatile struct servo_motor servo;
 
@@ -41,4 +42,8 @@ unsigned int get_servo_position(servo *servo);
 /* returns the threshold the servo is currently at */
 unsigned int get_servo_threshold(servo *servo);
 
+/* conversions */
+static unsigned int threshold_to_angle(servo * servo, unsigned int threshold);
+
+static unsigned int angle_to_threshold(servo * servo, unsigned int angle);
 #endif
