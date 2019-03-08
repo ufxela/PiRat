@@ -168,11 +168,11 @@ int pwm_output_test(void){
     //printf("in loop \n");
     pwm_change_threshold(GPIO_PIN4, 1200);
     //printf("1");
-    timer_delay_ms(100);
+    timer_delay_ms(500);
     //printf("2");
     pwm_change_threshold(GPIO_PIN4, 1700);
     //printf("3");
-    timer_delay_ms(100);
+    timer_delay_ms(500);
     //    printf("GPIO_PIN%d threshold: %d", GPIO_PIN4, get_threshold(GPIO_PIN4));
     //printf("beginning next iteration");
   }
