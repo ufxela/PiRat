@@ -77,4 +77,15 @@ void shimmy_left();
 
 /* same as shimmy left, except to the right. */
 void shimmy_right();
+
+/* sets the throttles which we move the wheels at throughout the program
+ * remember: throttle is from [-100, 100]
+ */
+void set_wheel_throttles(int throttle);
+
+/* independent throttle setting, if we need it */
+void set_wheel1_throttle(int throttle);
+
+/* independent throttle setting, if we need it */
+void set_wheel2_throttle(int throttle);
 #endif
