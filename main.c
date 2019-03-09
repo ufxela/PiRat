@@ -6,9 +6,34 @@
 #include "pwm_output_module.h"
 #include "pwm_input_module.h"
 #include "servo_module.h"
+#include "cr_servo_module.h"
 
 const unsigned int ULTRASONIC_TRIGGER = GPIO_PIN23;
 const unsigned int ULTRASONIC_ECHO = GPIO_PIN24;
+
+void test_cr_servo_module(unsigned int pin){
+  printf("Beginning cr servo module test\n");
+  cr_servo_module_init();
+
+  cr_servo * my_cr_servo = cr_servo_new(pin);
+
+  cr_servo_setup(my_cr_servo);
+
+  int throttle = 0;
+
+  while(1){
+    while(throttle < 100){
+      cr_servo_go_to_throttle(my_cr_servo, throttle);
+      throttle++;
+      timer_delay_ms(75);
+    }
+    while(throttle > -100){
+      cr_servo_go_to_throttle(my_cr_servo, throttle);
+      throttle--;
+      timer_delay_ms(75);
+    }
+  }
+}
 
 void test_servo_module(unsigned int pin){
   printf("Beginning servo module test \n");
@@ -115,9 +140,17 @@ void main(void)
   pwm_input_test();
   */
 
-  //test_pwm_IO(GPIO_PIN17, GPIO_PIN27, GPIO_PIN4, GPIO_PIN18); 
-  //test_pwm_IO2(GPIO_PIN27, GPIO_PIN18);  
+  /* test PWM IO */
+  /*
+  test_pwm_IO(GPIO_PIN17, GPIO_PIN27, GPIO_PIN4, GPIO_PIN18); 
+  test_pwm_IO2(GPIO_PIN27, GPIO_PIN18);  
+  */
 
+  /* test servo module */
+  /*
   test_servo_module(GPIO_PIN4);
+  */
 
+  /*test cr servo module */
+  test_cr_servo_module(GPIO_PIN4);
 }

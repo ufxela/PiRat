@@ -29,7 +29,7 @@ static unsigned int throttle_to_threshold(cr_servo *cr_servo, int throttle){
   return ((100 + throttle) * cr_servo->threshold_range / 200) + cr_servo->min_threshold; 
 }
 
-void cr_servo_init(){
+void cr_servo_module_init(){
   pwm_output_init(); //is it bad that I call this like 50 times?
 }
 

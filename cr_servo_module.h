@@ -13,7 +13,7 @@
 typedef volatile struct cr_servo_motor cr_servo;
 
 /* sets everything up */
-void cr_servo_init();
+void cr_servo_module_init();
 
 /* make a new cr_servo (continuous rotation servo) object */
 cr_servo *cr_servo_new(unsigned int pin);
