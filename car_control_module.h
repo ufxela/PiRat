@@ -4,17 +4,20 @@
 /* initializer function, starts everything up */
 void car_control_module_init();
 
-/* returns through the passed parameters, the absolute angle each wheel is
- * at, one representation of the vehicle's current position (though not the
- * absolute position of the vehicle...)
+/* getters for the x and y coordinates that 
+ * the car calculates that it is at, using trig and stuff.
+ * return values are in cm (I might change later).
+ * calculates things based on internal constants for wheel circumference 
  */
-void get_absolute_position(int * wheel1, int * wheel 2);
+int get_x_position();
 
-/* returns absolute position of wheel1 */
-int get_wheel1_position();
+int get_y_position();
+
+/* returns absolute position/angle of wheel1 */
+int get_wheel1_angle();
 
 /* returns absolute position of wheel2 */
-int get_wheel2_position();
+int get_wheel2_angle();
 
 /* steps forward a set amount of degrees, updating the internal 
  * data structure which keeps track of the vehicle's wheel positions 
@@ -31,6 +34,9 @@ void step_forward(int degrees);
  * i.e. make a single call to step_forward
  *
  * Negative values are acceptable, and are moving backward
+ *
+ * Also, every time a move_forward function is called, we should update the internal
+ * positions, based on the distance moved forward as well as the bearing.
  */
 void move_forward(int distance_in_cm);
 
@@ -61,6 +67,8 @@ void move_wheel2(int degrees);
  * and then moves the wheels to those positions to create turning
  *
  * positive angles are counter-clockwise
+ *
+ * Should also update internally kept variable which tracks bearing.
  */
 void turn(int degrees);
 
@@ -74,6 +82,9 @@ void turn(int degrees);
  * what I want)
  * Or maybe it will accept a parameter which represents the distance
  * to shimmy left / right
+ *
+ * Should also update internal variables which keep track of (x,y) positions
+ * by utilizing bearing, as well as the distance travelled. 
  */
 void shimmy_left();
 
