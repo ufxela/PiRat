@@ -57,9 +57,7 @@ void servo_setup(servo *servo){
   servo_write_threshold(servo);  
 
   printf("are we there yet? (y/n)");
-  printf("before uart");
-  char user_response = 'n';
-  user_response = uart_getchar();
+  char user_response = uart_getchar();
 
   unsigned int new_threshold = servo->current_threshold;
   

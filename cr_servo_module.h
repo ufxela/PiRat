@@ -25,14 +25,18 @@ void cr_servo_setup(cr_servo *cr_servo);
 void cr_servo_auto_setup(cr_servo *cr_servo, unsigned int center_threshold, unsigned int min_threshold,
                       unsigned int max_threshold);
 
-/* internally control throttle */
-int cr_servo_write_throttle(cr_servo *cr_servo, unsigned int angle);
+/* interally control thresholds. Writes servo to have threshold of current 
+ * threshold
+ */
+int cr_servo_write_threshold(cr_servo *cr_servo);
 
-/* interally control thresholds */
-int cr_servo_write_threshold(cr_servo *cr_servo, unsigned int threshold);
+/* internally control throttle. 
+ * Throttle int from [-100, 100]
+ */
+int cr_servo_go_to_throttle(cr_servo *cr_servo, int throttle);
 
 /* internally watch throttle */
-unsigned int get_cr_servo_throttle(cr_servo *cr_servo);
+int get_cr_servo_throttle(cr_servo *cr_servo);
 
 /* internally watch threshold */
 unsigned int get_cr_servo_threshold(cr_servo *cr_servo);
