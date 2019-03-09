@@ -9,8 +9,8 @@
  * I'll do it the bad way for now.
  */
 /* internally data concerning information about the car */
-unsigned int wheel_base; // distance between wheels, measured in cm (maybe mm)
-unsigned int wheel_circumference; //measured in cm (maybe mm)
+unsigned int wheel_base_mm; // distance between wheels, measured in  mm
+unsigned int wheel_circumference_mm; //measured in mm
 
 /* internally kept positioning data */
 unsigned int bearing; // the angle, in degrees, which the car is currently facing 
@@ -94,8 +94,8 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
   wheel2_throttle = 20;
 
   //update internal positioning/info
-  wheel_base = whl_base;
-  wheel_circumference = whl_crfnc;
+  wheel_base_mm = whl_base;
+  wheel_circumference_mm = whl_crfnc;
 
   bearing = 0;
   x_pos = 0;
@@ -173,4 +173,9 @@ void step_forward(int degrees){
     cr_servo_go_to_throttle(wheel1, 0);
     cr_servo_go_to_throttle(wheel2, 0);
   }
+}
+
+void move_forward(int distance_in_cm){
+  unsigned int angle = distance_in_cm * 100 * 360 / wheel_circumference_mm;
+  step_forward(angle);
 }
