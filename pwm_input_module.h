@@ -36,4 +36,6 @@ int pwm_input_get_number_sources();
  */
 int pwm_input_test();
 
+unsigned int pwm_input_get_angle(unsigned int pin);
+
 #endif
