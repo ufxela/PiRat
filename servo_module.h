@@ -41,8 +41,4 @@ unsigned int get_servo_position(servo *servo);
 /* returns the threshold the servo is currently at */
 unsigned int get_servo_threshold(servo *servo);
 
-/* conversions */
-static unsigned int threshold_to_angle(servo * servo, unsigned int threshold);
-
-static unsigned int angle_to_threshold(servo * servo, unsigned int angle);
 #endif

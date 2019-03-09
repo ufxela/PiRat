@@ -10,45 +10,13 @@
 const unsigned int ULTRASONIC_TRIGGER = GPIO_PIN23;
 const unsigned int ULTRASONIC_ECHO = GPIO_PIN24;
 
-void main(void) 
-{
-  uart_init();
-  printf("Hello, world!\n");
-  
-  /* test the ultrasonic module */
-  /*
-  timer_init();
-  ultrasonic_init(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO);
-  ultrasonic_test();
-  */
-
-  /* test the pwm output module */
-  timer_init();
-  //servos have cycle length 20 ms, with a 5% range of that being from 0 to 180 degrees
-  //(duty cycle of 5% = 0, 10% = 180. So I'm alloting 100 steps in the workable range)  
-  /*pwm_output_init();
-  pwm_output_test();
-  */
-  /* test pwm input module (works) */
-  /*
-  pwm_input_init();
-  pwm_input_test();
-  */
-
-  //test_pwm_IO(GPIO_PIN17, GPIO_PIN27, GPIO_PIN4, GPIO_PIN18); 
-  //test_pwm_IO2(GPIO_PIN27, GPIO_PIN18);  
-
-  test_servo_module(GPIO_PIN4);
-
-}
-
 void test_servo_module(unsigned int pin){
   printf("Beginning servo module test \n");
   servo_module_init();
   servo * my_servo = servo_new(pin);
 
-  servo_setup(my_servo);
-
+  // servo_setup(my_servo);
+  servo_auto_setup(my_servo, 500, 2400); //the settings which I found to work
   int angle = 0;
 
   while(1){
@@ -121,4 +89,35 @@ void test_pwm_IO2(unsigned int input_pin, unsigned int output_pin){
     timer_delay(2);
     angle += 30;
   }
+}
+
+void main(void) 
+{
+  uart_init();
+  timer_init();
+  printf("Hello, world!\n");
+  
+  /* test the ultrasonic module */
+  /*
+  timer_init();
+  ultrasonic_init(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO);
+  ultrasonic_test();
+  */
+
+  /* test the pwm output module */
+  /*pwm_output_init();
+  pwm_output_test();
+  */
+
+  /* test pwm input module (works) */
+  /*
+  pwm_input_init();
+  pwm_input_test();
+  */
+
+  //test_pwm_IO(GPIO_PIN17, GPIO_PIN27, GPIO_PIN4, GPIO_PIN18); 
+  //test_pwm_IO2(GPIO_PIN27, GPIO_PIN18);  
+
+  test_servo_module(GPIO_PIN4);
+
 }

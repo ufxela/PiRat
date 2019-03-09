@@ -5,9 +5,10 @@
 #include "uart.h"
 #include "timer.h"
 
-const unsigned int DEFAULT_THRESHOLD = 1500;
-const unsigned int MAX_SERVO_THRESHOLD = 2400;
-const unsigned int MIN_SERVO_THRESHOLD = 500;
+const unsigned int DEFAULT_THRESHOLD = 1500;   //settings which gave full motion on my servo:
+const unsigned int MAX_SERVO_THRESHOLD = 2000; //2400
+const unsigned int MIN_SERVO_THRESHOLD = 1000; //500
+
 struct servo_motor{
   unsigned int pin;
   unsigned int current_threshold;
@@ -16,6 +17,17 @@ struct servo_motor{
   unsigned int min_threshold;
   unsigned int threshold_range;
 };
+
+
+/*should do a check to make sure threshold > servo->min_threshold? */
+static unsigned int threshold_to_angle(servo * servo, unsigned int threshold){
+  unsigned int relative_threshold = threshold - servo->min_threshold;
+  return relative_threshold * 180 / servo->threshold_range;
+}
+
+static unsigned int angle_to_threshold(servo * servo, unsigned int angle){
+  return servo->min_threshold + servo->threshold_range * angle / 180;
+}
 
 void servo_module_init(){
   pwm_output_init();
@@ -143,14 +155,4 @@ unsigned int get_servo_position(servo *servo){
 
 unsigned int get_servo_threshold(servo *servo){
   return servo->current_threshold;
-}
-
-/*should do a check to make sure threshold > servo->min_threshold? */
-static unsigned int threshold_to_angle(servo * servo, unsigned int threshold){
-  unsigned int relative_threshold = threshold - servo->min_threshold;
-  return relative_threshold * 180 / servo->threshold_range;
-}
-
-static unsigned int angle_to_threshold(servo * servo, unsigned int angle){
-  return servo->min_threshold + servo->threshold_range * angle / 180;
 }
