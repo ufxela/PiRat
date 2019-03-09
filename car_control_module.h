@@ -67,7 +67,9 @@ void turn(int degrees);
 /* shimmies left (lateral motion). Does this by turning x degrees left
  * then moving forward distance of y, then turning x degrees to the right
  * and then moving backward distance of f(y) where f is some trigonometric
- * function which I have yet to determine 
+ * function which I have yet to determine. Hopefully I will just be able to
+ * calculate a constant to multiply y by, so I don't need to implement 
+ * trig functions. 
  * Will shimmy left a total of 1 cm (subject to change depending on
  * what I want)
  * Or maybe it will accept a parameter which represents the distance
@@ -88,4 +90,12 @@ void set_wheel1_throttle(int throttle);
 
 /* independent throttle setting, if we need it */
 void set_wheel2_throttle(int throttle);
+
+/* should I have separate internal variables and setter functions to 
+ * allow for independent and settable backward throttles for each wheel?*/
+
+/* also, should I keep track of the (x,y) position of the car at any given 
+ * time? It would require the addition of trig functions, if I turn at angles
+ * which are not 90 degrees, but it would also be cool
+ */
 #endif
