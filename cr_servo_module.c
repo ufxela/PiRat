@@ -6,8 +6,8 @@
 #include "malloc.h"
 
 const unsigned int CR_DEFAULT_THRESHOLD = 1500;  
-const unsigned int MAX_CR_SERVO_THRESHOLD = 2000;
-const unsigned int MIN_CR_SERVO_THRESHOLD = 1000;
+const unsigned int MAX_CR_SERVO_THRESHOLD = 3000;
+const unsigned int MIN_CR_SERVO_THRESHOLD = 0;
 
 struct cr_servo_motor{
   unsigned int pin;
@@ -64,6 +64,25 @@ void cr_servo_setup(cr_servo *cr_servo){
 
   char user_response = uart_getchar();
 
+
+  /* this section is if the cr servo isn't centered near 1500. Definitely need to make solution to this
+   * a lot neater than it is currently 
+   */
+  if(user_response == 'y'){
+    min_center_threshold = 1450;
+    cr_servo->current_threshold = min_center_threshold;
+    cr_servo_write_threshold(cr_servo);
+    printf("is the servo moving? (y/n)\n");
+    user_response = uart_getchar();
+    if(user_response == 'y'){
+      min_center_threshold = 1550;
+      cr_servo->current_threshold = min_center_threshold;
+      cr_servo_write_threshold(cr_servo);
+      printf("is the servo moving? (y/n)\n");
+      user_response = uart_getchar();
+    }
+  }
+
   /*loop until we've found the min_center_threshold */
   while(user_response != 'y'){
     min_center_threshold = min_center_threshold - 1;
@@ -105,7 +124,7 @@ void cr_servo_setup(cr_servo *cr_servo){
   user_response = 'n';
 
   while(user_response != 'y'){
-    min_threshold = min_center_threshold - 10;
+    min_threshold = min_threshold - 10;
     if(min_threshold <= MIN_CR_SERVO_THRESHOLD){
       min_threshold = MIN_CR_SERVO_THRESHOLD;
       user_response = 'y';
