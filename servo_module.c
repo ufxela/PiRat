@@ -30,7 +30,7 @@ static unsigned int angle_to_threshold(servo * servo, unsigned int angle){
 }
 
 void servo_module_init(){
-  pwm_output_init();
+  pwm_output_init(); //is it bad that I call this like 50 times?
 }
 
 servo *servo_new(unsigned int pin){
