@@ -2,7 +2,9 @@
 #define CAR_CONTROL_MODULE_H
 
 /* initializer function, starts everything up */
-void car_control_module_init();
+void car_control_module_init(unsigned int input1, unsigned int input2, unsigned int output1,
+			     unsigned int output2, unsigned int whl_base,
+			     unsigned int wheel_crfnc);
 
 /* getters for the x and y coordinates that 
  * the car calculates that it is at, using trig and stuff.
