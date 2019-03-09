@@ -15,8 +15,8 @@ void test_servo_module(unsigned int pin){
   servo_module_init();
   servo * my_servo = servo_new(pin);
 
-  // servo_setup(my_servo);
-  servo_auto_setup(my_servo, 500, 2400); //the settings which I found to work
+  servo_setup(my_servo);
+  //servo_auto_setup(my_servo, 500, 2400); //the settings which I found to work
   int angle = 0;
 
   while(1){

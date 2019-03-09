@@ -25,7 +25,7 @@ all : $(NAME).bin
 	arm-none-eabi-objdump  --no-show-raw-insn -d $< > $@
 
 install: $(NAME).bin
-	rpi-install.py -p $<
+	rpi-install.py -s $<
 
 clean:
 	rm -f *.o *.bin *.elf *.list *~

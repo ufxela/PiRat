@@ -5,9 +5,9 @@
 #include "uart.h"
 #include "timer.h"
 
-const unsigned int DEFAULT_THRESHOLD = 1500;   //settings which gave full motion on my servo:
-const unsigned int MAX_SERVO_THRESHOLD = 2000; //2400
-const unsigned int MIN_SERVO_THRESHOLD = 1000; //500
+const unsigned int DEFAULT_THRESHOLD = 1500;
+const unsigned int MAX_SERVO_THRESHOLD = 3000;
+const unsigned int MIN_SERVO_THRESHOLD = 0;
 
 struct servo_motor{
   unsigned int pin;
@@ -59,7 +59,7 @@ void servo_setup(servo *servo){
   printf("are we there yet? (Y/N)");
   printf("before uart");
   char user_response = 'N';
-  //  user_response = uart_getchar();
+  user_response = uart_getchar();
 
   unsigned int new_threshold = servo->current_threshold;
   
@@ -76,8 +76,7 @@ void servo_setup(servo *servo){
     servo_write_threshold(servo);
     
     printf("are we at the zero degree mark? (Y/N)\n");
-    //user_response = uart_getchar();
-    timer_delay_ms(100);
+    user_response = uart_getchar();
   }
 
   /* update servo info */
@@ -90,11 +89,9 @@ void servo_setup(servo *servo){
   servo_write_threshold(servo); 
 
   printf("are we there yet? (Y/N)");
-  //  user_response = uart_getchar();
+  user_response = uart_getchar();
 
   new_threshold = servo->current_threshold;
-
-  user_response = 'n';
 
   /* while user doesn't think we're at 180 degrees, move towards 180 degrees */
   while(user_response != 'Y'){
@@ -109,8 +106,7 @@ void servo_setup(servo *servo){
     servo_write_threshold(servo);
 
     printf("are we at the 180 degree mark? (Y/N)\n");
-    //user_response = uart_getchar();
-    timer_delay_ms(100);
+    user_response = uart_getchar();
   }
 
   /* update servo info */
