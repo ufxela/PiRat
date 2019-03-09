@@ -56,26 +56,26 @@ void servo_setup(servo *servo){
   servo->current_threshold = servo->min_threshold;
   servo_write_threshold(servo);  
 
-  printf("are we there yet? (Y/N)");
+  printf("are we there yet? (y/n)");
   printf("before uart");
-  char user_response = 'N';
+  char user_response = 'n';
   user_response = uart_getchar();
 
   unsigned int new_threshold = servo->current_threshold;
   
   /* while user doesn't think we're at zero degrees, move towards zero degrees */
-  while(user_response != 'Y'){
+  while(user_response != 'y'){
     new_threshold = new_threshold - 10;
     if(new_threshold <= MIN_SERVO_THRESHOLD){
       new_threshold = MIN_SERVO_THRESHOLD;
-      user_response = 'Y';
+      user_response = 'y';
     }
     servo->current_threshold = new_threshold;
     printf("setting threshold to %d \n", new_threshold);
     
     servo_write_threshold(servo);
     
-    printf("are we at the zero degree mark? (Y/N)\n");
+    printf("are we at the zero degree mark? (y/n)\n");
     user_response = uart_getchar();
   }
 
@@ -88,24 +88,24 @@ void servo_setup(servo *servo){
   servo->current_threshold = servo->max_threshold;
   servo_write_threshold(servo); 
 
-  printf("are we there yet? (Y/N)");
+  printf("are we there yet? (y/n)");
   user_response = uart_getchar();
 
   new_threshold = servo->current_threshold;
 
   /* while user doesn't think we're at 180 degrees, move towards 180 degrees */
-  while(user_response != 'Y'){
+  while(user_response != 'y'){
     new_threshold = new_threshold + 10;
     if(new_threshold >= MAX_SERVO_THRESHOLD){
       new_threshold = MAX_SERVO_THRESHOLD;
-      user_response = 'Y';
+      user_response = 'y';
     }
     servo->current_threshold = new_threshold;
     printf("setting threshold to %d \n", new_threshold);
 
     servo_write_threshold(servo);
 
-    printf("are we at the 180 degree mark? (Y/N)\n");
+    printf("are we at the 180 degree mark? (y/n)\n");
     user_response = uart_getchar();
   }
 
