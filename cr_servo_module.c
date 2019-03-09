@@ -21,7 +21,7 @@ struct cr_servo_motor{
 
 /* should do same checks as in servo module */
 static int threshold_to_throttle(cr_servo *cr_servo, unsigned int threshold){
-  int relative_threshold = threshold - servo->min_threshold;
+  int relative_threshold = threshold - cr_servo->min_threshold;
   return (relative_threshold - cr_servo->center_threshold) * 100 / cr_servo->threshold_range;
 }
 
@@ -43,7 +43,7 @@ cr_servo *cr_servo_new(unsigned int pin){
   cr_srvo->max_threshold = 1600;
   cr_srvo->min_threshold = 1400;
   cr_srvo->threshold_range = 200;
-  srvo->current_throttle = threshold_to_throttle(cr_srvo, cr_srvo->current_threshold);
+  cr_srvo->current_throttle = threshold_to_throttle(cr_srvo, cr_srvo->current_threshold);
 
   pwm_add_output(pin, cr_srvo->current_threshold);
 
@@ -120,7 +120,7 @@ void cr_servo_setup(cr_servo *cr_servo){
 
   /* set cr_servo values */
   cr_servo->min_threshold = min_threshold;
-  thresold_range = (cr_servo->center_threshold - min_threshold)*2;
+  unsigned int threshold_range = (cr_servo->center_threshold - min_threshold)*2;
   cr_servo->threshold_range = threshold_range;
   cr_servo->max_threshold = cr_servo->center_threshold + threshold_range/2;
   cr_servo_go_to_throttle(cr_servo, 0);
@@ -146,7 +146,8 @@ int cr_servo_go_to_throttle(cr_servo *cr_servo, int throttle){
   unsigned int threshold = throttle_to_threshold(cr_servo, throttle);
   cr_servo->current_throttle = throttle;
   cr_servo->current_threshold = threshold;
-  cr_servo_write_threshold(cr_servo);
+  return cr_servo_write_threshold(cr_servo);
+  /* same problem with this implementation as with servo_go_to_angle */
 }
 
 /* should probably do error checking */
