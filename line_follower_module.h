@@ -25,4 +25,7 @@ int get_line_follower_value(int sensor_index);
 
 /* returns in milimeters the distance between two of the line follower's sensors */
 int get_distance_between_sensors();
+
+/* a test function to showcase the module */
+void line_follower_test();
 #endif
