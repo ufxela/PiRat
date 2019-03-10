@@ -3,6 +3,7 @@
 #include "cr_servo_module.h"
 #include "timer.h"
 #include "math.h"
+#include "printf.h"
 
 /* all of these variables should probably be static */
 /* should I make a struct for all of this?
@@ -49,23 +50,27 @@ static int wheel2_throttle;
 /* internal helper functions which needs to be called very often, whenever there is wheel movement.
  * Ideally, this would be called on a tiemr interrupt schedule, once every 20 ms maybe, but
  * I am not doing that for now... 
+ *
+ * Right now this is not accurate. Not only is it super finnicky, but it doesn't update correctly
+ * about half the time. IT won't properly record wheelrotations, as it seems to skip them some of 
+ * the time. 
  */
 static void update_wheel_positions(){
   //update wheel1
   previous_wheel1_angle = wheel1_relative_angle;
   wheel1_relative_angle = pwm_input_get_angle(wheel1_input_pin);
-  if(wheel1_relative_angle > 340 && previous_wheel1_angle < 20){
+  if(wheel1_relative_angle > 300 && previous_wheel1_angle < 60){
     wheel1_rotations--;
-  }else if(wheel1_relative_angle < 20 && previous_wheel1_angle > 340){
+  }else if(wheel1_relative_angle < 60 && previous_wheel1_angle > 300){
     wheel1_rotations++;
   }
 
   //update wheel2
   previous_wheel2_angle = wheel2_relative_angle;
-  wheel2_relative_angle = pwm_input_get_angle(wheel1_input_pin);
-  if(wheel2_relative_angle > 340 && previous_wheel2_angle < 20){
+  wheel2_relative_angle = pwm_input_get_angle(wheel2_input_pin);
+  if(wheel2_relative_angle > 300 && previous_wheel2_angle < 60){
     wheel2_rotations--;
-  }else if(wheel2_relative_angle < 20 && previous_wheel2_angle > 340){
+  }else if(wheel2_relative_angle < 60 && previous_wheel2_angle > 300){
     wheel2_rotations++;
   }
 }
@@ -88,11 +93,11 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
   wheel1 = cr_servo_new(output1);  
   wheel2 = cr_servo_new(output2);
 
-  cr_servo_auto_setup(wheel1, 1509, 1286, 1732); //just some info that I already collected about
-  cr_servo_auto_setup(wheel2, 1503, 1265, 1741); //my servos 
+  cr_servo_auto_setup(wheel2, 1509, 1286, 1732); //just some info that I already collected about
+  cr_servo_auto_setup(wheel1, 1503, 1265, 1741); //my servos 
 
-  wheel1_throttle = 20; //default throttles
-  wheel2_throttle = 20;
+  wheel1_throttle = 30; //default throttles
+  wheel2_throttle = 30;
 
   //update internal positioning/info
   wheel_base_mm = whl_base;
@@ -129,26 +134,42 @@ int get_wheel2_angle(){
   return wheel2_rotations * 360 + wheel2_relative_angle;
 }
 
+
+/* NOTE: WHEEL1 and WHEEL2 Throttles and angles should be negatives of eachother in general
+ * because one wheel is flipped. I need to find a fix to this so that wheel1 positive is the oppposite
+ * of wheel2 positive
+ *
+ * right now this program is buggy in that the recorded angle will occasionally just
+ * stop short, and result in the motors rotating without stop
+ */
 void step_forward(int degrees){
+  update_wheel_positions();
   int new_wheel1_angle = get_wheel1_angle() + degrees;
   int new_wheel2_angle = get_wheel2_angle() + degrees;
+
+  printf("Wheel1 anlge: %d, Wheel2 angle: %d\n", get_wheel1_angle(), get_wheel2_angle());
+  printf("Desired angles: wheel1: %d, wheel2: %d\n", new_wheel1_angle, new_wheel2_angle); 
 
   //if forwards movement
   if(degrees > 0){
     //set throttles
-    cr_servo_go_to_throttle(wheel1, wheel1_throttle); //need to be opposite since servos flipped.
+    cr_servo_go_to_throttle(wheel1, -1*wheel1_throttle); 
     cr_servo_go_to_throttle(wheel2, -1*wheel2_throttle);
     //while we haven't reached the desired angles, keep the throttle there
     while(get_wheel1_angle() < new_wheel1_angle || get_wheel2_angle() < new_wheel2_angle){
       //if a single wheel reaches destination before the other, stop.
+      update_wheel_positions();
       if(get_wheel1_angle() >= new_wheel1_angle){
 	cr_servo_go_to_throttle(wheel1, 0);
+        cr_servo_go_to_throttle(wheel2, -1*wheel2_throttle);
       }
       if(get_wheel2_angle() >= new_wheel2_angle){
 	cr_servo_go_to_throttle(wheel2, 0);
+	cr_servo_go_to_throttle(wheel1, -1*wheel1_throttle);
       }
       //update wheel positions
       update_wheel_positions();
+      printf("Wheel1 anlge: %d, Wheel2 angle: %d\n", get_wheel1_angle(), get_wheel2_angle());
     }
     //stop once position is reached
     cr_servo_go_to_throttle(wheel1, 0);
@@ -156,7 +177,7 @@ void step_forward(int degrees){
   }else if(degrees < 0){ //backwards, same except negative throttle.
     //this can probably be combined with the above using some sign multiplications.
     //set throttles                                                                                 
-    cr_servo_go_to_throttle(wheel1, -1*wheel1_throttle); //opposite because servos flipped
+    cr_servo_go_to_throttle(wheel1, wheel1_throttle);
     cr_servo_go_to_throttle(wheel2, wheel2_throttle);
     //while we haven't reached the desired angles, keep the throttle there                       
     while(get_wheel1_angle() > new_wheel1_angle || get_wheel2_angle() > new_wheel2_angle){

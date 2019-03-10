@@ -20,6 +20,8 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
   printf("move forward 10\n");
   move_forward(10);
 
+  timer_delay(5);
+
   printf("wheel positions: %d, %d\n", get_wheel1_angle(), get_wheel2_angle());
 
   printf("move forward -10\n");
@@ -98,10 +100,12 @@ void test_pwm_IO(unsigned int input_pin1, unsigned int input_pin2, unsigned int 
     printf("new loop \n");
     pwm_change_threshold(output_pin1, 1400);
     pwm_change_threshold(output_pin2, 1450);
+    printf("hello");
     for(int i = 0; i < 10; i++){
       timer_delay_ms(100);
-      printf("Output 1 angle: %d, Output 2 angle %d \n", (pwm_input_get_threshold(input_pin1)-30) * 360 
-	     / 1060, (pwm_input_get_threshold(input_pin2)-30) * 360 / 1060);
+      printf("hello");
+      printf("Output 1 angle: %d, Output 2 angle %d \n", pwm_input_get_angle(input_pin1), 
+	     pwm_input_get_angle(input_pin2));
     }
     pwm_change_threshold(output_pin1, 1600);
     pwm_change_threshold(output_pin2, 1550);
@@ -159,14 +163,15 @@ void main(void)
   */
 
   /* test pwm input module (works) */
-  /*
+  /* 
   pwm_input_init();
   pwm_input_test();
   */
 
   /* test PWM IO */
-  /*
-  test_pwm_IO(GPIO_PIN17, GPIO_PIN27, GPIO_PIN4, GPIO_PIN18); 
+  /* 
+  test_pwm_IO(GPIO_PIN23, GPIO_PIN24, GPIO_PIN20, GPIO_PIN21); 
+  /* 
   test_pwm_IO2(GPIO_PIN27, GPIO_PIN18);  
   */
 
@@ -181,5 +186,7 @@ void main(void)
   */
 
   /*test car control module */
+  
   test_car_control_module(GPIO_PIN23, GPIO_PIN24, GPIO_PIN20, GPIO_PIN21);
+  
 }
