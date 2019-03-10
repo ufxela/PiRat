@@ -5,6 +5,7 @@
 #include "timer.h"
 #include "malloc.h"
 
+/* default constants */
 const unsigned int CR_DEFAULT_THRESHOLD = 1500;  
 const unsigned int MAX_CR_SERVO_THRESHOLD = 3000;
 const unsigned int MIN_CR_SERVO_THRESHOLD = 0;

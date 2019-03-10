@@ -1,11 +1,11 @@
 NAME = main
-OBJECTS = ultrasonic_module.o pwm_output_module.o pwm_input_module.o servo_module.o cr_servo_module.o car_control_module.o line_follower_module.o
+OBJECTS = ultrasonic_module.o pwm_output_module.o pwm_input_module.o servo_module.o cr_servo_module.o car_control_module.o line_follower_module.o #includes all the modules that I made into compilation
 
 CFLAGS  = -I$(CS107E)/include -g -Wall -Wpointer-arith
 CFLAGS += -Og -std=c99 -ffreestanding
 CFLAGS += -mapcs-frame -fno-omit-frame-pointer -mpoke-function-name
 LDFLAGS = -nostdlib -T memmap -L. -L$(CS107E)/lib
-LDLIBS  = -lpiextra -lmypi -lpi -lm -lgcc
+LDLIBS  = -lpiextra -lmypi -lpi -lm -lgcc #-lm includes c math library
 
 all : $(NAME).bin
 

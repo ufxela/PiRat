@@ -1,3 +1,11 @@
+/* this is a module to drive continuous rotation servos
+ * throttle is the speed of which the servo is spinning at
+ * and can be negative to repesent turning backwards
+ * 
+ * This module takes an object oriented programming approach
+ * to make the addition of new continuous rotation servos easy
+ */
+
 #ifndef CR_SERVO_MODULE_H
 #define CR_SERVO_MODULE_H
 

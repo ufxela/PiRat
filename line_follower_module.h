@@ -1,3 +1,8 @@
+/* this is a module which provides a driver for
+ * a line follower device. We can read values from the
+ * device which is communictaed to via I2C
+ */
+
 #ifndef LINE_FOLLOWER_MODULE_H
 #define LINE_FOLLOWER_MODULE_H
 

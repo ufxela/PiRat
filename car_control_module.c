@@ -5,19 +5,19 @@
 #include "math.h"
 #include "printf.h"
 
-/* all of these variables should probably be static */
 /* should I make a struct for all of this?
  * yeah probably. It would make the program more flexible and concise. But
  * I'll do it the bad way for now.
  */
+
 /* internally data concerning information about the car */
-unsigned int wheel_base_mm; // distance between wheels, measured in  mm
-unsigned int wheel_circumference_mm; //measured in mm
+static unsigned int wheel_base_mm; // distance between wheels, measured in  mm
+static unsigned int wheel_circumference_mm; //measured in mm
 
 /* internally kept positioning data */
-unsigned int bearing; // the angle, in degrees, which the car is currently facing 
-int x_pos; //the x position, in cm of the car
-int y_pos; //the y position, in cm
+static unsigned int bearing; // the angle, in degrees, which the car is currently facing 
+static int x_pos; //the x position, in cm of the car
+static int y_pos; //the y position, in cm
 
 /* internally kept motor information
  *
@@ -26,18 +26,18 @@ int y_pos; //the y position, in cm
  * negative angle example: -30 degrees would be -1 rotations and position of
  * 330 (-360 + 330 = -30).
  */
-int wheel1_rotations; //from -infinity to positive infinity
-int wheel2_rotations;
-unsigned int wheel1_relative_angle;  //from 0 to 360. 
-unsigned int wheel2_relative_angle;
+static int wheel1_rotations; //from -infinity to positive infinity
+static int wheel2_rotations;
+static unsigned int wheel1_relative_angle;  //from 0 to 360. 
+static unsigned int wheel2_relative_angle;
 
 /* pin info */
-unsigned int wheel1_input_pin;
-unsigned int wheel2_input_pin;
+static unsigned int wheel1_input_pin;
+static unsigned int wheel2_input_pin;
 
 /* wheels */
-cr_servo* wheel1;
-cr_servo* wheel2;
+static cr_servo* wheel1;
+static cr_servo* wheel2;
 
 /* to help us update wheel positions */
 static unsigned int previous_wheel1_angle;
@@ -75,6 +75,7 @@ static void update_wheel_positions(){
     wheel2_rotations++;
   }
 }
+
 /* this function is really ugly because some info, like the servo info, I already have set
  * but other info, like wheelbase, I let the user set 
  */
@@ -118,7 +119,6 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
   previous_wheel2_angle = wheel2_relative_angle;
 }
 
-/* unsure of why I need these */
 int get_x_position(){
   return x_pos;
 }

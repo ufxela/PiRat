@@ -1,3 +1,8 @@
+/* this is the primary program of this repository 
+ * which is the command central, and everything is being called from here
+ * includes a lot of test programs to verify functionality of modules
+ */
+
 #include "printf.h"
 #include "uart.h"
 #include "ultrasonic_module.h"

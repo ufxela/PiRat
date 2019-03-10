@@ -1,3 +1,7 @@
+/* This function provides basic movement for a car powered by two
+ * parallax feedback 360 servos. 
+ */
+
 #ifndef CAR_CONTROL_MODULE_H
 #define CAR_CONTROL_MODULE_H
 
