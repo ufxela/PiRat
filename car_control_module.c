@@ -51,7 +51,8 @@ static int wheel2_throttle;
 static const unsigned int SHIMMY_ANGLE = 30;
 static const unsigned int SHIMMY_FORWARD_DISTANCE_CM = 5;
 //move back (move back cos(SHIMMY ANGLE) * SHIMMY_FORWARD_DISTANCE                                      
-static const unsigned int SHIMMY_FORWARD_DISTANCE_CM = 4;
+static const unsigned int SHIMMY_BACKWARDS_DISTANCE_CM = 4;
+
 /* internal helper functions which needs to be called very often, whenever there is wheel movement.
  * Ideally, this would be called on a tiemr interrupt schedule, once every 20 ms maybe, but
  * I am not doing that for now... 
@@ -107,8 +108,8 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
   wheel2_throttle = 20;
 
   //update internal positioning/info
-  wheel_base_mm = whl_base;
-  wheel_circumference_mm = whl_crfnc;
+  wheel_base_mm = whl_base; //current wheelbase is 96 mm
+  wheel_circumference_mm = whl_crfnc; //current wheel diameter is 188.5
 
   bearing = 0;
   x_pos = 0;
@@ -318,7 +319,7 @@ void turn(int degrees){
     cr_servo_go_to_throttle(wheel2, -1*wheel2_throttle);
 
     //move until we've acheived the desired position
-    while(get_wheel1_angle() >= new_wheel1_angle || get_wheel2_angle <= new_wheel2_angle){
+    while(get_wheel1_angle() >= new_wheel1_angle || get_wheel2_angle() <= new_wheel2_angle){
       update_wheel_positions();
       if(get_wheel1_angle() >= new_wheel1_angle){
         cr_servo_go_to_throttle(wheel1, 0);
@@ -335,7 +336,7 @@ void turn(int degrees){
     cr_servo_go_to_throttle(wheel1, -1*wheel1_throttle);
     cr_servo_go_to_throttle(wheel2, wheel2_throttle);
 
-    while(get_wheel1_angle() <= new_wheel1_angle || get_wheel2_angle >= new_wheel2_angle){
+    while(get_wheel1_angle() <= new_wheel1_angle || get_wheel2_angle() >= new_wheel2_angle){
       update_wheel_positions();
       if(get_wheel1_angle() <= new_wheel1_angle){
         cr_servo_go_to_throttle(wheel1, 0);
@@ -358,21 +359,21 @@ void shimmy_left(){
   turn(SHIMMY_ANGLE);
 
   //move forward
-  move_forward(SHIMMY_FORWARD_DISTANCE);
+  move_forward(SHIMMY_FORWARD_DISTANCE_CM);
 
   //rotate right
   turn(-SHIMMY_ANGLE);
 
   //move back (move back cos(SHIMMY ANGLE) * SHIMMY_FORWARD_DISTANCE
-  move_forward(SHIMMY_BACKWARDS_DISTANCE);
+  move_forward(SHIMMY_BACKWARDS_DISTANCE_CM);
 
 }
 /* shimmy right 1 cm */
 void shimmy_right(){
   turn(-SHIMMY_ANGLE);
-  move_forward(SHIMMY_FORWARD_DISTANCE);
+  move_forward(SHIMMY_FORWARD_DISTANCE_CM);
   turn(SHIMMY_ANGLE);
-  move_forward(-SHIMMY_BACKWARDS_DISTANCE);
+  move_forward(-SHIMMY_BACKWARDS_DISTANCE_CM);
 }
 
 void set_wheel_throttles(int throttle){
