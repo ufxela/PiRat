@@ -59,18 +59,19 @@ static void update_wheel_positions(){
   //update wheel1
   previous_wheel1_angle = wheel1_relative_angle;
   wheel1_relative_angle = pwm_input_get_angle(wheel1_input_pin);
-  if(wheel1_relative_angle > 300 && previous_wheel1_angle < 60){
+  if(wheel1_relative_angle > 320 && previous_wheel1_angle < 40){
+    printf("current: %d previous: %d\n\n", wheel1_relative_angle, previous_wheel1_angle);
     wheel1_rotations--;
-  }else if(wheel1_relative_angle < 60 && previous_wheel1_angle > 300){
+  }else if(wheel1_relative_angle < 40 && previous_wheel1_angle > 320){
     wheel1_rotations++;
   }
 
   //update wheel2
   previous_wheel2_angle = wheel2_relative_angle;
   wheel2_relative_angle = pwm_input_get_angle(wheel2_input_pin);
-  if(wheel2_relative_angle > 300 && previous_wheel2_angle < 60){
+  if(wheel2_relative_angle > 320 && previous_wheel2_angle < 40){
     wheel2_rotations--;
-  }else if(wheel2_relative_angle < 60 && previous_wheel2_angle > 300){
+  }else if(wheel2_relative_angle < 40 && previous_wheel2_angle > 320){
     wheel2_rotations++;
   }
 }
@@ -96,8 +97,8 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
   cr_servo_auto_setup(wheel2, 1509, 1286, 1732); //just some info that I already collected about
   cr_servo_auto_setup(wheel1, 1503, 1265, 1741); //my servos 
 
-  wheel1_throttle = 30; //default throttles
-  wheel2_throttle = 30;
+  wheel1_throttle = 20; //default throttles
+  wheel2_throttle = 20;
 
   //update internal positioning/info
   wheel_base_mm = whl_base;

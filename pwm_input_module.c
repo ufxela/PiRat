@@ -4,7 +4,7 @@
 #include "interrupts.h"
 #include "printf.h"
 #include "malloc.h"
-
+#include "strings.h"
 /* internal data structure to keep track of what gpio pins
  * we're reading PWM inputs from.
  * also keeps track of the current readings from each pin
@@ -141,15 +141,23 @@ int pwm_input_get_number_sources(){
   return number_of_pwm_inputs;
 }
 
-//this function needs to be improved
+//this function needs to be improved. its really bad right now...
 unsigned int pwm_input_get_angle(unsigned int pin){
-  unsigned int angle = (pwm_input_get_threshold(pin) - 30) * 360 / 1060;
-  if(angle < 0){
-    angle = 0;
-  }else if(angle > 360){
-    angle = 360;
+  //average 5 readings
+  unsigned int angle_total = 0;
+  for(int i = 0; i < 8; i++){
+    int angle = (pwm_input_get_threshold(pin) - 30) * 360 / 1060;
+    while(angle < -40 || angle > 400){
+      angle = (pwm_input_get_threshold(pin) - 30) * 360 / 1060;
+    }
+    if(angle < 0){
+      angle = 0;
+    }else if(angle > 360){
+      angle = 360;
+    }
+    angle_total += angle;
   }
-  return angle;
+  return angle_total / 8;
 }
 
 int pwm_input_test(){
