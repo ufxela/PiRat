@@ -150,3 +150,26 @@ unsigned int get_servo_position(servo *servo){
 unsigned int get_servo_threshold(servo *servo){
   return servo->current_threshold;
 }
+
+void test_servo_module(unsigned int pin){
+  printf("Beginning servo module test \n");
+  servo_module_init();
+  servo * my_servo = servo_new(pin);
+
+  servo_setup(my_servo);
+  //servo_auto_setup(my_servo, 500, 2400); //the settings which I found to work                
+  int angle = 0;
+
+  while(1){
+    while(angle < 180){
+      servo_go_to_angle(my_servo, angle);
+      angle++;
+      timer_delay_ms(50);
+    }
+    while(angle > 0){
+      servo_go_to_angle(my_servo, angle);
+      angle--;
+      timer_delay_ms(50);
+    }
+  }
+}
