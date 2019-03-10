@@ -310,8 +310,8 @@ void move_wheel2(int degrees){
 void turn(int degrees){
   int angle_to_move_wheels = degrees * wheel_base_mm * 314 / 100 / wheel_circumference_mm;
   
-  int new_wheel1_angle = get_wheel1_angle() - degrees; //assuming wheel 1 is to the left
-  int new_wheel2_angle = get_wheel2_angle() + degrees; //may need to chance one or both signs
+  int new_wheel1_angle = get_wheel1_angle() - angle_to_move_wheels; //assuming wheel 1 is to the left
+  int new_wheel2_angle = get_wheel2_angle() + angle_to_move_wheel; //may need to chance one or both signs
 
   if(degrees > 0){
     //set throttles
