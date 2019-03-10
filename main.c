@@ -8,6 +8,7 @@
 #include "servo_module.h"
 #include "cr_servo_module.h"
 #include "car_control_module.h"
+#include "line_follower_module.h"
 
 const unsigned int ULTRASONIC_TRIGGER = GPIO_PIN23;
 const unsigned int ULTRASONIC_ECHO = GPIO_PIN24;
@@ -24,7 +25,7 @@ void test_pwm_IO(unsigned int input_pin1, unsigned int input_pin2, unsigned int 
   pwm_add_output(output_pin2, 1500);
   pwm_add_input(input_pin1);
   pwm_add_input(input_pin2);
-
+  
   while(1){
     printf("new loop \n");
     pwm_change_threshold(output_pin1, 1400);
@@ -51,10 +52,10 @@ void test_pwm_IO2(unsigned int input_pin, unsigned int output_pin){
   printf("Beginning PWM IO Test 2 \n");
   pwm_output_init();
   pwm_input_init();
-
+  
   pwm_add_output(output_pin, 1500);
   pwm_add_input(input_pin);
-
+  
   int angle = 0;
   while(1){
     if(angle >= 360){
@@ -62,20 +63,20 @@ void test_pwm_IO2(unsigned int input_pin, unsigned int output_pin){
     }
     
     printf("going to angle %d", angle);
-
+    
     pwm_change_threshold(output_pin, 1700);
     while(((pwm_input_get_threshold(input_pin)-30) * 360 / 1060) > angle + 5 ||
 	  ((pwm_input_get_threshold(input_pin)-30) * 360 / 1060) < angle - 5){
     }
     pwm_change_threshold(output_pin, 1500);
-
+    
     printf("current angle: %d\n", (pwm_input_get_threshold(input_pin)-30) * 360 / 1060);
     timer_delay(2);
     angle += 30;
   }
 }
 
-void main(void) 
+int main(void) 
 {
   uart_init();
   timer_init();
@@ -91,32 +92,32 @@ void main(void)
   /*pwm_output_init();
   pwm_output_test();
   */
-
+  
   /* test pwm input module (works) */
   /* 
   pwm_input_init();
   pwm_input_test();
   */
-
+  
   /* test PWM IO */
   /* 
   test_pwm_IO(GPIO_PIN23, GPIO_PIN24, GPIO_PIN20, GPIO_PIN21); 
-  /* 
   test_pwm_IO2(GPIO_PIN27, GPIO_PIN18);  
   */
-
+  
   /* test servo module */
   /*
   test_servo_module(GPIO_PIN4);
   */
-
+  
   /*test cr servo module */
   /*  
   test_cr_servo_module(GPIO_PIN20);
   */
-
+  
   /*test car control module */
-  
+  /*  
   test_car_control_module(GPIO_PIN23, GPIO_PIN24, GPIO_PIN20, GPIO_PIN21);
-  
+  */
+  return 1;
 }

@@ -42,6 +42,6 @@ unsigned int get_servo_position(servo *servo);
 unsigned int get_servo_threshold(servo *servo);
 
 /* test function to showcase this module's functionality */
-void test_servo_module(unsigned int pin){
+void test_servo_module(unsigned int pin);
 
 #endif
