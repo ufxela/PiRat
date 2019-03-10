@@ -18,6 +18,11 @@ void pi_rat_movement_init();
  * line position after movement and then at the end
  * uses this information to correct the position of the Pi Rat
  * if needed
+ *
+ * If the position needed to be corrected, this function will then go forward
+ * a minute ammount to adjust for the forward motion which the off center direction of 
+ * movement caused the Pi Rat to lack. Will do this with trig (maybe a switch statement lookup table
+ * since angles will be discrete (only 7 of them possible, for the 8 line sensors). 
  */
 void pi_rat_go_forward();
 
