@@ -55,35 +55,54 @@ besides a Raspberry Pi,
 
 *Software:*
 
-1. Write module to communicate to servo through PWM
-1. Write module to communicate to continuous rotation servo through PWM
-1. Write module to read PWM communications from Parallax Feedback 360 servos
+1. Write a module to output PWM signals
+1. Write a module to read PWM inputs
+1. Write module to setup and control a servo through PWM
+1. Write module to setup and control continuous rotation servo through PWM
+1. Write module to read PWM communications from Parallax Feedback 360 servos, to determine positioning
 1. Either:
    1. Communicate through I2C to optical time of flight sensor
-   1. Read/write through GPIO to communicate with ultrasonic distance sensor
+   1. Read/write through GPIO to communicate with ultrasonic distance sensor (This is what I have chosen).
 1. Write module to communicate via I2C with the line follower module
    1. Will use libpiextra i2c modules
-1. Module to move support movement of rat and keep track of position.
-   1. Will exist a forward movement function which adjusts movement based on line follower's output 
+1. Module to move support basic movement of a continuous rotation servo powered car.
+   1. With two independent wheels, we will be able to move forward, backward, turn and shimmy to the left and right
+1. Module to support advanced movement for Pi Rat
+   1. Will keep track of position of Pi Rat
+   1. Will have discretized movements so as to follow maze properly
+   1. Will have correctional movements that ensure proper orientation within maze (no roaming off track)
 1. Code to use all modules to sense environment and move the rat in response based on
    where it wants to go. 
    1. Internal data structure to represent maze
    1. Algorithm to solve maze
-   1. Needs to keep orientation correct with line follower sensor
+   1. Internal data structure to represent current path, and provide ability to backtrack path.
    1. Way to determine when solution is discovered
-
+   1. Traverse solution (back and forth, like a sentry) once found. 
+   1. Once maze map is completed, user may tell Pi Rat to go from point A to point B for any two connected
+      points in the maze.
+   1. User may input instructions to the Pi Rat beforehand to tell it where to go
+1. Extensions:
+   1. Code to use modules to traverse a new environment that may not be a maze. 
+   1. Code to find shortest path from point A to point B within maze. 
+   1. Remove any information about the maze at all (step size, dimensions) and use Pi Rat's sensing abilities
+      to determine this information itself. 
+   1. Add in remote control abilities. 
+   
 *Hardware:*
 
 1. Model and 3D print chassis for rat
 1. Mount time of flight sensor / ultrasonic distance sensor
+1. Mount line follower module
 1. Find / make wheels which have really good grip
 1. Make maze, ideally with configurability. (slot and fit walls)
 
 **Goals for Next Week**
-1. Software steps 1-6
-1. Hardware steps 1-3
+1. Software steps 1-7
+1. Hardware steps 1-4
 1. Test movement of Pi Rat and see how accurately it can hold its position
 1. Test accuracy of ultrasonic sensor
+1. Configure servo motors
+1. Configure line follower sensor
 
 **Reference and Resources**
 
@@ -96,6 +115,7 @@ https://docs.google.com/document/d/10EH3p42lqzU2tbl3T3y5yWcG4yZZ02CRSOTUqFnZRl0/
 http://wiki.sunfounder.cc/index.php?title=Line_Follower_Module
 https://github.com/cs107e/cs107e.github.io/blob/master/cs107e/src/i2c.c
 Note: this bad boy can't be powered just through the Pi's GPIO pins. Needs external supply!
+
 *ultrasonic sensor*
 
 https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf
@@ -104,3 +124,10 @@ https://github.com/cs107e/cs107e.github.io/blob/master/lectures/Sensors/code/son
 *servos*
 
 https://learn.sparkfun.com/tutorials/pulse-width-modulation/all
+
+*CS107E Libraries*
+
+https://github.com/cs107e/cs107e.github.io/tree/master/cs107e/src
+https://github.com/cs107e/cs107e.github.io/tree/master/cs107e/include
+
+Specifically: gpioextra, interrupts, i2c. 
