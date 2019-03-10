@@ -25,7 +25,7 @@ all : $(NAME).bin
 	arm-none-eabi-objdump  --no-show-raw-insn -d $< > $@
 
 install: $(NAME).bin
-	rpi-install.py -s $<
+	rpi-install.py -p $< #change -p to -s if want to setup servos
 
 clean:
 	rm -f *.o *.bin *.elf *.list *~
