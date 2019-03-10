@@ -57,7 +57,7 @@ static void update_wheel_positions(){
   if(wheel1_relative_angle > 340 && previous_wheel1_angle < 20){
     wheel1_rotations--;
   }else if(wheel1_relative_angle < 20 && previous_wheel1_angle > 340){
-    wheel1_rotaions++;
+    wheel1_rotations++;
   }
 
   //update wheel2
@@ -66,7 +66,7 @@ static void update_wheel_positions(){
   if(wheel2_relative_angle > 340 && previous_wheel2_angle < 20){
     wheel2_rotations--;
   }else if(wheel2_relative_angle < 20 && previous_wheel2_angle > 340){
-    wheel2_rotaions++;
+    wheel2_rotations++;
   }
 }
 /* this function is really ugly because some info, like the servo info, I already have set
@@ -136,8 +136,8 @@ void step_forward(int degrees){
   //if forwards movement
   if(degrees > 0){
     //set throttles
-    cr_servo_go_to_throttle(wheel1, wheel1_throttle);
-    cr_servo_go_to_throttle(wheel2, wheel2_throttle);
+    cr_servo_go_to_throttle(wheel1, wheel1_throttle); //need to be opposite since servos flipped.
+    cr_servo_go_to_throttle(wheel2, -1*wheel2_throttle);
     //while we haven't reached the desired angles, keep the throttle there
     while(get_wheel1_angle() < new_wheel1_angle || get_wheel2_angle() < new_wheel2_angle){
       //if a single wheel reaches destination before the other, stop.
@@ -156,8 +156,8 @@ void step_forward(int degrees){
   }else if(degrees < 0){ //backwards, same except negative throttle.
     //this can probably be combined with the above using some sign multiplications.
     //set throttles                                                                                 
-    cr_servo_go_to_throttle(wheel1, -1*wheel1_throttle);
-    cr_servo_go_to_throttle(wheel2, -1*wheel2_throttle);
+    cr_servo_go_to_throttle(wheel1, -1*wheel1_throttle); //opposite because servos flipped
+    cr_servo_go_to_throttle(wheel2, wheel2_throttle);
     //while we haven't reached the desired angles, keep the throttle there                       
     while(get_wheel1_angle() > new_wheel1_angle || get_wheel2_angle() > new_wheel2_angle){
       //if a single wheel reaches destination before the other, stop.                             
@@ -200,7 +200,7 @@ void move_forward_3(int distance_in_cm){
 
 void move_wheel1(int degrees){
   int new_wheel1_angle = get_wheel1_angle() + degrees;
-
+  
   /* this code was copied from step forward. Bad practice probably. */
   //if forwards movement                                                                                 
   if(degrees > 0){
@@ -211,67 +211,65 @@ void move_wheel1(int degrees){
       //if a single wheel reaches destination before the other, stop.                                    
       if(get_wheel1_angle() >= new_wheel1_angle){
         cr_servo_go_to_throttle(wheel1, 0);
-
+      }
       //update wheel positions                                                                           
       update_wheel_positions();
     }
     //stop once position is reached                                                                      
     cr_servo_go_to_throttle(wheel1, 0);
-    }else if(degrees < 0){ //backwards, same except negative throttle.                               
-      //this can probably be combined with the above using some sign multiplications.                  
-      //set throttles                                                                                
-      cr_servo_go_to_throttle(wheel1, -1*wheel1_throttle);
-      
+  }else if(degrees < 0){ //backwards, same except negative throttle.                               
+    //this can probably be combined with the above using some sign multiplications.                  
+    //set throttles                                                                                
+    cr_servo_go_to_throttle(wheel1, -1*wheel1_throttle);
+    
       //while we haven't reached the desired angles, keep the throttle there                          
-      while(get_wheel1_angle() > new_wheel1_angle){
-	//if a single wheel reaches destination before the other, stop.                                 
-	if(get_wheel1_angle() <= new_wheel1_angle){
-	  cr_servo_go_to_throttle(wheel1, 0);
-	}
-	update_wheel_positions();
+    while(get_wheel1_angle() > new_wheel1_angle){
+      //if a single wheel reaches destination before the other, stop.                                 
+      if(get_wheel1_angle() <= new_wheel1_angle){
+	cr_servo_go_to_throttle(wheel1, 0);
       }
-      
-      cr_servo_go_to_throttle(wheel1, 0); //can be moved out of the if statement. 
+      update_wheel_positions();
     }
+    
+    cr_servo_go_to_throttle(wheel1, 0); //can be moved out of the if statement. 
   }
 }
+
 
 /* this was genuinely painful to write. I definitely should have made wheel objects */
 void move_wheel2(int degrees){
   int new_wheel2_angle = get_wheel2_angle() + degrees;
   
   /* this code was copied from step forward. Bad practice probably. */
-  //if forwards movement                                                                                        
+  //if forwards movement                                                                             
   if(degrees > 0){
-    //set throttles                                                                                            
+    //set throttles                                                                               
     cr_servo_go_to_throttle(wheel2, wheel2_throttle);
-    //while we haven't reached the desired angles, keep the throttle there                                       
+    //while we haven't reached the desired angles, keep the throttle there                     
     while(get_wheel2_angle() < new_wheel2_angle){
-      //if a single wheel reaches destination before the other, stop.                                              
+      //if a single wheel reaches destination before the other, stop.                                 
       if(get_wheel2_angle() >= new_wheel2_angle){
         cr_servo_go_to_throttle(wheel2, 0);
-	
-	//update wheel positions                                                                                  
-	update_wheel_positions();
-      }
-      //stop once position is reached                                                                             
-      cr_servo_go_to_throttle(wheel2, 0);
-    }else if(degrees < 0){ //backwards, same except negative throttle.                                             
-      //this can probably be combined with the above using some sign multiplications.                               
-      //set throttles                                                                                             
-      cr_servo_go_to_throttle(wheel2, -1*wheel2_throttle);
-      
-      //while we haven't reached the desired angles, keep the throttle there                                       
-      while(get_wheel2_angle() > new_wheel2_angle){
-        //if a single wheel reaches destination before the other, stop.                                              
-	if(get_wheel2_angle() <= new_wheel2_angle){
+      }	
+	//update wheel positions                                                               
+      update_wheel_positions();
+    }
+    //stop once position is reached                                                                    
+    cr_servo_go_to_throttle(wheel2, 0);
+  }else if(degrees < 0){ //backwards, same except negative throttle.                                   
+    //this can probably be combined with the above using some sign multiplications.               
+    //set throttles                                                                                 
+    cr_servo_go_to_throttle(wheel2, -1*wheel2_throttle);
+    //while we haven't reached the desired angles, keep the throttle there                       
+    while(get_wheel2_angle() > new_wheel2_angle){
+        //if a single wheel reaches destination before the other, stop.                            
+      if(get_wheel2_angle() <= new_wheel2_angle){
           cr_servo_go_to_throttle(wheel2, 0);
         }
         update_wheel_positions();
       }
       
-      cr_servo_go_to_throttle(wheel2, 0); //can be moved out of the if statement.                                   
-    }
+      cr_servo_go_to_throttle(wheel2, 0); //can be moved out of the if statement.                    
   }
 }
 

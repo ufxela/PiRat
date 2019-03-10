@@ -141,6 +141,17 @@ int pwm_input_get_number_sources(){
   return number_of_pwm_inputs;
 }
 
+//this function needs to be improved
+unsigned int pwm_input_get_angle(unsigned int pin){
+  unsigned int angle = (pwm_input_get_threshold(pin) - 30) * 360 / 1060;
+  if(angle < 0){
+    angle = 0;
+  }else if(angle > 360){
+    angle = 360;
+  }
+  return angle;
+}
+
 int pwm_input_test(){
   printf("starting test \n");
   pwm_add_input(GPIO_PIN26);
@@ -151,15 +162,4 @@ int pwm_input_test(){
     printf("cycle length: %d\n", pwm_input_get_cycle_length(GPIO_PIN26));
   }
   return 1;
-}
-
-//this function needs to be improved
-unsigned int pwm_input_get_angle(unsigned int pin){
-  unsigned int angle = (pwm_input_get_threshold(pin) - 30) * 360 / 1060;
-  if(angle < 0){
-    angle = 0;
-  }else if(angle > 360){
-    angle = 360;
-  }
-  return angle;
 }

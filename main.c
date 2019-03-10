@@ -7,9 +7,34 @@
 #include "pwm_input_module.h"
 #include "servo_module.h"
 #include "cr_servo_module.h"
+#include "car_control_module.h"
 
 const unsigned int ULTRASONIC_TRIGGER = GPIO_PIN23;
 const unsigned int ULTRASONIC_ECHO = GPIO_PIN24;
+
+void test_car_control_module(unsigned int input1, unsigned int input2, unsigned int output1, 
+			     unsigned int output2){
+  printf("Beginning car control test\n");
+  car_control_module_init(input1, input2, output1, output2, 100, 340); //estimated wheelbase/circumfrence
+  
+  printf("move forward 10\n");
+  move_forward(10);
+
+  printf("wheel positions: %d, %d\n", get_wheel1_angle(), get_wheel2_angle());
+
+  printf("move forward -10\n");
+  move_forward(-10);
+
+  printf("wheel positions: %d, %d\n", get_wheel1_angle(), get_wheel2_angle());
+
+  printf("move forward_2, 10\n");
+  move_forward_2(10);
+
+  printf("wheel positions: %d, %d\n", get_wheel1_angle(), get_wheel2_angle());
+
+  printf("move forward_2, -10\n");
+  move_forward_2(-10);
+}
 
 void test_cr_servo_module(unsigned int pin){
   printf("Beginning cr servo module test\n");
@@ -120,7 +145,6 @@ void main(void)
 {
   uart_init();
   timer_init();
-  printf("Hello, world!\n");
   
   /* test the ultrasonic module */
   /*
@@ -152,5 +176,10 @@ void main(void)
   */
 
   /*test cr servo module */
-  test_cr_servo_module(GPIO_PIN4);
+  /*  
+  test_cr_servo_module(GPIO_PIN20);
+  */
+
+  /*test car control module */
+  test_car_control_module(GPIO_PIN23, GPIO_PIN24, GPIO_PIN20, GPIO_PIN21);
 }
