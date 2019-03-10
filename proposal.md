@@ -135,3 +135,30 @@ Specifically: gpioextra, interrupts, i2c.
 *Wheels*
 
 The wheels that I'm using are borrowed from this kit: https://www.amazon.com/Geekstory-Feetech-Degree-Continuous-Rotation/dp/B079FRHBTR/ref=sr_1_2_sspa?keywords=continuous+rotation+servos&qid=1552198755&s=gateway&sr=8-2-spons&psc=1
+
+**Lessons that I have Learned**
+* Have only one ground. Otherwise, you will pull your hairs out.
+* Line follower module needs to be powered externally
+* At first glance, things will seem definitely doable. Then once you start doing them, they no longer seem doable.
+  But once you complete them, they seem very doable.
+* Object oriented programming can be very helpful, but not if you don't do it. I should do it more often in my coding.
+* There is a lot more to consider besides the software side of things. For example, an uneven weight distribution
+  in the chassis will lead to one wheel having more grip than the other. So have an even weight distribution.
+* Many things pop up and make other things hard. For example, keeping the orientation of the Pi Rat correct throughout the
+  maze. You have to constantly figure solutions out to these challenges. Many of the best solutions come in the shower.
+* Oftentimes, things are difficult because you make them so. It can be good to take a step back, and think: is there a 
+  simpler, easier solution to things? This is difficult because you can get caught up in the way you currently want to
+  do things, and miss out on otherwise obvious things. For example, when writing PWM outputs, initially I picked up Pat's
+  idea (which, now that I look back, should work, if I properly used get_and_clear_event()...) with the incrementing interrupt
+  counter. But later, I took a simpler, better approach which is currently implemented. Also, with utilizing the line
+  follower, my initial thought was to update the orientation as the Pi Rat moved. But then I realized it would be much 
+  simpler if I compartmentalized each operation. First move, then correct the movement. 
+* This brings me to: compartmentalizing things means you can do so much more. "Stand on the shoulders of giants" except
+  In this case, you are the giant. There are so many details of my code that are critical but I've totally forgotten about
+  (well, I could recall them, but it's much easier not having the worry of needing to). And by leaking those details from my
+  memory, I've allowed myself to use my mind more completely to solve each task. Whereas, if I chose to mesh everything
+  together, either I would be able to do much less in coding, or I would have to spend way more effort achieving it. This
+  is part of the reason I chose not to use a task queue for control, and instead opted to compartmentalize PWM outputs, even
+  if it meant having that 2-3 ms penalty. 
+
+  
