@@ -111,4 +111,9 @@ void set_wheel2_throttle(int throttle);
  * time? It would require the addition of trig functions, if I turn at angles
  * which are not 90 degrees, but it would also be cool
  */
+
+/* test function to showcase this module off */
+void test_car_control_module(unsigned int input1, unsigned int input2, unsigned int output1,
+			     unsigned int output2);
+
 #endif

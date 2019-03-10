@@ -12,33 +12,6 @@
 const unsigned int ULTRASONIC_TRIGGER = GPIO_PIN23;
 const unsigned int ULTRASONIC_ECHO = GPIO_PIN24;
 
-/* for all of these test functions, I should move them to the module itself */
-void test_car_control_module(unsigned int input1, unsigned int input2, unsigned int output1, 
-			     unsigned int output2){
-  printf("Beginning car control test\n");
-  car_control_module_init(input1, input2, output1, output2, 100, 340); //estimated wheelbase/circumfrence
-  
-  printf("move forward 10\n");
-  move_forward(10);
-
-  timer_delay(5);
-
-  printf("wheel positions: %d, %d\n", get_wheel1_angle(), get_wheel2_angle());
-
-  printf("move forward -10\n");
-  move_forward(-10);
-
-  printf("wheel positions: %d, %d\n", get_wheel1_angle(), get_wheel2_angle());
-
-  printf("move forward_2, 10\n");
-  move_forward_2(10);
-
-  printf("wheel positions: %d, %d\n", get_wheel1_angle(), get_wheel2_angle());
-
-  printf("move forward_2, -10\n");
-  move_forward_2(-10);
-}
-
 void test_cr_servo_module(unsigned int pin){
   printf("Beginning cr servo module test\n");
   cr_servo_module_init();

@@ -317,3 +317,30 @@ void set_wheel1_throttle(int throttle){
 void set_wheel2_throttle(int throttle){
   wheel2_throttle = throttle;
 }
+
+void test_car_control_module(unsigned int input1, unsigned int input2, unsigned int output1,
+                             unsigned int output2){
+  printf("Beginning car control test\n");
+  car_control_module_init(input1, input2, output1, output2, 100, 340); //estimated wheelbase/circumfrence
+
+  printf("move forward 10\n");
+  move_forward(10);
+
+  timer_delay(5);
+
+  printf("wheel positions: %d, %d\n", get_wheel1_angle(), get_wheel2_angle());
+
+  printf("move forward -10\n");
+  move_forward(-10);
+
+  printf("wheel positions: %d, %d\n", get_wheel1_angle(), get_wheel2_angle());
+
+  printf("move forward_2, 10\n");
+  move_forward_2(10);
+
+  printf("wheel positions: %d, %d\n", get_wheel1_angle(), get_wheel2_angle());
+
+  printf("move forward_2, -10\n");
+  move_forward_2(-10);
+}
+
