@@ -1,5 +1,5 @@
 NAME = main
-OBJECTS = ultrasonic_module.o pwm_output_module.o pwm_input_module.o servo_module.o cr_servo_module.o car_control_module.o
+OBJECTS = ultrasonic_module.o pwm_output_module.o pwm_input_module.o servo_module.o cr_servo_module.o car_control_module.o line_follower_module.o
 
 CFLAGS  = -I$(CS107E)/include -g -Wall -Wpointer-arith
 CFLAGS += -Og -std=c99 -ffreestanding
