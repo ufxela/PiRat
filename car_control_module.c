@@ -47,6 +47,11 @@ static unsigned int previous_wheel2_angle;
 static int wheel1_throttle;
 static int wheel2_throttle;
 
+/* shimmy constants */
+static const unsigned int SHIMMY_ANGLE = 30;
+static const unsigned int SHIMMY_FORWARD_DISTANCE_CM = 5;
+//move back (move back cos(SHIMMY ANGLE) * SHIMMY_FORWARD_DISTANCE                                      
+static const unsigned int SHIMMY_FORWARD_DISTANCE_CM = 4;
 /* internal helper functions which needs to be called very often, whenever there is wheel movement.
  * Ideally, this would be called on a tiemr interrupt schedule, once every 20 ms maybe, but
  * I am not doing that for now... 
@@ -170,6 +175,7 @@ void step_forward(int degrees){
       }
       //update wheel positions
       update_wheel_positions();
+      /* this printf is here for debugging purposes */
       printf("Wheel1 anlge: %d, Wheel2 angle: %d\n", get_wheel1_angle(), get_wheel2_angle());
     }
     //stop once position is reached
@@ -295,15 +301,79 @@ void move_wheel2(int degrees){
   }
 }
 
+/* needs to rotate one wheel degrees * pi * wheelbase / wheel_circumference 
+ * and the other wheel the same amount in the opposite direciton
+ *
+ * May want to implement this in a different way than I currently am
+ */
 void turn(int degrees){
+  int angle_to_move_wheels = degrees * wheel_base_mm * 314 / 100 / wheel_circumference_mm;
+  
+  int new_wheel1_angle = get_wheel1_angle() - degrees; //assuming wheel 1 is to the left
+  int new_wheel2_angle = get_wheel2_angle() + degrees; //may need to chance one or both signs
 
+  if(degrees > 0){
+    //set throttles
+    cr_servo_go_to_throttle(wheel1, wheel1_throttle); //may need to change signs
+    cr_servo_go_to_throttle(wheel2, -1*wheel2_throttle);
+
+    //move until we've acheived the desired position
+    while(get_wheel1_angle() >= new_wheel1_angle || get_wheel2_angle <= new_wheel2_angle){
+      update_wheel_positions();
+      if(get_wheel1_angle() >= new_wheel1_angle){
+        cr_servo_go_to_throttle(wheel1, 0);
+        cr_servo_go_to_throttle(wheel2, -1*wheel2_throttle);
+      }
+      if(get_wheel2_angle() <= new_wheel2_angle){
+        cr_servo_go_to_throttle(wheel2, 0);
+        cr_servo_go_to_throttle(wheel1, -1*wheel1_throttle);
+      }
+    }
+    cr_servo_go_to_throttle(wheel1, 0);
+    cr_servo_go_to_throttle(wheel2, 0);
+  }else if(degrees < 0){
+    cr_servo_go_to_throttle(wheel1, -1*wheel1_throttle);
+    cr_servo_go_to_throttle(wheel2, wheel2_throttle);
+
+    while(get_wheel1_angle() <= new_wheel1_angle || get_wheel2_angle >= new_wheel2_angle){
+      update_wheel_positions();
+      if(get_wheel1_angle() <= new_wheel1_angle){
+        cr_servo_go_to_throttle(wheel1, 0);
+        cr_servo_go_to_throttle(wheel2, -1*wheel2_throttle);
+      }
+      if(get_wheel2_angle() >= new_wheel2_angle){
+        cr_servo_go_to_throttle(wheel2, 0);
+        cr_servo_go_to_throttle(wheel1, -1*wheel1_throttle);
+      }
+    }
+    cr_servo_go_to_throttle(wheel1, 0);
+    cr_servo_go_to_throttle(wheel2, 0);
+  } 
 }
 
 /* shimmy left one cm */
-void shimmy_left();
+/* values of rotation and forward movement need to be adjusted to give proper behavior */
+void shimmy_left(){
+  //rotate left
+  turn(SHIMMY_ANGLE);
 
+  //move forward
+  move_forward(SHIMMY_FORWARD_DISTANCE);
+
+  //rotate right
+  turn(-SHIMMY_ANGLE);
+
+  //move back (move back cos(SHIMMY ANGLE) * SHIMMY_FORWARD_DISTANCE
+  move_forward(SHIMMY_BACKWARDS_DISTANCE);
+
+}
 /* shimmy right 1 cm */
-void shimmy_right();
+void shimmy_right(){
+  turn(-SHIMMY_ANGLE);
+  move_forward(SHIMMY_FORWARD_DISTANCE);
+  turn(SHIMMY_ANGLE);
+  move_forward(-SHIMMY_BACKWARDS_DISTANCE);
+}
 
 void set_wheel_throttles(int throttle){
   wheel1_throttle = throttle;
