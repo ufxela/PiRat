@@ -131,3 +131,7 @@ https://github.com/cs107e/cs107e.github.io/tree/master/cs107e/src
 https://github.com/cs107e/cs107e.github.io/tree/master/cs107e/include
 
 Specifically: gpioextra, interrupts, i2c. 
+
+*Wheels*
+
+The wheels that I'm using are borrowed from this kit: https://www.amazon.com/Geekstory-Feetech-Degree-Continuous-Rotation/dp/B079FRHBTR/ref=sr_1_2_sspa?keywords=continuous+rotation+servos&qid=1552198755&s=gateway&sr=8-2-spons&psc=1
