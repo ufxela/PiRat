@@ -11,6 +11,18 @@ void line_follower_init();
  * This function returns, as an int, which value the line is currently at. -1 if it is currently
  * at none of the lines. 
  */
+int get_line_index();
+
+/* returns the value in mm of where the line is with respect to the middle of the
+ * line sensor. Unsure of whether I should define the middle of the line sensor
+ * as the in between of sensors 4 & 5 (indexing from 1) or if it should
+ * just be either 4 or 5.
+ *
+ * For now, it will be 4
+ * 
+ * if line position is invalid, will return -1000000 (as the distance between sensors surely will
+ * be less than 1000000 mm).
+ */
 int get_line_position();
 
 /* sets the threshold for what is considered a line "hit" or not */
