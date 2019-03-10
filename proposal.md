@@ -160,5 +160,8 @@ The wheels that I'm using are borrowed from this kit: https://www.amazon.com/Gee
   together, either I would be able to do much less in coding, or I would have to spend way more effort achieving it. This
   is part of the reason I chose not to use a task queue for control, and instead opted to compartmentalize PWM outputs, even
   if it meant having that 2-3 ms penalty. 
-
+* When you're doing something completely alone, that you really enjoy, there really is nothing else needed. Although I've
+  been really frustrated at times (like before I realized you should connect all your grounds--lesson learned!), and I've
+  definitely wished that I had someone along side me helping me solve my problems (in a way, I have--through the course staff)
+  but at the end of the day, I'm really glad to have embarked on this project. It's definitely overwhelming. But worth it.
   
