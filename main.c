@@ -121,6 +121,8 @@ int main(void)
   */
 
   /* test line follower */
+
   line_follower_test();
+
   return 1;
 }

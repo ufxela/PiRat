@@ -4,6 +4,12 @@
 #include "printf.h"
 #include "timer.h"
 
+/* note: the line follower needs an external power supply: the pi doesn't provide enough. 
+ * 
+ * also: darker colors lead to smaller values => min will be the line, if there is just a 
+ * single line
+ */
+
 /* an array which stores the line_follower_data 
  * an array of charcaters, not a string. 
  */
