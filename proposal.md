@@ -20,6 +20,11 @@ algorithm to navigate through a maze, and find a solution. At the same time,
 the PiRat will keep an internal model of the maze, updating the model with each 
 measurement it takes with it’s ultrasonic distance/time of flight sensor. 
 
+One challenge of this project is keeping the Pi Rat's orientation correct throughout
+the maze. Because the Pi Rat senses very little about it's environement, it is difficult
+for it to truly know where it is (position and bearing) within the maze. Therefore, small
+inaccuracies in positioning can avalanche to throw the entire Pi Rat off track. 
+
 **Hardware Required:** 
 besides a Raspberry Pi,
 
