@@ -119,5 +119,8 @@ int main(void)
   /*  
   test_car_control_module(GPIO_PIN23, GPIO_PIN24, GPIO_PIN20, GPIO_PIN21);
   */
+
+  /* test line follower */
+  line_follower_test();
   return 1;
 }
