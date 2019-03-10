@@ -12,6 +12,7 @@
 const unsigned int ULTRASONIC_TRIGGER = GPIO_PIN23;
 const unsigned int ULTRASONIC_ECHO = GPIO_PIN24;
 
+/* for all of these test functions, I should move them to the module itself */
 void test_car_control_module(unsigned int input1, unsigned int input2, unsigned int output1, 
 			     unsigned int output2){
   printf("Beginning car control test\n");
