@@ -182,3 +182,27 @@ int get_cr_servo_throttle(cr_servo *cr_servo){
 unsigned int get_cr_servo_threshold(cr_servo *cr_servo){
   return cr_servo->current_threshold;
 }
+
+void test_cr_servo_module(unsigned int pin){
+  printf("Beginning cr servo module test\n");
+  cr_servo_module_init();
+
+  cr_servo * my_cr_servo = cr_servo_new(pin);
+
+  cr_servo_setup(my_cr_servo);
+
+  int throttle = 0;
+
+  while(1){
+    while(throttle < 100){
+      cr_servo_go_to_throttle(my_cr_servo, throttle);
+      throttle++;
+      timer_delay_ms(75);
+    }
+    while(throttle > -100){
+      cr_servo_go_to_throttle(my_cr_servo, throttle);
+      throttle--;
+      timer_delay_ms(75);
+    }
+  }
+}

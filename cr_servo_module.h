@@ -41,6 +41,9 @@ int get_cr_servo_throttle(cr_servo *cr_servo);
 /* internally watch threshold */
 unsigned int get_cr_servo_threshold(cr_servo *cr_servo);
 
+/* a test function to showcase this module's functionality */
+void test_cr_servo_module(unsigned int pin);
+
 #endif
 
 
