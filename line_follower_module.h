@@ -27,6 +27,11 @@ int get_line_index();
  * 
  * if line position is invalid, will return -1000000 (as the distance between sensors surely will
  * be less than 1000000 mm).
+ *
+ * Maybe this function can be more specific than just a single line sensor lense
+ * and use continuous values of line sensor outputs to determine how close the 
+ * line sensor is to the line, and calculate a more exact/precise value for the line's
+ * position
  */
 int get_line_position();
 
