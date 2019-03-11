@@ -124,6 +124,10 @@ int pwm_input_get_threshold(unsigned int pin){
 
 /* this function is a fossil from my old implementation of this module that didn't work
  * which had a variable cycle length and resolution
+ *
+ * perhaps a better way to do this function is to measure an accurate cycle length at the 
+ * beginning on program execution, then store that into a global variable
+ * for later references, as the cycle length should stay constant
  */
 int pwm_input_get_cycle_length(unsigned int pin){
   int cycle_length = -1;
@@ -150,6 +154,9 @@ int pwm_input_get_number_sources(){
  * 97.1 % of this is 1066 us
  *
  * conversion rate is this (threshold - 30) * 360 / 1036
+ *
+ * a better way to do this would utilize pwm_input_get_cycle_length
+ * to get more precise measurements on the cycle length to calculate this.
  */
 unsigned int pwm_input_get_angle(unsigned int pin){
   //average 8 readings
