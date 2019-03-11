@@ -121,6 +121,10 @@ Note: this bad boy can't be powered just through the Pi's GPIO pins. Needs exter
 https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf
 https://github.com/cs107e/cs107e.github.io/blob/master/lectures/Sensors/code/sonar/sonar.c
 
+*parallax feedback 360 servos*
+
+https://www.parallax.com/product/900-00360
+
 *servos*
 
 https://learn.sparkfun.com/tutorials/pulse-width-modulation/all
