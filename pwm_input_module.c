@@ -142,14 +142,25 @@ int pwm_input_get_number_sources(){
 }
 
 //this function needs to be improved. its really bad right now...
+/* servo sends PWM feeback at 910 Hz
+ * 2.7% duty cycle corresponds to 0 degrees, 97.1 corresponds to 360
+ * Doing some math:
+ * 1/910 = .0010989 s = 1099 us.
+ * 2.7 % of this is 30 us
+ * 97.1 % of this is 1066 us
+ *
+ * conversion rate is this (threshold - 30) * 360 / 1036
+ */
 unsigned int pwm_input_get_angle(unsigned int pin){
-  //average 5 readings
+  //average 8 readings
   unsigned int angle_total = 0;
   for(int i = 0; i < 8; i++){
-    int angle = (pwm_input_get_threshold(pin) - 30) * 360 / 1060;
-    while(angle < -40 || angle > 400){
-      angle = (pwm_input_get_threshold(pin) - 30) * 360 / 1060;
+    int angle = (pwm_input_get_threshold(pin) - 30) * 360 / 1036;
+    //wait till we get an approximately good reading
+    while(angle < -10 || angle > 370){
+      angle = (pwm_input_get_threshold(pin) - 30) * 360 / 1036;
     }
+    //correct for some errors...
     if(angle < 0){
       angle = 0;
     }else if(angle > 360){
