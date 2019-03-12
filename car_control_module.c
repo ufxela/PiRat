@@ -66,6 +66,13 @@ static int abs(int x){
   }
 }
 
+static int get_angle_average(unsigned int pin){
+  int total = 0;
+  for(int i = 0; i < 5; i++){
+    total+= pwm_input_get_angle(pin);
+  }
+  return total / 5;
+
 /* internal helper functions which needs to be called very often, whenever there is wheel movement.
  * Ideally, this would be called on a tiemr interrupt schedule, once every 20 ms maybe, but
  * I am not doing that for now... 
@@ -89,12 +96,14 @@ static void update_wheel_positions(){
    * read value was valid, so if any of them are invalid, everything's screwed 
    */
   int failsafe = 0;
+  int total_wheel_angle = 0;
   while(abs(wheel1_relative_angle - previous_wheel1_angle) > 20 && 
 	abs(wheel1_relative_angle - previous_wheel1_angle) < 340){
     wheel1_relative_angle = pwm_input_get_angle(wheel1_input_pin);
     failsafe++;
+    total_wheel_angle += wheel1_relative_angle;
     if(failsafe > 20){
-      previous_wheel1_angle = wheel1_relative_angle; //assumes wheel1_realtive_angle correct, 
+      previous_wheel1_angle = total_wheel_angle / 20; //assumes wheel1_realtive_angle correct, 
       //thigns go wrong if not
       //break;
       //instead of ending the loop and continuing, should throw away current readings and re measure
@@ -102,6 +111,7 @@ static void update_wheel_positions(){
     }
   }
   failsafe = 0;
+  total_wheel_angle = 0;
 
   if(wheel1_relative_angle > 320 && previous_wheel1_angle < 40){
     printf("current: %d previous: %d\n\n", wheel1_relative_angle, previous_wheel1_angle);
@@ -118,9 +128,10 @@ static void update_wheel_positions(){
   while(abs(wheel2_relative_angle - previous_wheel2_angle) > 20 &&
         abs(wheel2_relative_angle - previous_wheel2_angle) < 340){
     wheel2_relative_angle = pwm_input_get_angle(wheel2_input_pin);
+    total_wheel_angle += wheel1_relative_angle;
     failsafe++;
     if(failsafe > 20){
-      previous_wheel1_angle = wheel1_relative_angle;
+      previous_wheel1_angle = total_wheel_angle/20;
       //      break;
     }
   }
