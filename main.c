@@ -121,13 +121,13 @@ int main(void)
   */
   
   /*test car control module */
-  /*  
-  test_car_control_module(GPIO_PIN23, GPIO_PIN24, GPIO_PIN20, GPIO_PIN21);
-  */
+    
+  test_car_control_module(GPIO_PIN18, GPIO_PIN21, GPIO_PIN20, GPIO_PIN16);
+  
 
   /* test line follower */
-
+  /*
   line_follower_test();
-
+  */
   return 1;
 }
