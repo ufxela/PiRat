@@ -77,7 +77,6 @@ static int get_angle_average(wheel * wheel){
  * Wheel1's (left wheel) angles are negated, so that it's positive direciton is forwards
  */
 static void update_wheel_positions(){
-  printf("updating");
   //update left_wheel
   left_wheel->previous_angle = left_wheel->relative_angle;
   // need to negate in order to keep forwards the positive direction
@@ -210,7 +209,7 @@ int get_wheel_angle(wheel * wheel){
  * right now this program is buggy in that the recorded angle will occasionally just
  * stop short, and result in the motors rotating without stop
  */
-void step_forward(int degrees){
+void step_forward_2(int degrees){
   printf("Degrees: %d\n", degrees);
   update_wheel_positions();
   int left_wheel_final_angle = get_wheel_angle(left_wheel) + degrees;
@@ -247,7 +246,9 @@ void step_forward(int degrees){
   }
 }
 
-void step_forward_2(int degrees){ //angle = degrees
+void step_forward(int degrees){ //angle = degrees
+  int bias = 0;
+
   update_wheel_positions();
   int master_throttle = left_wheel->forwards_throttle;
   int slave_throttle = right_wheel->forwards_throttle;
@@ -272,18 +273,18 @@ void step_forward_2(int degrees){ //angle = degrees
     int right_wheel_progress = get_wheel_angle(right_wheel) - right_wheel_start_angle;
 
     //if one wheel has advanced further than the other, make corrections
-    if(left_wheel_progress < right_wheel_progress - 5){
+    if(left_wheel_progress < right_wheel_progress - 3){
       slave_throttle++;
       //we don't want slave_throttle to get too high / low
-      if(slave_throttle > right_wheel->forwards_throttle + 3){
-	slave_throttle = right_wheel->forwards_throttle + 3;
+      if(slave_throttle > right_wheel->forwards_throttle + 5){
+	slave_throttle = right_wheel->forwards_throttle + 5;
 	motor_set_throttle(right_wheel, slave_throttle);
 	//	timer_delay_ms(20); //to avoid doing this a bunch of times in a single pwm cycle
       }
-    }else if(left_wheel_progress > right_wheel_progress + 5){
+    }else if(left_wheel_progress > right_wheel_progress + 3){
       slave_throttle--;
-      if(slave_throttle < right_wheel->forwards_throttle - 3){
-	slave_throttle = right_wheel->forwards_throttle - 3;
+      if(slave_throttle < right_wheel->forwards_throttle - 2){
+	slave_throttle = right_wheel->forwards_throttle - 2;
 	motor_set_throttle(right_wheel, slave_throttle);
 	//	timer_delay_ms(20);
       }
@@ -296,8 +297,8 @@ void step_forward_2(int degrees){ //angle = degrees
     if(get_wheel_angle(right_wheel) >= right_wheel_final_angle){
       motor_set_throttle(right_wheel, 0);
     }
-
-    printf("difference: %d, wheel1 position: %d, wheel2 positon: %d \n", left_wheel_progress-right_wheel_progress,
+    bias += left_wheel_progress-right_wheel_progress;
+    printf("bias: %d, difference: %d, wheel1 position: %d, wheel2 positon: %d \n", bias, left_wheel_progress-right_wheel_progress,
 	   left_wheel_progress, right_wheel_progress);
     update_wheel_positions();
   }
@@ -500,31 +501,31 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
 
   timer_delay(2);
   car_control_module_init(input1, input2, output1, output2,96, 188); //estimated wheelbase/circumfrence
-  /*
+  
   printf("move forward 10\n");
   move_forward(10);
 
   timer_delay(2);
 
-  printf("wheel positions: %d, %d\n", get_wheel1_angle(), get_wheel2_angle());
+  printf("wheel positions: %d, %d\n", get_wheel_angle(left_wheel), get_wheel_angle(right_wheel));
 
   printf("move forward -10\n");
   move_forward(-10);
 
   timer_delay(2);
 
-  printf("wheel positions: %d, %d\n", get_wheel1_angle(), get_wheel2_angle());
+  printf("wheel positions: %d, %d\n", get_wheel_angle(left_wheel), get_wheel_angle(right_wheel));
 
   //these don't currently work... or do they?
 
   printf("move forward_2, 10\n");
   move_forward_2(10);
 
-  printf("wheel positions: %d, %d\n", get_wheel1_angle(), get_wheel2_angle());
+  printf("wheel positions: %d, %d\n", get_wheel_angle(left_wheel), get_wheel_angle(right_wheel));
 
   printf("move forward_2, -10\n");
   move_forward_2(-10);
-  */
+  
 
   /*
   while(1){
@@ -542,7 +543,7 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
     timer_delay_ms(100); //this messes things up
   }
   */
-  step_forward_2(10000);
+  /*  step_forward_2(10000);*/
 
 }
 
