@@ -127,10 +127,10 @@ int main(void)
   */
   
   /* test pwm input module (works) */
-  /* 
+
   pwm_input_init();
   pwm_input_test();
-  */
+
   
   /* test PWM IO */
   /* 

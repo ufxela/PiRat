@@ -180,12 +180,12 @@ unsigned int pwm_input_get_angle(unsigned int pin){
 
 int pwm_input_test(){
   printf("starting test \n");
-  pwm_add_input(GPIO_PIN26);
-  pwm_add_input(GPIO_PIN16);
+  pwm_add_input(GPIO_PIN18);
+  pwm_add_input(GPIO_PIN21);
   while(1){
-    printf("angle 1: %d ", pwm_input_get_angle(GPIO_PIN26));
-    printf("angle 2: %d\n", pwm_input_get_angle(GPIO_PIN16));
-    printf("cycle length: %d\n", pwm_input_get_cycle_length(GPIO_PIN26));
+    printf("angle 1: %d ", pwm_input_get_angle(GPIO_PIN18));
+    printf("angle 2: %d, ", pwm_input_get_angle(GPIO_PIN21));
+    printf("cycle length: %d\n", pwm_input_get_cycle_length(GPIO_PIN21));
   }
   return 1;
 }

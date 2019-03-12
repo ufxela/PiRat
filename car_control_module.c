@@ -92,8 +92,8 @@ static void update_wheel_positions(){
 
   int timeout = 0;
   int total_wheel_angle = 0;
-  while(abs(left_wheel->relative_angle - left_wheel->previous_angle) > 4 &&
-	abs(left_wheel->relative_angle - left_wheel->previous_angle) < 356){
+  while(abs(left_wheel->relative_angle - left_wheel->previous_angle) > 6 &&
+	abs(left_wheel->relative_angle - left_wheel->previous_angle) < 354){
     left_wheel->relative_angle = -1*get_angle_average(left_wheel);
     timeout++;
     total_wheel_angle += left_wheel->relative_angle;
@@ -103,9 +103,9 @@ static void update_wheel_positions(){
   }
 
   /* update rotations */
-  if(left_wheel->relative_angle < -1*320 && left_wheel->previous_angle > -1*40){
+  if(left_wheel->relative_angle < -1*340 && left_wheel->previous_angle > -1*20){
     left_wheel->rotations++;
-  }else if(left_wheel->relative_angle > -1*40 && left_wheel->previous_angle < -1*320){
+  }else if(left_wheel->relative_angle > -1*20 && left_wheel->previous_angle < -1*340){
     left_wheel->rotations--;
   }
 
@@ -118,8 +118,8 @@ static void update_wheel_positions(){
   right_wheel->relative_angle = get_angle_average(right_wheel);
 
   /* safety check */
-  while(abs(right_wheel->relative_angle - right_wheel->previous_angle) > 4 &&
-        abs(right_wheel->relative_angle - right_wheel->previous_angle) < 356){
+  while(abs(right_wheel->relative_angle - right_wheel->previous_angle) > 6 &&
+        abs(right_wheel->relative_angle - right_wheel->previous_angle) < 354){
     right_wheel->relative_angle = get_angle_average(right_wheel);
     timeout++;
     total_wheel_angle += right_wheel->relative_angle;
@@ -129,9 +129,9 @@ static void update_wheel_positions(){
   }
 
 
-  if(right_wheel->relative_angle > 320 && right_wheel->previous_angle < 40){
+  if(right_wheel->relative_angle > 340 && right_wheel->previous_angle < 20){
     right_wheel->rotations--;
-  }else if(right_wheel->relative_angle < 40 && right_wheel->previous_angle > 320){
+  }else if(right_wheel->relative_angle < 20 && right_wheel->previous_angle > 340){
     right_wheel->rotations++;
   }
 }
@@ -391,8 +391,8 @@ void move_forward_3(int distance_in_cm){
 void turn(int degrees){
   int angle_to_move_wheels = degrees * wheel_base_mm * 314 / 100 / wheel_circumference_mm;
 
-  int left_wheel_final_angle = get_wheel_angle(left_wheel) - angle_to_move_wheels; //assuming wheel 1 is to the left
-  int right_wheel_final_angle = get_wheel_angle(right_wheel) + angle_to_move_wheels; //may need to chance one or both signs
+  int left_wheel_final_angle = get_wheel_angle(left_wheel) - angle_to_move_wheels;
+  int right_wheel_final_angle = get_wheel_angle(right_wheel) + angle_to_move_wheels;
 
   if(degrees > 0){
     //set throttles
