@@ -15,8 +15,8 @@
 #include "car_control_module.h"
 #include "line_follower_module.h"
 
-const unsigned int ULTRASONIC_TRIGGER = GPIO_PIN23;
-const unsigned int ULTRASONIC_ECHO = GPIO_PIN24;
+const unsigned int ULTRASONIC_TRIGGER = GPIO_PIN6;
+const unsigned int ULTRASONIC_ECHO = GPIO_PIN5;
 
 /* test function which combines pwm_input and pwm_output modules */
 void test_pwm_IO(unsigned int input_pin1, unsigned int input_pin2, unsigned int output_pin1,
@@ -81,13 +81,41 @@ void test_pwm_IO2(unsigned int input_pin, unsigned int output_pin){
   }
 }
 
+void test_wall_sensing(unsigned int trig_pin, unsigned int echo_pin, unsigned int servo_pin){
+  printf("testing wall sensing \n");
+  ultrasonic_init(trig_pin, echo_pin);
+
+  servo_module_init();
+  servo * my_servo = servo_new(servo_pin);
+  servo_auto_setup(my_servo, 500, 2400);
+  
+  while(1){
+    servo_go_to_angle(my_servo, 0);
+    printf("begin 0");
+    /* us to avoid conflicts with interrupts */
+    timer_delay_us(1000004);
+    printf("after timer delay");
+    printf("distance at 0: %d \n", get_ultrasonic_mean(10));
+    servo_go_to_angle(my_servo, 90);
+    printf("begin 90");
+    timer_delay_us(500004);
+    printf("after timer delay");
+    printf("distance at 90 %d \n", get_ultrasonic_mean(10));
+    servo_go_to_angle(my_servo, 170);
+    printf("begin 170");
+    timer_delay_us(500004);
+    printf("after timer delay");
+    printf("distance at 180 %d \n", get_ultrasonic_mean(10));
+  }
+}
+
 int main(void) 
 {
   uart_init();
   timer_init();
   
   /* test the ultrasonic module */
-  /*
+  /*  
   timer_init();
   ultrasonic_init(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO);
   ultrasonic_test();
@@ -121,13 +149,18 @@ int main(void)
   */
   
   /*test car control module */
-    
+  /*  
   test_car_control_module(GPIO_PIN18, GPIO_PIN21, GPIO_PIN20, GPIO_PIN16);
-  
+  */
 
   /* test line follower */
   /*
   line_follower_test();
   */
+
+  /* test wall sensing */
+
+  test_wall_sensing(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO, GPIO_PIN12);
+
   return 1;
 }

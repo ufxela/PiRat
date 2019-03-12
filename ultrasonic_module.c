@@ -30,9 +30,17 @@ unsigned int get_time_of_flight_basic(){
   timer_delay_us(149); // wait til device settles: 148 = time to go one inch
   
   //wait for echo to be received
-  while(gpio_read(ECHO) == 0){/* spin */}
+  while(gpio_read(ECHO) == 0){
+    if(timer_get_ticks() - trigger_time_us > 100000){ //if there's a timeout
+      return 1000000;
+    }
+  }
 
-  while(gpio_read(ECHO) == 1){/* spin */}
+  while(gpio_read(ECHO) == 1){
+    if(timer_get_ticks() - trigger_time_us > 100000){
+      return 1000000;
+    }
+  }
 
   //record time at echo
   unsigned int echo_time_us = timer_get_ticks();
@@ -44,7 +52,11 @@ unsigned int get_time_of_flight_basic(){
 unsigned int get_ultrasonic_mean(int number_samples){
   unsigned int total = 0;
   for(int i = 0; i < number_samples; i++){
-    total += get_time_of_flight_basic();
+    int basic_reading = get_time_of_flight_basic();
+    while(basic_reading > 10000){
+      basic_reading = get_time_of_flight_basic();
+    }
+    total += basic_reading;
     timer_delay_us(1000);
   }
   return total / number_samples;
