@@ -20,6 +20,7 @@ const unsigned int NUMBER_LF_READ_HEADS = 8;
 
 const unsigned int DISTANCE_BETWEEN_SENSORS = 13; //approximately
 
+/* is a wrong address the reason this isn't working? */
 const unsigned int LINE_FOLLOWER_ADDRESS = 9;
 
 static int MIDDLE_DISTANCE; 
@@ -63,7 +64,6 @@ int get_line_index(){
       index = i;
     }
   }
-
   return index;
 }
 
