@@ -28,8 +28,8 @@ static int y_pos; //the y position, in cm
  */
 static int wheel1_rotations; //from -infinity to positive infinity
 static int wheel2_rotations;
-static unsigned int wheel1_relative_angle;  //from 0 to 360. 
-static unsigned int wheel2_relative_angle;
+static int wheel1_relative_angle;  //from 0 to 360. 
+static int wheel2_relative_angle;
 
 /* pin info */
 static unsigned int wheel1_input_pin;
@@ -40,8 +40,8 @@ static cr_servo* wheel1;
 static cr_servo* wheel2;
 
 /* to help us update wheel positions */
-static unsigned int previous_wheel1_angle;
-static unsigned int previous_wheel2_angle;
+static int previous_wheel1_angle;
+static int previous_wheel2_angle;
 
 /* throttles */
 static int wheel1_throttle;
@@ -56,6 +56,15 @@ static const unsigned int SHIMMY_ANGLE = 30;
 static const unsigned int SHIMMY_FORWARD_DISTANCE_CM = 5;
 //move back (move back cos(SHIMMY ANGLE) * SHIMMY_FORWARD_DISTANCE                                      
 static const unsigned int SHIMMY_BACKWARDS_DISTANCE_CM = 4;
+
+/* get the absolute value; simple function, so I wrote it myself */
+static int abs(int x){
+  if(x < 0){
+    return -1*x;
+  }else{
+    return x;
+  }
+}
 
 /* internal helper functions which needs to be called very often, whenever there is wheel movement.
  * Ideally, this would be called on a tiemr interrupt schedule, once every 20 ms maybe, but
@@ -73,6 +82,10 @@ static void update_wheel_positions(){
   /* a safety check */
   // need a safety check here that makes sure previus wheel angle and current wheel angle don't
   //differ by too much (otherwise, it's likely an error */
+  while(abs(wheel1_relative_angle - previous_wheel1_angle) > 10 && 
+	abs(wheel1_relative_angle - previous_wheel1_angle) < 350){
+    wheel1_relative_angle = pwm_input_get_angle(wheel1_input_pin);
+  }
 
   if(wheel1_relative_angle > 320 && previous_wheel1_angle < 40){
     printf("current: %d previous: %d\n\n", wheel1_relative_angle, previous_wheel1_angle);
@@ -86,6 +99,10 @@ static void update_wheel_positions(){
   wheel2_relative_angle = pwm_input_get_angle(wheel2_input_pin);
   
   /* safety check */
+  while(abs(wheel2_relative_angle - previous_wheel2_angle) > 10 &&
+        abs(wheel2_relative_angle - previous_wheel2_angle) < 350){
+    wheel2_relative_angle = pwm_input_get_angle(wheel2_input_pin);
+  }
 
   if(wheel2_relative_angle > 320 && previous_wheel2_angle < 40){
     wheel2_rotations--;
@@ -411,10 +428,10 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
   printf("Beginning car control test in 2 s\n");
 
   timer_delay(2);
-  car_control_module_init(input1, input2, output1, output2, 100, 340); //estimated wheelbase/circumfrence
+  car_control_module_init(input1, input2, output1, output2,96, 188); //estimated wheelbase/circumfrence
 
-  printf("move forward 10\n");
-  move_forward(10);
+  printf("move forward 20\n");
+  move_forward(20);
 
   timer_delay(2);
 
