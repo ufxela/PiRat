@@ -5,6 +5,8 @@
 #ifndef CAR_CONTROL_MODULE_H
 #define CAR_CONTROL_MODULE_H
 
+typedef volatile struct wheel wheel;
+
 /* initializer function, starts everything up */
 void car_control_module_init(unsigned int input1, unsigned int input2, unsigned int output1,
 			     unsigned int output2, unsigned int whl_base,
@@ -20,10 +22,8 @@ int get_x_position();
 int get_y_position();
 
 /* returns absolute position/angle of wheel1 */
-int get_wheel1_angle();
+int get_wheel_angle();
 
-/* returns absolute position of wheel2 */
-int get_wheel2_angle();
 
 /* steps forward a set amount of degrees, updating the internal 
  * data structure which keeps track of the vehicle's wheel positions 
@@ -71,10 +71,10 @@ void move_forward_2(int distance_in_cm);
 void move_forward_3(int distance_in_cm);
 
 /* moves wheel 1 a set number of degrees */
-void move_wheel1(int degrees);
+//void move_wheel1(int degrees);
 
 /* wheel to move degrees */
-void move_wheel2(int degrees);
+//void move_wheel2(int degrees);
 
 /* calculates the angles each wheel has to move (one forward x degrees, one
  * backward x degrees), based on internally kept constants representing the
@@ -109,13 +109,13 @@ void shimmy_right();
 /* sets the throttles which we move the wheels at throughout the program
  * remember: throttle is from [-100, 100]
  */
-void set_wheel_throttles(int throttle);
+//void set_wheel_throttles(int throttle);
 
 /* independent throttle setting, if we need it */
-void set_wheel1_throttle(int throttle);
+//void set_wheel1_throttle(int throttle);
 
 /* independent throttle setting, if we need it */
-void set_wheel2_throttle(int throttle);
+//void set_wheel2_throttle(int throttle);
 
 /* should I have separate internal variables and setter functions to 
  * allow for independent and settable backward throttles for each wheel?*/
