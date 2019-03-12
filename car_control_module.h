@@ -24,15 +24,7 @@ int get_y_position();
 /* returns absolute position/angle of wheel1 */
 int get_wheel_angle();
 
-
-/* steps forward a set amount of degrees, updating the internal 
- * data structure which keeps track of the vehicle's wheel positions 
- *
- * negative values are acceptable and are moving backward
- */
-void step_forward_2(int degrees);
-
-/* another version of the step forward function which continuously 
+/* forward movement function which continuously 
  * monitors the position of each wheel and ensures that they're at the same angle
  * to provide for true straight forward motion
  * inspired by:
@@ -41,6 +33,12 @@ void step_forward_2(int degrees);
  * since it's better, I made it step_forward, and not step_forward_2
  */
 void step_forward(int degrees);
+
+/* same as step_forward, but in other direction 
+ * Degrees is positive, and measures in the negative direction 
+ *
+ */
+void step_backward(int degrees);
 
 /* calculates, based on constants which define the wheel radius,
  * the number of degrees which must be moved forward to move foward a set
@@ -71,12 +69,6 @@ void move_forward_2(int distance_in_cm);
  */
 void move_forward_3(int distance_in_cm);
 
-/* moves wheel 1 a set number of degrees */
-//void move_wheel1(int degrees);
-
-/* wheel to move degrees */
-//void move_wheel2(int degrees);
-
 /* calculates the angles each wheel has to move (one forward x degrees, one
  * backward x degrees), based on internally kept constants representing the
  * wheelbase (distance between wheels) and the wheel circumference. 
@@ -106,25 +98,6 @@ void shimmy_left();
 
 /* same as shimmy left, except to the right. */
 void shimmy_right();
-
-/* sets the throttles which we move the wheels at throughout the program
- * remember: throttle is from [-100, 100]
- */
-//void set_wheel_throttles(int throttle);
-
-/* independent throttle setting, if we need it */
-//void set_wheel1_throttle(int throttle);
-
-/* independent throttle setting, if we need it */
-//void set_wheel2_throttle(int throttle);
-
-/* should I have separate internal variables and setter functions to 
- * allow for independent and settable backward throttles for each wheel?*/
-
-/* also, should I keep track of the (x,y) position of the car at any given 
- * time? It would require the addition of trig functions, if I turn at angles
- * which are not 90 degrees, but it would also be cool
- */
 
 /* test function to showcase this module off */
 void test_car_control_module(unsigned int input1, unsigned int input2, unsigned int output1,
