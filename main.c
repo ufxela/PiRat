@@ -149,9 +149,9 @@ int main(void)
   */
   
   /*test car control module */
-  /*  
+
   test_car_control_module(GPIO_PIN18, GPIO_PIN21, GPIO_PIN20, GPIO_PIN16);
-  */
+
 
   /* test line follower */
   /*
@@ -159,8 +159,8 @@ int main(void)
   */
 
   /* test wall sensing */
-
+  /*
   test_wall_sensing(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO, GPIO_PIN12);
-
+  */
   return 1;
 }

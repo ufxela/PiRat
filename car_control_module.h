@@ -32,6 +32,15 @@ int get_wheel2_angle();
  */
 void step_forward(int degrees);
 
+/* another version of the step forward function which continuously 
+ * monitors the position of each wheel and ensures that they're at the same angle
+ * to provide for true straight forward motion
+ * inspired by:
+ * http://www.robotc.net/wikiarchive/Tutorials/Arduino_Projects/Mobile_Robotics/VEX/Using_encoders_to_drive_straight
+ *
+ */
+void step_forward_2(int degrees);
+
 /* calculates, based on constants which define the wheel radius,
  * the number of degrees which must be moved forward to move foward a set
  * distance, measured in cm.

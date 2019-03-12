@@ -5,6 +5,8 @@
 #include "math.h"
 #include "printf.h"
 
+/* should I have a wheel1_go_to_throttle() function which compartmentalizezs cr_servo?*/
+
 /* should I make a struct for all of this?
  * yeah probably. It would make the program more flexible and concise. But
  * I'll do it the bad way for now.
@@ -81,6 +83,10 @@ static int get_angle_average(unsigned int pin){
  * Right now this is not accurate. Not only is it super finnicky, but it doesn't update correctly
  * about half the time. IT won't properly record wheelrotations, as it seems to skip them some of 
  * the time. 
+ * 
+ * TODO:
+ * this function should probably reverse wheel1's angles so that they are positive in the forwards
+ * dircetion
  */
 static void update_wheel_positions(){
   //update wheel1
@@ -267,6 +273,70 @@ void step_forward(int degrees){
     cr_servo_go_to_throttle(wheel1, 0); //these can probably be moved out of the if statement. 
     cr_servo_go_to_throttle(wheel2, 0);
   }
+}
+
+void step_forward_2(int angle){ //angle = degrees
+  update_wheel_positions();
+  int master_throttle = wheel1_throttle;
+  int slave_throttle = wheel2_throttle;
+
+  int wheel1_final_angle = get_wheel1_angle() - angle;
+  int wheel2_final_angle = get_wheel2_angle() + angle;
+
+  int wheel1_start_angle = get_wheel1_angle();
+  int wheel2_start_angle = get_wheel2_angle();
+
+  //only implementing positive angles for now
+  cr_servo_go_to_throttle(wheel1, master_throttle);
+  cr_servo_go_to_throttle(wheel2, -1*slave_throttle);
+
+  update_wheel_positions();
+
+  //until we've reached out destination
+  while(get_wheel1_angle() > wheel1_final_angle || get_wheel2_angle() < wheel2_final_angle){
+    int wheel1_progress = -1*get_wheel1_angle() + wheel1_start_angle;
+    int wheel2_progress = get_wheel2_angle() - wheel2_start_angle;
+
+    //if one wheel has advanced further than the other, make corrections
+    if(wheel1_progress < wheel2_progress - 5){
+      slave_throttle--;
+      if(slave_throttle < wheel2_throttle - 3){
+	slave_throttle = wheel2_throttle - 3;
+      }
+      cr_servo_go_to_throttle(wheel2, -1*slave_throttle);
+      //      printf("Wheel1 progress %d, wheel2 progress %d ", wheel1_progress, wheel2_progress);
+      //      printf("slave throttle %d \n", slave_throttle);
+      timer_delay_ms(20); //to avoid doing this a bunch of times in a single pwm cycle
+    }else if(wheel1_progress > wheel2_progress + 5){
+      slave_throttle++;
+      if(slave_throttle > wheel2_throttle + 3){
+	slave_throttle = wheel2_throttle + 3;
+      }
+      cr_servo_go_to_throttle(wheel2, -1*slave_throttle);
+      //      printf("Wheel1 progress %d, wheel2 progress %d ", wheel1_progress, wheel2_progress);
+      //      printf("slave throttle %d \n", slave_throttle);
+      timer_delay_ms(20);
+    }
+
+    //if one wheel finishes before the other, stop it. This may be unnecessary
+    if(get_wheel1_angle() <= wheel1_final_angle){
+      cr_servo_go_to_throttle(wheel1, 0);
+    }
+    if(get_wheel2_angle() >= wheel2_final_angle){
+      cr_servo_go_to_throttle(wheel2, 0);
+    }
+
+    printf("difference: %d, wheel1 position: %d, wheel2 positon: %d \n", wheel1_progress-wheel2_progress,
+	   wheel1_progress, wheel2_progress);
+    update_wheel_positions();
+
+    /* this printf is here for debugging purposes */
+    //    printf("Wheel1 anlge: %d, Wheel2 angle: %d\n", get_wheel1_angle(), get_wheel2_angle());
+  }
+
+  //stop
+  cr_servo_go_to_throttle(wheel1, 0);
+  cr_servo_go_to_throttle(wheel2, 0);
 }
 
 void move_forward(int distance_in_cm){
@@ -488,9 +558,13 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
   move_forward_2(-10);
   */
 
+  /*
   while(1){
     move_forward_2(20);
     move_forward_2(-20);
   }
+  */
+
+  step_forward_2(10000);
 }
 
