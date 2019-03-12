@@ -133,11 +133,11 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
   cr_servo_auto_setup(wheel2, 1509, 1286, 1732); //just some info that I already collected about
   cr_servo_auto_setup(wheel1, 1503, 1265, 1741); //my servos 
 
-  wheel1_throttle = 20; //default throttles
+  wheel1_throttle = 21; //default throttles
   wheel2_throttle = 24;
 
   wheel1_backwards_throttle = 20;
-  wheel2_backwards_throttle = 21;
+  wheel2_backwards_throttle = 20;
 
   //update internal positioning/info
   wheel_base_mm = whl_base; //current wheelbase is 96 mm
@@ -430,8 +430,8 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
   timer_delay(2);
   car_control_module_init(input1, input2, output1, output2,96, 188); //estimated wheelbase/circumfrence
 
-  printf("move forward 20\n");
-  move_forward(20);
+  printf("move forward 10\n");
+  move_forward(10);
 
   timer_delay(2);
 
