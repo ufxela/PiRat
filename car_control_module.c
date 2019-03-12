@@ -82,10 +82,26 @@ static void update_wheel_positions(){
   /* a safety check */
   // need a safety check here that makes sure previus wheel angle and current wheel angle don't
   //differ by too much (otherwise, it's likely an error */
-  while(abs(wheel1_relative_angle - previous_wheel1_angle) > 10 && 
-	abs(wheel1_relative_angle - previous_wheel1_angle) < 350){
+  /* this check currently works some of the time, but it is possible for a "glitch out" to happen
+   * where if a reading is wrong, it will continually be wrong and screw up the whole system.
+   * generally won't happen, but detrimantal if it does
+   * this occurs because the check assumes the previous
+   * read value was valid, so if any of them are invalid, everything's screwed 
+   */
+  int failsafe = 0;
+  while(abs(wheel1_relative_angle - previous_wheel1_angle) > 20 && 
+	abs(wheel1_relative_angle - previous_wheel1_angle) < 340){
     wheel1_relative_angle = pwm_input_get_angle(wheel1_input_pin);
+    failsafe++;
+    if(failsafe > 20){
+      previous_wheel1_angle = wheel1_relative_angle; //assumes wheel1_realtive_angle correct, 
+      //thigns go wrong if not
+      //break;
+      //instead of ending the loop and continuing, should throw away current readings and re measure
+      //angle
+    }
   }
+  failsafe = 0;
 
   if(wheel1_relative_angle > 320 && previous_wheel1_angle < 40){
     printf("current: %d previous: %d\n\n", wheel1_relative_angle, previous_wheel1_angle);
@@ -99,10 +115,17 @@ static void update_wheel_positions(){
   wheel2_relative_angle = pwm_input_get_angle(wheel2_input_pin);
   
   /* safety check */
-  while(abs(wheel2_relative_angle - previous_wheel2_angle) > 10 &&
-        abs(wheel2_relative_angle - previous_wheel2_angle) < 350){
+  while(abs(wheel2_relative_angle - previous_wheel2_angle) > 20 &&
+        abs(wheel2_relative_angle - previous_wheel2_angle) < 340){
     wheel2_relative_angle = pwm_input_get_angle(wheel2_input_pin);
+    failsafe++;
+    if(failsafe > 20){
+      previous_wheel1_angle = wheel1_relative_angle;
+      //      break;
+    }
   }
+
+  failsafe = 0;
 
   if(wheel2_relative_angle > 320 && previous_wheel2_angle < 40){
     wheel2_rotations--;
