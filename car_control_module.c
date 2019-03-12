@@ -72,6 +72,7 @@ static int get_angle_average(unsigned int pin){
     total+= pwm_input_get_angle(pin);
   }
   return total / 5;
+}
 
 /* internal helper functions which needs to be called very often, whenever there is wheel movement.
  * Ideally, this would be called on a tiemr interrupt schedule, once every 20 ms maybe, but
@@ -84,7 +85,7 @@ static int get_angle_average(unsigned int pin){
 static void update_wheel_positions(){
   //update wheel1
   previous_wheel1_angle = wheel1_relative_angle;
-  wheel1_relative_angle = pwm_input_get_angle(wheel1_input_pin);
+  wheel1_relative_angle = get_angle_average(wheel1_input_pin);
 
   /* a safety check */
   // need a safety check here that makes sure previus wheel angle and current wheel angle don't
@@ -99,15 +100,11 @@ static void update_wheel_positions(){
   int total_wheel_angle = 0;
   while(abs(wheel1_relative_angle - previous_wheel1_angle) > 20 && 
 	abs(wheel1_relative_angle - previous_wheel1_angle) < 340){
-    wheel1_relative_angle = pwm_input_get_angle(wheel1_input_pin);
+    wheel1_relative_angle = get_angle_average(wheel1_input_pin);
     failsafe++;
     total_wheel_angle += wheel1_relative_angle;
     if(failsafe > 20){
       previous_wheel1_angle = total_wheel_angle / 20; //assumes wheel1_realtive_angle correct, 
-      //thigns go wrong if not
-      //break;
-      //instead of ending the loop and continuing, should throw away current readings and re measure
-      //angle
     }
   }
   failsafe = 0;
@@ -122,17 +119,16 @@ static void update_wheel_positions(){
 
   //update wheel2
   previous_wheel2_angle = wheel2_relative_angle;
-  wheel2_relative_angle = pwm_input_get_angle(wheel2_input_pin);
+  wheel2_relative_angle = get_angle_average(wheel2_input_pin);
   
   /* safety check */
   while(abs(wheel2_relative_angle - previous_wheel2_angle) > 20 &&
         abs(wheel2_relative_angle - previous_wheel2_angle) < 340){
-    wheel2_relative_angle = pwm_input_get_angle(wheel2_input_pin);
+    wheel2_relative_angle = get_angle_average(wheel2_input_pin);
     total_wheel_angle += wheel1_relative_angle;
     failsafe++;
     if(failsafe > 20){
       previous_wheel1_angle = total_wheel_angle/20;
-      //      break;
     }
   }
 
@@ -167,10 +163,10 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
   cr_servo_auto_setup(wheel2, 1509, 1286, 1732); //just some info that I already collected about
   cr_servo_auto_setup(wheel1, 1503, 1265, 1741); //my servos 
 
-  wheel1_throttle = 21; //default throttles
+  wheel1_throttle = 22; //default throttles
   wheel2_throttle = 24;
 
-  wheel1_backwards_throttle = 20;
+  wheel1_backwards_throttle = 21;
   wheel2_backwards_throttle = 20;
 
   //update internal positioning/info
@@ -184,8 +180,8 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
   wheel1_rotations = 0;
   wheel2_rotations = 0;
 
-  wheel1_relative_angle = pwm_input_get_angle(wheel1_input_pin);
-  wheel2_relative_angle = pwm_input_get_angle(wheel2_input_pin);
+  wheel1_relative_angle = get_angle_average(wheel1_input_pin);
+  wheel2_relative_angle = get_angle_average(wheel2_input_pin);
 
   previous_wheel1_angle = wheel1_relative_angle;
   previous_wheel2_angle = wheel2_relative_angle;
@@ -274,10 +270,13 @@ void step_forward(int degrees){
 }
 
 void move_forward(int distance_in_cm){
-  int angle = distance_in_cm * 100 * 360 / wheel_circumference_mm;
+  int angle = distance_in_cm * 10 * 360 / wheel_circumference_mm;
   step_forward(angle);
 }
 
+/* maybe I should write this differently 
+ * the idea is that wheel1 and wheel2 should stop at the same exact time every time.
+ */
 void move_forward_2(int distance_in_cm){
   int steps = distance_in_cm;
   if(steps < 0){
@@ -287,7 +286,7 @@ void move_forward_2(int distance_in_cm){
   //step 1 cm a bunch of times
   for(int i = 0; i < steps; i++){
     move_forward(distance_in_cm/steps); //+ or - 1 depending on sign of distance_in_cm
-    timer_delay(3); //change this delay time depending on trial and error
+    timer_delay_ms(500); //change this delay time depending on trial and error
   }
 }
 
@@ -463,7 +462,7 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
 
   timer_delay(2);
   car_control_module_init(input1, input2, output1, output2,96, 188); //estimated wheelbase/circumfrence
-
+  /*
   printf("move forward 10\n");
   move_forward(10);
 
@@ -487,6 +486,11 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
 
   printf("move forward_2, -10\n");
   move_forward_2(-10);
+  */
 
+  while(1){
+    move_forward_2(20);
+    move_forward_2(-20);
+  }
 }
 
