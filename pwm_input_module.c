@@ -145,6 +145,14 @@ int pwm_input_get_number_sources(){
   return number_of_pwm_inputs;
 }
 
+static int abs(int x){
+  if(x < 0){
+    return -1*x;
+  }else{
+    return x;
+  }
+}
+
 //this function needs to be improved. its really bad right now...
 /* servo sends PWM feeback at 910 Hz
  * 2.7% duty cycle corresponds to 0 degrees, 97.1 corresponds to 360
@@ -159,9 +167,17 @@ int pwm_input_get_number_sources(){
  * to get more precise measurements on the cycle length to calculate this.
  */
 unsigned int pwm_input_get_angle(unsigned int pin){
-  //average 8 readings
+  //Wait till we aren't in a pwm_output_conflict
+
+  int interrupt_time = get_time_at_output_interrupt() % 20000;
+  int interrupt_end_time = (interrupt_time + 4000) % 20000;
+  int interrupt_grace_time = (interrupt_time - 4000) % 20000;
+  while(abs(timer_get_ticks() % 20000 - interrupt_time) < 4000){
+    /* wait */
+  }
+  //average 5 readings
   unsigned int angle_total = 0;
-  for(int i = 0; i < 8; i++){
+  for(int i = 0; i < 5; i++){
     int angle = (pwm_input_get_threshold(pin) - 30) * 360 / 1036;
     //wait till we get an approximately good reading
     while(angle < -10 || angle > 370){
@@ -175,7 +191,7 @@ unsigned int pwm_input_get_angle(unsigned int pin){
     }
     angle_total += angle;
   }
-  return angle_total / 8;
+  return angle_total / 5;
 }
 
 int pwm_input_test(){

@@ -22,6 +22,9 @@ volatile unsigned int number_of_pwm_outputs = 0;
 volatile unsigned int * pwm_output_pins; 
 volatile unsigned int * pwm_output_thresholds;
 
+/* to help us keep things in sync */
+volatile unsigned int time_at_interrupt;
+
 //TODO:
 //make functions to allow for these to be changed
 const unsigned int pwm_output_cycle_length_us = 20000; //20 ms, for servos.
@@ -49,7 +52,7 @@ static bool pwm_output_handler(unsigned int pc){
   if(armtimer_check_and_clear_interrupt()){
     //get the current time. QUESTION Is this limited by the 35 minute wraparound?
     unsigned int start_time = timer_get_ticks();
-
+    time_at_interrupt = start_time;
     //write 1 to all servo channels to start duty cycle
     for(int i = 0; i < number_of_pwm_outputs; i++){
       gpio_write(pwm_output_pins[i], 1);
@@ -86,11 +89,33 @@ void pwm_output_init(){
   pwm_output_thresholds = malloc(4 * number_of_pwm_outputs);
 
   //initialize interrupts 
+  while(timer_get_ticks() % 20000 > 500){
+    //wait till we're at a known point, to eliminate conflicts */                                         
+  }
   armtimer_init(pwm_output_cycle_length_us);
+  while(timer_get_ticks() % 20000 > 500){
+    //wait till we're at a known point, to eliminate conflicts */                                         
+  }
   armtimer_enable();
+  while(timer_get_ticks() % 20000 > 500){
+    //wait till we're at a known point, to eliminate conflicts */                                         
+  }
   armtimer_enable_interrupts();
+  while(timer_get_ticks() % 20000 > 500){
+    //wait till we're at a known point, to eliminate conflicts */                                         
+  }
   interrupts_enable_basic(INTERRUPTS_BASIC_ARM_TIMER_IRQ);
+  while(timer_get_ticks() % 20000 > 500){
+    //wait till we're at a known point, to eliminate conflicts */                                         
+  }
   interrupts_attach_handler(pwm_output_handler);
+  while(timer_get_ticks() % 20000 > 500){
+    //wait till we're at a known point, to eliminate conflicts */                                         
+  }
+  interrupts_global_disable();
+  while(timer_get_ticks() % 20000 > 500){ 
+    //wait till we're at a known point, to eliminate conflicts */
+  }
   interrupts_global_enable();
 }
 
@@ -171,3 +196,6 @@ int pwm_output_test(void){
   return 1;
 }
 
+unsigned int get_time_at_output_interrupt(){
+  return time_at_interrupt;
+}

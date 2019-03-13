@@ -31,4 +31,6 @@ int get_threshold(unsigned int pin);
 //a test file
 int pwm_output_test(void);
 
+unsigned int get_time_at_output_interrupt();
+
 #endif
