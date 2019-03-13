@@ -122,15 +122,14 @@ int main(void)
   */
 
   /* test the pwm output module */
-  
-  pwm_output_init();
+  //pwm_output_init();
   //pwm_output_test();
 
   /* test pwm input module (works) */
-
+  /*
   pwm_input_init();
   pwm_input_test();
-
+  */
   
   /* test PWM IO */
   /* 

@@ -58,6 +58,34 @@ static int abs(int x){
   }
 }
 
+/* internal helper functions which needs to be called very often, whenever there is wheel movement.
+ * Ideally, this would be called on a tiemr interrupt schedule, once every 20 ms maybe, but
+ * I am not doing that for now...
+ *
+ * Wheel1's (left wheel) angles are negated, so that it's positive direciton is forwards                 
+ *
+ * does a small check to make sure the angles are valid
+ */
+static void update_wheel_positions(){
+  left_wheel->previous_angle = left_wheel->relative_angle;
+  left_wheel->relative_angle = -1*pwm_input_get_angle(left_wheel->input_pin);
+
+  if(left_wheel->relative_angle < -1*350 && left_wheel->previous_angle > -1*10){
+    left_wheel->rotations++;
+  }else if(left_wheel->relative_angle > -1*10 && left_wheel->previous_angle < -1*350){
+    left_wheel->rotations--;
+  }
+
+  right_wheel->previous_angle = right_wheel->relative_angle;
+  right_wheel->relative_angle = pwm_input_get_angle(right_wheel->input_pin);
+
+  if(right_wheel->relative_angle > 350 && right_wheel->previous_angle < 10){
+    right_wheel->rotations--;
+  }else if(right_wheel->relative_angle < 10 && right_wheel->previous_angle > 350){
+    right_wheel->rotations++;
+  }
+}
+
 static int get_angle_average(wheel * wheel){
   int total = 0;
   for(int i = 0; i < 5; i++){
@@ -66,17 +94,14 @@ static int get_angle_average(wheel * wheel){
   return total / 5;
 }
 
-/* internal helper functions which needs to be called very often, whenever there is wheel movement.
- * Ideally, this would be called on a tiemr interrupt schedule, once every 20 ms maybe, but
- * I am not doing that for now...
- *
+/*
  * Right now this is not accurate. Not only is it super finnicky, but it doesn't update correctly
  * about half the time. IT won't properly record wheelrotations, as it seems to skip them some of
  * the time.
  *
  * Wheel1's (left wheel) angles are negated, so that it's positive direciton is forwards
  */
-static void update_wheel_positions(){
+static void update_wheel_positions1(){
   //update left_wheel
   left_wheel->previous_angle = left_wheel->relative_angle;
   // need to negate in order to keep forwards the positive direction
@@ -145,18 +170,19 @@ static void motor_set_throttle(wheel * wheel, int throttle){
  */
 void car_control_module_init(unsigned int input1, unsigned int input2, unsigned int output1,
 			     unsigned int output2, unsigned int whl_base, unsigned int whl_crfnc){
+  printf("C1");
   pwm_input_init();
   cr_servo_module_init(); //wow this inconsistency hurts...
   left_wheel = malloc(sizeof(wheel));
   right_wheel = malloc(sizeof(wheel));
-
+  printf("2");
   //setup pwm inputs
   left_wheel->input_pin = input1;
   right_wheel->input_pin = input2;
 
   pwm_add_input(left_wheel->input_pin);
   pwm_add_input(right_wheel->input_pin);
-
+  printf("3");
   //setup cr servo outputs
   left_wheel->motor = cr_servo_new(output1);
   right_wheel->motor = cr_servo_new(output2);
@@ -169,7 +195,7 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
 
   left_wheel->backwards_throttle = -21;
   right_wheel->backwards_throttle = 20;
-
+  printf("4");
   //update internal positioning/info
   wheel_base_mm = whl_base; //current wheelbase is 96 mm
   wheel_circumference_mm = whl_crfnc; //current wheel diameter is 188.5
@@ -459,11 +485,11 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
 
   printf("beginning car control test in 2s\n");
   timer_delay(2);
-  
+  printf("1");  
   car_control_module_init(input1, input2, output1, output2,96, 188); //estimated wheelbase/circumfrence  
-
+  printf("2");
   while(1){
-    
+  
     printf("move forward 20\n");
     move_forward(20);
     
