@@ -45,8 +45,8 @@ unsigned int get_time_of_flight_basic(){
   //record time at echo
   unsigned int echo_time_us = timer_get_ticks();
 
-  //convert time into inches
-  return (echo_time_us - trigger_time_us)/149;
+  //if converting time into inches, do (echo_time_us - trigger_time_us)/149;
+  return (echo_time_us - trigger_time_us);
 }
 
 unsigned int get_ultrasonic_mean(int number_samples){
