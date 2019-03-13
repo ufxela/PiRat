@@ -2,7 +2,8 @@
 #define PI_RAT_SENSING_MODULE_H
 
 /* sets up ultrasonic sensor, line follower and panning servo */
-void pi_rat_sensing_module_init(unsigned int trigger_pin, unsigned int echo_pin, unsigned int servo_pin);
+void pi_rat_sensing_module_init(unsigned int trigger_pin, unsigned int echo_pin, 
+				unsigned int servo_pin);
 
 /* determines if there is a wall to the left, center and right and returns a value
  * corresponding to it
@@ -16,5 +17,11 @@ int pi_rat_get_walls();
  */
 int pi_rat_line_position();
 
+/* functions to get physical values about the Pi */
+int pi_rat_get_wheelbase();
+
+int pi_rat_get_wheel_circumference();
+
+int pi_rat_get_line_follower_sensor_dist();
 
 #endif
