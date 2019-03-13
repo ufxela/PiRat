@@ -18,6 +18,7 @@ void line_follower_init();
  */
 int get_line_index();
 
+/* I'm not currently using this function */
 /* returns the value in mm of where the line is with respect to the middle of the
  * line sensor. Unsure of whether I should define the middle of the line sensor
  * as the in between of sensors 4 & 5 (indexing from 1) or if it should
@@ -34,12 +35,6 @@ int get_line_index();
  * position
  */
 int get_line_position();
-
-/* sets the threshold for what is considered a line "hit" or not */
-int set_line_threshold();
-
-/* gets the threshold for which line detection is measured at */
-int get_line_threhsold();
 
 /* gets the line follower's reading at the index sensor_index
  */

@@ -20,7 +20,6 @@ const unsigned int NUMBER_LF_READ_HEADS = 8;
 
 const unsigned int DISTANCE_BETWEEN_SENSORS = 13; //approximately
 
-/* is a wrong address the reason this isn't working? */
 const unsigned int LINE_FOLLOWER_ADDRESS = 9;
 
 static int MIDDLE_DISTANCE; 
@@ -36,8 +35,6 @@ static void update_line_follower_data(){
   }
 
   free(raw_data);
-
-  /* timer delay here? */
 }
 
 void line_follower_init(){
@@ -50,12 +47,9 @@ void line_follower_init(){
 }
 
 int get_line_index(){
-  //update our data
-  //this call is a bit sketchy, because it may be time sensitive and we don't want to be calling it
-  //too much. Perhaps it's better to allow the user to chose when to call it...
   update_line_follower_data();
 
-  //search for the minimum data value (or maybe the max?)
+  //search for the minimum data value, which is the darkest point
   int min = line_follower_data[0];
   int index = 0;
   for(int i = 1; i < NUMBER_LF_READ_HEADS; i++){
@@ -76,13 +70,8 @@ int get_line_position(){
   }
 }
 
-//maybe I'll add this in the future
-int set_line_threshold(); //no longer needed, I guess, since I just get the extreme value. 
-
-//might add functionality for in the future
-int get_line_threshold();
-
 int get_line_follower_value(int sensor_index){
+  update_line_follower_data();
   return line_follower_data[sensor_index];
 }
 
