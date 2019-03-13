@@ -6,6 +6,7 @@
 #include "malloc.h"
 #include "strings.h"
 #include "pwm_output_module.h"
+
 /* internal data structure to keep track of what gpio pins
  * we're reading PWM inputs from.
  * also keeps track of the current readings from each pin
@@ -24,6 +25,7 @@ unsigned int * pwm_input_time_at_previous_rising_edge;
 unsigned int * pwm_input_time_at_falling_edge; 
 
 const unsigned int MAX_PWM_INPUTS = 8;
+const unsigned int MAX_THRESHOLD = 1100;
 
 //helper to search data structure for index of pin, returns -1 if pin not in data structure
 static int get_pin_index(unsigned int pin){
@@ -116,20 +118,13 @@ int pwm_input_get_threshold(unsigned int pin){
   int i = get_pin_index(pin);
 
   //wait till we get a good valued threshold
-  while(threshold < 0 || threshold > 1100){
+  while(threshold < 0 || threshold > MAX_THRESHOLD){
     threshold = pwm_input_time_at_falling_edge[i] - pwm_input_time_at_rising_edge[i];
   }
 
   return threshold;
 }
 
-/* this function is a fossil from my old implementation of this module that didn't work
- * which had a variable cycle length and resolution
- *
- * perhaps a better way to do this function is to measure an accurate cycle length at the 
- * beginning on program execution, then store that into a global variable
- * for later references, as the cycle length should stay constant
- */
 int pwm_input_get_cycle_length(unsigned int pin){
   int cycle_length = -1;
   int i = get_pin_index(pin);
@@ -172,7 +167,7 @@ unsigned int pwm_input_get_angle(unsigned int pin){
 
   //get three readings, and determine the correct reading from them.
   unsigned int angle1 = (pwm_input_get_threshold(pin) - 30) * 360 / 1036;
-  timer_delay_us(pwm_input_get_cycle_length(pin)); //wait for threshold ot update
+  timer_delay_us(pwm_input_get_cycle_length(pin)); //wait for next cycle, so threshold can update
   unsigned int angle2 = (pwm_input_get_threshold(pin) - 30) * 360 / 1036;
   timer_delay_us(pwm_input_get_cycle_length(pin));
   unsigned int angle3 = (pwm_input_get_threshold(pin) - 30) * 360 / 1036;
