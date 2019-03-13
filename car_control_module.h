@@ -12,15 +12,6 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
 			     unsigned int output2, unsigned int whl_base,
 			     unsigned int wheel_crfnc);
 
-/* getters for the x and y coordinates that 
- * the car calculates that it is at, using trig and stuff.
- * return values are in cm (I might change later).
- * calculates things based on internal constants for wheel circumference 
- */
-int get_x_position();
-
-int get_y_position();
-
 /* returns absolute position/angle of wheel1 */
 int get_wheel_angle();
 
