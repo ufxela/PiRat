@@ -14,10 +14,6 @@ void pwm_output_init();
  */
 int pwm_add_output(unsigned int pin, unsigned int starting_threshold);
 
-/* removes an output 
- */
-int pwm_remove_output(unsigned int pin);
-
 /* changes duty cycle of existing pwm output 
  * returns 1 for success, 0 otherwise
  */
@@ -28,9 +24,13 @@ int pwm_change_threshold(unsigned int pin, unsigned int new_threshold);
  */
 int get_threshold(unsigned int pin);
 
-//a test file
+//a test program
 int pwm_output_test(void);
 
+/* gets the time that the interrupt will occur at / occured at to help other modules
+ * used in sync with this module that are time sensitive to coordinate their actions
+ * so as not to be interrupted by this module 
+ */
 unsigned int get_time_at_output_interrupt();
 
 #endif

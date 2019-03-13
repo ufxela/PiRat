@@ -10,7 +10,7 @@
 #include "malloc.h"
 #include "printf.h"
 
-/* just a placeholder for now, can definitely do more outputs */
+/* can definitely do more outputs */
 const unsigned int MAX_PWM_OUTPUTS = 8;
 
 /* this data structure holds each of the pins which are available for use, and the "thresholds"
@@ -25,13 +25,11 @@ volatile unsigned int * pwm_output_thresholds;
 /* to help us keep things in sync */
 volatile unsigned int time_at_interrupt;
 
-//TODO:
-//make functions to allow for these to be changed
+//could make functions to allow for these to be changed
 const unsigned int pwm_output_cycle_length_us = 20000; //20 ms, for servos.
-/* changed this to 3000 because 2000 wasn't enough */
 const unsigned int pwm_output_max_threshold = 3000; //2ms should correspond to max of 10% duty cycle
-/* expanded this down from 1000 because 1000 wasn't enough */
-const unsigned int pwm_output_min_threshold = 0;
+const unsigned int pwm_output_min_threshold = 0; //1ms should correspont to min of 5% duty cycle
+/* reasoned min/max thresholds aren't expected values is because my servos aren't perfect */
 
 /* helper function which gets the index of a pin. -1 if not existent */
 static int pwm_output_get_pin_index(unsigned int pin){
@@ -60,14 +58,14 @@ static bool pwm_output_handler(unsigned int pc){
     
     //loop through and set output to zero once threshold is reached
     unsigned int current_time = timer_get_ticks() - start_time;
-    //at 2ms mark, we're done
+    //if we're past the maximum threshold, we can stop
     while(current_time < pwm_output_max_threshold){
       current_time = timer_get_ticks() - start_time; 
       //check thresholds
       for(int i = 0; i < number_of_pwm_outputs; i++){
 	//check if we should kill the output
 	if(pwm_output_thresholds[i] <= current_time){
-	  gpio_write(pwm_output_pins[i], 0); //this is writing 0 an unnecessary large number of times...
+	  gpio_write(pwm_output_pins[i], 0);
 	}
       }
     }
@@ -124,11 +122,6 @@ int pwm_add_output(unsigned int pin, unsigned int starting_threshold){
   }
 }
 
-/* I don't really need this, and I'm too lazy to write it */
-int pwm_remove_output(unsigned int pin){
-  return 0;
-}
-
 /* changes the threshold for an existing pin
  * will wait until pwm write is finished before updating threshold
  * checks if pin is valid
@@ -157,20 +150,12 @@ int get_threshold(unsigned int pin){
 }
 
 int pwm_output_test(void){
-  // printf("starting pwm output test\n");
   pwm_add_output(GPIO_PIN4, 1200);
-  //printf("output added");
   while(1){
-    //printf("in loop \n");
     pwm_change_threshold(GPIO_PIN4, 1200);
-    //printf("1");
     timer_delay_ms(500);
-    //printf("2");
     pwm_change_threshold(GPIO_PIN4, 1700);
-    //printf("3");
     timer_delay_ms(500);
-    //    printf("GPIO_PIN%d threshold: %d", GPIO_PIN4, get_threshold(GPIO_PIN4));
-    //printf("beginning next iteration");
   }
   return 1;
 }
