@@ -126,9 +126,10 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
   left_wheel->forwards_throttle = 22; //default throttles
   right_wheel->forwards_throttle = -24;
 
-  left_wheel->backwards_throttle = -21;
-  right_wheel->backwards_throttle = 20;
+  left_wheel->backwards_throttle = -23; //prevous -21, worked to go backwards
+  right_wheel->backwards_throttle = 22; //previous 20
   printf("4");
+
   //update internal positioning/info
   wheel_base_mm = whl_base; //current wheelbase is 96 mm
   wheel_circumference_mm = whl_crfnc; //current wheel diameter is 188.5
@@ -160,6 +161,9 @@ int get_wheel_angle(wheel * wheel){
   return wheel->rotations * 360 + wheel->relative_angle;
 }
 
+
+/* TODO: there's still a rare glitch where it won't stop moving forward. 
+ * have a timeout, where if after 3 seconds, it's running, it will force exit */
 /* should probably do a check on degrees */
 void step_forward(int degrees){ //angle = degrees
   int bias = 0;
@@ -173,8 +177,8 @@ void step_forward(int degrees){ //angle = degrees
   int left_wheel_final_angle = get_wheel_angle(left_wheel) + degrees;
   int right_wheel_final_angle = get_wheel_angle(right_wheel) + degrees;
 
-  update_wheel_positions();
-  update_wheel_positions();
+  //  update_wheel_positions();
+  //update_wheel_positions();
   int left_wheel_start_angle = get_wheel_angle(left_wheel);
   int right_wheel_start_angle = get_wheel_angle(right_wheel);
 
@@ -186,27 +190,27 @@ void step_forward(int degrees){ //angle = degrees
 
   //until we've reached out destination
   while(get_wheel_angle(left_wheel) < left_wheel_final_angle || get_wheel_angle(right_wheel) < right_wheel_final_angle){
-    update_wheel_positions();
+    //update_wheel_positions();
     int left_wheel_progress = get_wheel_angle(left_wheel) - left_wheel_start_angle;
     int right_wheel_progress = get_wheel_angle(right_wheel) - right_wheel_start_angle;
-    update_wheel_positions();
+    //update_wheel_positions();
     //if one wheel has advanced further than the other, make corrections
     if(left_wheel_progress < right_wheel_progress - 3){
       slave_throttle++;
-      update_wheel_positions();
+      //update_wheel_positions();
       //we don't want slave_throttle to get too high / low
       if(slave_throttle > right_wheel->forwards_throttle + 5){
 	slave_throttle = right_wheel->forwards_throttle + 5;
 	motor_set_throttle(right_wheel, slave_throttle);
-	update_wheel_positions();
+	//update_wheel_positions();
       }
     }else if(left_wheel_progress > right_wheel_progress + 3){
       slave_throttle--;
-      update_wheel_positions();
+      //update_wheel_positions();
       if(slave_throttle < right_wheel->forwards_throttle - 2){
 	slave_throttle = right_wheel->forwards_throttle - 2;
 	motor_set_throttle(right_wheel, slave_throttle);
-	update_wheel_positions();
+	//update_wheel_positions();
       }
     }
 
@@ -220,10 +224,10 @@ void step_forward(int degrees){ //angle = degrees
       motor_set_throttle(right_wheel, 0);
     }
     bias += left_wheel_progress-right_wheel_progress;
-    update_wheel_positions();
+    //update_wheel_positions();
     printf("bias: %d, difference: %d, wheel1 position: %d, wheel2 positon: %d \n", bias, left_wheel_progress-right_wheel_progress,
 	   left_wheel_progress, right_wheel_progress);
-    update_wheel_positions();
+    //update_wheel_positions();
     if(abs(bias) > 10000){
       while(1){
 	printf("ERROR");
@@ -344,18 +348,24 @@ void move_forward_2(int distance_in_cm){
  * May want to implement this in a different way than I currently am
  */
 void turn(int degrees){
+  printf("brginning turn\n");
+  update_wheel_positions();
   int angle_to_move_wheels = degrees * wheel_base_mm * 314 / 100 / wheel_circumference_mm;
 
-  int left_wheel_final_angle = get_wheel_angle(left_wheel) - angle_to_move_wheels;
-  int right_wheel_final_angle = get_wheel_angle(right_wheel) + angle_to_move_wheels;
+  int left_wheel_final_angle = get_wheel_angle(left_wheel) + angle_to_move_wheels;
+  int right_wheel_final_angle = get_wheel_angle(right_wheel) - angle_to_move_wheels;
 
+  /*left wheel moves forwards, right wheel moves backwards */
   if(degrees > 0){
+    printf("positive turn, wheel angle: %d\n", angle_to_move_wheels);
     //set throttles
-    motor_set_throttle(left_wheel, left_wheel->forwards_throttle); //may need to change signs
+    motor_set_throttle(left_wheel, left_wheel->forwards_throttle);
     motor_set_throttle(right_wheel, right_wheel->backwards_throttle); //need to sync f and b
 
+    update_wheel_positions();
+
     //move until we've acheived the desired position
-    while(get_wheel_angle(left_wheel) >= left_wheel_final_angle || get_wheel_angle(right_wheel) <= right_wheel_final_angle){
+    while(get_wheel_angle(left_wheel) <= left_wheel_final_angle || get_wheel_angle(right_wheel) >= right_wheel_final_angle){
       update_wheel_positions();
       if(get_wheel_angle(left_wheel) >= left_wheel_final_angle){
         motor_set_throttle(left_wheel, 0);
@@ -363,14 +373,16 @@ void turn(int degrees){
       if(get_wheel_angle(right_wheel) <= right_wheel_final_angle){
         motor_set_throttle(right_wheel, 0);
       }
+      update_wheel_positions();
     }
     motor_set_throttle(left_wheel, 0);
     motor_set_throttle(right_wheel, 0);
   }else if(degrees < 0){
+    printf("negative turn");
     motor_set_throttle(left_wheel, left_wheel->backwards_throttle);
     motor_set_throttle(right_wheel, right_wheel->forwards_throttle);
 
-    while(get_wheel_angle(left_wheel) <= left_wheel_final_angle || get_wheel_angle(right_wheel) >= right_wheel_final_angle){
+    while(get_wheel_angle(left_wheel) >= left_wheel_final_angle || get_wheel_angle(right_wheel) <= right_wheel_final_angle){
       update_wheel_positions();
       if(get_wheel_angle(left_wheel) <= left_wheel_final_angle){
         motor_set_throttle(left_wheel, 0);
@@ -378,6 +390,7 @@ void turn(int degrees){
       if(get_wheel_angle(right_wheel) >= right_wheel_final_angle){
         motor_set_throttle(right_wheel, 0);
       }
+      update_wheel_positions();
     }
     motor_set_throttle(left_wheel, 0);
     motor_set_throttle(right_wheel, 0);
@@ -398,8 +411,8 @@ void shimmy_left(){
 
   //move back (move back cos(SHIMMY ANGLE) * SHIMMY_FORWARD_DISTANCE
   move_forward(SHIMMY_BACKWARDS_DISTANCE_CM);
-
 }
+
 /* shimmy right 1 cm */
 void shimmy_right(){
   turn(-SHIMMY_ANGLE);
@@ -414,6 +427,9 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
 
   printf("beginning car control test in 2s\n");
   timer_delay(2);
+
+  car_control_module_init(input1, input2, output1, output2, 96, 188); //estimated wheelbase/circumfrence
+  /*
   printf("1");  
   car_control_module_init(input1, input2, output1, output2,96, 188); //estimated wheelbase/circumfrence  
   printf("2");
@@ -442,7 +458,7 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
     move_forward_2(-20);
     
   }
-
+  */
   /*
   while(1){
     move_forward_2(20);
@@ -461,5 +477,20 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
   */
   /*  step_forward_2(10000);*/
 
+  /*
+  while(1){
+    turn(90);
+    timer_delay(1);
+    turn(-1*90);
+    timer_delay(1);
+  }
+  */
+
+  while(1){
+    move_forward(10);
+    timer_delay_ms(500);
+    turn(90);
+    timer_delay_ms(500);
+  }
 }
 

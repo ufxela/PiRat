@@ -67,7 +67,7 @@ void move_forward_2(int distance_in_cm);
  * wheelbase (distance between wheels) and the wheel circumference. 
  * and then moves the wheels to those positions to create turning
  *
- * positive angles are counter-clockwise
+ * positive angles are clockwise
  *
  * Should also update internally kept variable which tracks bearing.
  */
