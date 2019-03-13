@@ -31,6 +31,10 @@ void pi_rat_go_forward();
  */
 void pi_rat_go_back();
 
+/* goes to end of corridor, by making measurements with the ultrasonic sensor to determine 
+ * how far to go.
+ */
+void pi_rat_go_to_corridor_end();
 
 /* turns left 90 degrees to setup exploration of a left corridor 
  * May or may not utilize correctional movement to ensure that turn
@@ -53,10 +57,13 @@ void pi_rat_turn_right();
  * based on the average of start_line and end_line, shimmys either
  * left or right to center the line on the line reader
  */
-void pi_rat_correct_lateral(int start_line, int end_line);
+void pi_rat_correct_line_position(int start_line, int end_line);
 
-/* idk how I'll do this. */
-void pi_rat_correct_horizontal();
+/* Assumes the Pi Rat was in the correct position before the turn
+ * Aligns the robot with the line after the turn to make sure
+ * it did not turn too far / not far enough
+ */
+void pi_rat_correct_turn();
 
 /* flips the Pi rat 180 degrees. May be useful for backtracking. May not */
 void pi_rat_turn_180();
