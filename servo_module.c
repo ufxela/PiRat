@@ -19,10 +19,16 @@ struct servo_motor{
 };
 
 
-/*should do a check to make sure threshold > servo->min_threshold? */
+/* has a check to make sure threshold is valid */
 static unsigned int threshold_to_angle(servo * servo, unsigned int threshold){
-  unsigned int relative_threshold = threshold - servo->min_threshold;
-  return relative_threshold * 180 / servo->threshold_range;
+  if(threshold >= servo->min_threshold && threshold <= servo->max_threshold){
+    unsigned int relative_threshold = threshold - servo->min_threshold;
+    return relative_threshold * 180 / servo->threshold_range;
+  }else if(threshold < servo->min_threshold){
+    return 0;
+  }else{
+    return 180;
+  }
 }
 
 static unsigned int angle_to_threshold(servo * servo, unsigned int angle){
@@ -119,7 +125,7 @@ void servo_setup(servo *servo){
   printf("Max_threshold: %d\n", servo->max_threshold);
   printf("Min_threshold: %d\n", servo->min_threshold);
 }
-/* check that we have valid values? */
+
 void servo_auto_setup(servo *servo, unsigned int min_threshold, unsigned int max_threshold){
   servo->threshold_range = max_threshold - min_threshold;
   servo->max_threshold = max_threshold;
