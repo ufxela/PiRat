@@ -136,7 +136,7 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
 
   left_wheel->previous_angle = left_wheel->relative_angle;
   right_wheel->previous_angle = right_wheel->relative_angle;
-
+  printf("5");
 }
 
 int get_wheel_angle(wheel * wheel){
@@ -271,6 +271,7 @@ void step_backward(int degrees){
   motor_set_throttle(right_wheel, 0);
 }
 
+/* I should probably have a more desrciptive name for this, like move laterally */
 void move_forward(int distance_in_cm){
   /* calculate angle to move */
   int angle = distance_in_cm * 10 * 360 / wheel_circumference_mm;
@@ -323,6 +324,7 @@ void turn(int degrees){
       if(get_wheel_angle(right_wheel) <= right_wheel_final_angle){
         motor_set_throttle(right_wheel, 0);
       }
+      update_wheel_positions();
     }
     /* stop wheels at end */
     motor_set_throttle(left_wheel, 0);
@@ -361,7 +363,7 @@ void shimmy_left(){
   turn(-SHIMMY_ANGLE);
 
   //move back (move back cos(SHIMMY ANGLE) * SHIMMY_FORWARD_DISTANCE
-  move_forward(SHIMMY_BACKWARDS_DISTANCE_CM);
+  move_forward(-SHIMMY_BACKWARDS_DISTANCE_CM);
 }
 
 /* shimmy right 1 cm */
@@ -381,8 +383,13 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
 
   car_control_module_init(input1, input2, output1, output2, 96, 188); //estimated wheelbase/circumfrence
 
-  /* a test to go in a L shaped path continually */
+  /* a test to go in a L shaped path continually, with a bit of inconsequential shimmying */
   while(1){
+    shimmy_left();
+    timer_delay_ms(500);
+    shimmy_right();
+    timer_delay_ms(500);
+    /*
     move_forward(20);
     timer_delay_ms(500);
     turn(90);
@@ -399,6 +406,7 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
     timer_delay_ms(500);
     turn(180);
     timer_delay_ms(500);
-  }
+    */
+    }
 }
 
