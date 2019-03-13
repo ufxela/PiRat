@@ -64,3 +64,29 @@ void pi_rat_go_forward(){
     maze_y_cord--;
   }
 }
+
+/* very similar to go_forward() */
+void pi_rat_go_back(){
+  //measure                                                                                         
+  int start_line_position = pi_rat_line_position();
+
+  //move                                                                                           
+  move_forward(-MAZE_WALL_LENGTH_CM);
+
+  //measure                                                                                       
+  int end_line_position = pi_rat_line_position();
+
+  //correct (start/end reversed because going backwards flips things                           
+  pi_rat_correct_line_position(end_line_position, start_line_position);
+
+  //update position                                                                                     
+  if(bearing == 0){
+    maze_x_coord--;
+  }else if(bearing == 1){
+    maze_y_cord--;
+  }else if(bearing == 2){
+    maze_x_cord++;
+  }else{
+    maze_y_cord++;
+  }
+}
