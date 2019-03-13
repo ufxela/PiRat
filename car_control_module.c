@@ -11,8 +11,8 @@ static  int wheel_base_mm; // distance between wheels, measured in  mm
 static  int wheel_circumference_mm; //measured in mm
 
 /* shimmy constants */
-static const unsigned int SHIMMY_ANGLE = 30;
-static const unsigned int SHIMMY_FORWARD_DISTANCE_CM = 5;
+static const unsigned int SHIMMY_ANGLE = 15;
+static const unsigned int SHIMMY_FORWARD_DISTANCE_CM = 4;
 //move back (move back cos(SHIMMY ANGLE) * SHIMMY_FORWARD_DISTANCE
 static const unsigned int SHIMMY_BACKWARDS_DISTANCE_CM = 4;
 
