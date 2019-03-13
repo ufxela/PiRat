@@ -62,13 +62,6 @@ void move_forward(int distance_in_cm);
  */
 void move_forward_2(int distance_in_cm);
 
-/* yet another strategy for moving forward. 
- * this strategy only moves one wheel at a time. Moves the left wheel a little
- * then the right a little & repeat, until the correct position is reached.
- * who knows, this could work the best. Or not.
- */
-void move_forward_3(int distance_in_cm);
-
 /* calculates the angles each wheel has to move (one forward x degrees, one
  * backward x degrees), based on internally kept constants representing the
  * wheelbase (distance between wheels) and the wheel circumference. 

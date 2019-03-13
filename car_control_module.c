@@ -405,10 +405,6 @@ void move_forward_2(int distance_in_cm){
   }
 }
 
-void move_forward_3(int distance_in_cm){
-  //only implement this if move_forward/move_forward_2 don't work
-}
-
 /* needs to rotate one wheel degrees * pi * wheelbase / wheel_circumference
  * and the other wheel the same amount in the opposite direciton
  *
