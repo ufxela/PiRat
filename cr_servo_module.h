@@ -9,7 +9,7 @@
 #ifndef CR_SERVO_MODULE_H
 #define CR_SERVO_MODULE_H
 
-/* this module could rebrand servo_module 
+/* this module could rebrands servo_module 
  * to create a driver for continuous rotation servos
  * Could--but won't just because
  * I'm just gonna utilize ctrl c, ctrl v a lot instead lol

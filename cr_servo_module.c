@@ -65,7 +65,6 @@ void cr_servo_setup(cr_servo *cr_servo){
 
   char user_response = uart_getchar();
 
-
   /* this section is if the cr servo isn't centered near 1500. Definitely need to make solution to this
    * a lot neater than it is currently 
    */
