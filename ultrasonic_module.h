@@ -7,6 +7,8 @@ void ultrasonic_init(unsigned int trig_pin, unsigned int echo_pin);
 /* a basic, non interrupt time of flight function */
 int get_time_of_flight_basic();
 
+unsigned int get_ultrasonic_mean(int number_samples);
+
 int ultrasonic_test(void);
 
 unsigned int get_distance(void);

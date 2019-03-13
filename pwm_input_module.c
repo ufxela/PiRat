@@ -5,6 +5,7 @@
 #include "printf.h"
 #include "malloc.h"
 #include "strings.h"
+#include "pwm_output_module.h"
 /* internal data structure to keep track of what gpio pins
  * we're reading PWM inputs from.
  * also keeps track of the current readings from each pin
@@ -153,7 +154,7 @@ static int abs(int x){
   }
 }
 
-//this function needs to be improved. its really bad right now...
+/* this servo syncs up to avoid conflicts with pwm output interrupts */
 /* servo sends PWM feeback at 910 Hz
  * 2.7% duty cycle corresponds to 0 degrees, 97.1 corresponds to 360
  * Doing some math:
@@ -162,16 +163,10 @@ static int abs(int x){
  * 97.1 % of this is 1066 us
  *
  * conversion rate is this (threshold - 30) * 360 / 1036
- *
- * a better way to do this would utilize pwm_input_get_cycle_length
- * to get more precise measurements on the cycle length to calculate this.
  */
 unsigned int pwm_input_get_angle(unsigned int pin){
   //Wait till we aren't in a pwm_output_conflict
-
-  int interrupt_time = get_time_at_output_interrupt() % 20000;
-  int interrupt_end_time = (interrupt_time + 4000) % 20000;
-  int interrupt_grace_time = (interrupt_time - 4000) % 20000;
+  int interrupt_time = ((int) get_time_at_output_interrupt()) % 20000;
   while(abs(timer_get_ticks() % 20000 - interrupt_time) < 4000){
     /* wait */
   }

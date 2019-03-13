@@ -89,33 +89,12 @@ void pwm_output_init(){
   pwm_output_thresholds = malloc(4 * number_of_pwm_outputs);
 
   //initialize interrupts 
-  while(timer_get_ticks() % 20000 > 500){
-    //wait till we're at a known point, to eliminate conflicts */                                         
-  }
   armtimer_init(pwm_output_cycle_length_us);
-  while(timer_get_ticks() % 20000 > 500){
-    //wait till we're at a known point, to eliminate conflicts */                                         
-  }
   armtimer_enable();
-  while(timer_get_ticks() % 20000 > 500){
-    //wait till we're at a known point, to eliminate conflicts */                                         
-  }
   armtimer_enable_interrupts();
-  while(timer_get_ticks() % 20000 > 500){
-    //wait till we're at a known point, to eliminate conflicts */                                         
-  }
   interrupts_enable_basic(INTERRUPTS_BASIC_ARM_TIMER_IRQ);
-  while(timer_get_ticks() % 20000 > 500){
-    //wait till we're at a known point, to eliminate conflicts */                                         
-  }
   interrupts_attach_handler(pwm_output_handler);
-  while(timer_get_ticks() % 20000 > 500){
-    //wait till we're at a known point, to eliminate conflicts */                                         
-  }
   interrupts_global_disable();
-  while(timer_get_ticks() % 20000 > 500){ 
-    //wait till we're at a known point, to eliminate conflicts */
-  }
   interrupts_global_enable();
 }
 
