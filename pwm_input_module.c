@@ -164,33 +164,6 @@ static int abs(int x){
  *
  * conversion rate is this (threshold - 30) * 360 / 1036
  */
-unsigned int pwm_input_get_angle1(unsigned int pin){
-  //Wait till we aren't in a pwm_output_conflict
-  int interrupt_time = ((int) get_time_at_output_interrupt()) % 20000;
-  while(abs(timer_get_ticks() % 20000 - interrupt_time) < 4000){
-    /* wait */
-  }
-  //average 5 readings
-  unsigned int angle_total = 0;
-  for(int i = 0; i < 5; i++){
-    int angle = (pwm_input_get_threshold(pin) - 30) * 360 / 1036;
-    //wait till we get an approximately good reading
-    while(angle < -5 || angle > 365){
-      angle = (pwm_input_get_threshold(pin) - 30) * 360 / 1036;
-    }
-    //correct for some errors...
-    if(angle < 0){
-      angle = 0;
-    }else if(angle > 360){
-      angle = 360;
-    }
-    angle_total += angle;
-  }
-  return angle_total / 5;
-}
-
-/* a better version of the above function which remembers to timer delay and has better validity
- * checking */
 unsigned int pwm_input_get_angle(unsigned int pin){
   int interrupt_time = ((int) get_time_at_output_interrupt()) % 20000;
   while(abs(timer_get_ticks() % 20000 - interrupt_time) < 4000){
