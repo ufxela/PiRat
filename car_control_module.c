@@ -58,6 +58,15 @@ static int abs(int x){
   }
 }
 
+/* a helper to filter through angles */
+static int get_angle(wheel * wheel){
+  int raw = pwn_input_get_angle(wheel->input_pin);
+  while(raw >= 400){ //make sure it's not the invalid 10000 data point                                  
+    raw = pwm_input_get_angle(wheel->input_pin);
+  }
+  return raw;
+}
+
 /* internal helper functions which needs to be called very often, whenever there is wheel movement.
  * Ideally, this would be called on a tiemr interrupt schedule, once every 20 ms maybe, but
  * I am not doing that for now...
@@ -68,7 +77,7 @@ static int abs(int x){
  */
 static void update_wheel_positions(){
   left_wheel->previous_angle = left_wheel->relative_angle;
-  left_wheel->relative_angle = -1*pwm_input_get_angle(left_wheel->input_pin);
+  left_wheel->relative_angle = -1*get_angle(left_wheel);
 
   if(left_wheel->relative_angle < -1*350 && left_wheel->previous_angle > -1*10){
     left_wheel->rotations++;
@@ -77,7 +86,7 @@ static void update_wheel_positions(){
   }
 
   right_wheel->previous_angle = right_wheel->relative_angle;
-  right_wheel->relative_angle = pwm_input_get_angle(right_wheel->input_pin);
+  right_wheel->relative_angle = get_angle(right_wheel);
 
   if(right_wheel->relative_angle > 350 && right_wheel->previous_angle < 10){
     right_wheel->rotations--;
@@ -89,7 +98,11 @@ static void update_wheel_positions(){
 static int get_angle_average(wheel * wheel){
   int total = 0;
   for(int i = 0; i < 5; i++){
-    total += pwm_input_get_angle(wheel->input_pin);
+    int raw = pwn_input_get_angle(wheel->input_pin);
+    while(raw >= 400){ //make sure it's not the invalid 10000 data point
+      raw = pwm_input_get_angle(wheel->input_pin);
+    }
+    total+=raw;
   }
   return total / 5;
 }
