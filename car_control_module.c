@@ -500,9 +500,21 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
   */
 
   while(1){
-    move_forward(10);
+    move_forward(20);
     timer_delay_ms(500);
     turn(90);
+    timer_delay_ms(500);
+    move_forward(20);
+    timer_delay_ms(500);
+    turn(180);
+    timer_delay_ms(500);
+    move_forward(20);
+    timer_delay_ms(500);
+    turn(-90);
+    timer_delay_ms(500);
+    move_forward(20);
+    timer_delay_ms(500);
+    turn(180);
     timer_delay_ms(500);
   }
 }
