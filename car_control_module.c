@@ -10,7 +10,9 @@
 static  int wheel_base_mm; // distance between wheels, measured in  mm
 static  int wheel_circumference_mm; //measured in mm
 
-/* shimmy constants */
+/* shimmy constants, configures shimmy unit to be equal to distance betwee
+ * line sensors
+ */
 static const unsigned int SHIMMY_ANGLE = 15;
 static const unsigned int SHIMMY_FORWARD_DISTANCE_CM = 4;
 //move back (move back cos(SHIMMY ANGLE) * SHIMMY_FORWARD_DISTANCE
@@ -350,7 +352,7 @@ void turn(int degrees){
   }
 }
 
-/* shimmy left one cm */
+/* shimmy left one unit */
 /* values of rotation and forward movement need to be adjusted to give proper behavior */
 void shimmy_left(){
   //rotate left
@@ -366,7 +368,7 @@ void shimmy_left(){
   move_forward(-SHIMMY_BACKWARDS_DISTANCE_CM);
 }
 
-/* shimmy right 1 cm */
+/* shimmy right 1 unit */
 void shimmy_right(){
   turn(-SHIMMY_ANGLE);
   move_forward(SHIMMY_FORWARD_DISTANCE_CM);
