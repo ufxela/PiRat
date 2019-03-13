@@ -60,7 +60,7 @@ static int abs(int x){
 
 /* a helper to filter through angles */
 static int get_angle(wheel * wheel){
-  int raw = pwn_input_get_angle(wheel->input_pin);
+  int raw = pwm_input_get_angle(wheel->input_pin);
   while(raw >= 400){ //make sure it's not the invalid 10000 data point                                  
     raw = pwm_input_get_angle(wheel->input_pin);
   }
@@ -98,7 +98,7 @@ static void update_wheel_positions(){
 static int get_angle_average(wheel * wheel){
   int total = 0;
   for(int i = 0; i < 5; i++){
-    int raw = pwn_input_get_angle(wheel->input_pin);
+    int raw = pwm_input_get_angle(wheel->input_pin);
     while(raw >= 400){ //make sure it's not the invalid 10000 data point
       raw = pwm_input_get_angle(wheel->input_pin);
     }
