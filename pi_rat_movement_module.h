@@ -68,4 +68,15 @@ void pi_rat_correct_turn();
 /* flips the Pi rat 180 degrees. May be useful for backtracking. May not */
 void pi_rat_turn_180();
 
+/* a bunch of positioning / maze spec functions */
+int pi_rat_get_x_coord();
+
+int pi_rat_get_y_coord();
+
+int pi_rat_get_maze_length();
+
+int pi_rat_get_maze_width();
+
+int pi_rat_get_wall_length();
+
 #endif
