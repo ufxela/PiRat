@@ -376,6 +376,13 @@ void shimmy_right(){
   move_forward(-SHIMMY_BACKWARDS_DISTANCE_CM);
 }
 
+int get_wheel_base(){
+  return wheel_base_mm;
+}
+
+int get_wheel_circumference(){
+  return wheel_circumference_mm;
+}
 /* a test module */
 void test_car_control_module(unsigned int input1, unsigned int input2, unsigned int output1,
                              unsigned int output2){

@@ -83,6 +83,12 @@ void shimmy_left();
 /* same as shimmy left, except to the right. */
 void shimmy_right();
 
+/* returns value, in mm, of wheelbase */
+int get_wheel_base();
+
+/* returns value, in mm of wheel circumference */
+int get_wheel_circumference();
+
 /* test function to showcase this module off */
 void test_car_control_module(unsigned int input1, unsigned int input2, unsigned int output1,
 			     unsigned int output2);
