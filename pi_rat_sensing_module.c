@@ -5,6 +5,7 @@
 /* 20cm to inches = 7.4 inches * 149 us/inch = 1173 */
 const unsigned int WALL_THRESHOLD_US = 1173; //threshold to determine if there is a wall or not. 
 const unsigned int NUM_LINE_READINGS = 3;
+
 void pi_rat_sensing_module_init(unsigned int trigger_pin, unsigned int echo_pin, 
 				unsigned int servo_pin){
   ultrasonic_init(trigger_pin, echo_pin);
@@ -67,6 +68,15 @@ int pi_rat_line_position(){
   }
 }
 
-/* probably want getter functions for physical data about Pi, like distance between line sensors,
- * wheelbase, etc. 
- */
+int pi_rat_get_wheel_base_mm(){
+  return get_wheel_base();
+}
+
+int pi_rat_get_wheel_circumference_mm(){
+  return get_wheel_circumference(); 
+}
+
+int pi_rat_get_line_sensor_dist_mm(){
+  return get_distance_betwee_sensors();
+}
+

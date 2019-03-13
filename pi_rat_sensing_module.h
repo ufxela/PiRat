@@ -24,4 +24,13 @@ int pi_rat_get_wheel_circumference();
 
 int pi_rat_get_line_follower_sensor_dist();
 
+/* retuns size of wheelbase in mm */
+int pi_rat_get_wheel_base_mm();
+
+/* retursn the wheel circumference in mm */
+int pi_rat_get_wheel_circumference_mm();
+
+/* returns in mm the distance between sensors on the line follower */
+int pi_rat_get_line_sensor_dist_mm();
+
 #endif
