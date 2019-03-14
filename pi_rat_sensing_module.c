@@ -36,14 +36,19 @@ int pi_rat_get_walls(){
   //check each of the three walls
   servo_go_to_angle(ultrasonic_pan, 0);
   timer_delay_ms(500);
+  printf("1");
   if(is_there_a_wall()){
     walls_result += 1;
+    printf("in if");
   }
+  printf("2");
   servo_go_to_angle(ultrasonic_pan, 90);
   timer_delay_ms(500);
+  printf("3");
   if(is_there_a_wall()){
     walls_result += 2;
   }
+  printf("4");
   servo_go_to_angle(ultrasonic_pan, 180);
   timer_delay_ms(500);
   if(is_there_a_wall()){
@@ -87,6 +92,8 @@ int pi_rat_get_line_sensor_dist_mm(){
 void pi_rat_sensing_test(unsigned int trigger_pin, unsigned int echo_pin, unsigned int servo_pin){
   pi_rat_sensing_module_init(trigger_pin, echo_pin, servo_pin);
   while(1){
-    printf("Line position: %d", pi_rat_line_position());
+    printf("Line position: %d ", pi_rat_line_position());
+    int walls = pi_rat_get_walls();
+    printf("walls: %d", walls);
   }
 }

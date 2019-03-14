@@ -160,14 +160,14 @@ int main(void)
   */
 
   /* test wall sensing */
-  /*
+
   test_wall_sensing(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO, GPIO_PIN12);
-  */
+
 
   /* test sensing module */
-
+  /*
   pi_rat_sensing_test(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO, GPIO_PIN12);
-
+  */
 
 
   return 1;
