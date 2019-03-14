@@ -94,4 +94,6 @@ void pi_rat_correct_lateral(int current_line);
 /* similar to correct_lateral, except corrects the angular error */
 void pi_rat_correct_angle(int start_line, int end_line);
 
+void test_pi_rat_movement();
+
 #endif

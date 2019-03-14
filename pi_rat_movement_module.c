@@ -149,3 +149,27 @@ void pi_rat_correct_angle(int start_line, int end_line){
   turn(angle);
   timer_delay(100);
 }
+
+void pi_rat_correct_turn();
+
+void pi_rat_turn_180();
+
+int pi_rat_get_x_coord();
+
+int pi_rat_get_y_coord();
+
+int pi_rat_get_maze_length();
+
+int pi_rat_get_maze_width();
+
+int pi_rat_get_wall_length();
+
+void test_pi_rat_movement(){
+  printf("testing pi rat movement \n");
+  printf("you have 5 seconds to place the Pi on the line\n");
+  timer_delay(5);
+
+  //check line correction
+  int line_position = pi_rat_line_position();
+  pi_rat_correct_lateral(line_position);
+}
