@@ -36,7 +36,7 @@ unsigned int maze_y_cord;
  * 2 = right
  * 3 = backwards
  */
-unsigned int bearing;
+unsigned int maze_bearing;
 
 void pi_rat_movement_init(unsigned int input1, unsigned int input2, unsigned int output1, 
 			  unsigned int output2){
@@ -44,6 +44,7 @@ void pi_rat_movement_init(unsigned int input1, unsigned int input2, unsigned int
   car_control_module_init(input1, input2, output1, output2, 96, 188); 
   maze_x_cord = 0;
   maze_y_cord = 0;
+  maze_bearing = 1; //start facing forwards.
 }
 
 /* assumes our center of rotation is centered */
@@ -61,11 +62,11 @@ void pi_rat_go_forward(){
   pi_rat_correct_line_position_f(start_line_position, end_line_position);
 
   //update position
-  if(bearing == 0){
+  if(maze_bearing == 0){
     maze_x_cord++;
-  }else if(bearing == 1){
+  }else if(maze_bearing == 1){
     maze_y_cord++;
-  }else if(bearing == 2){
+  }else if(maze_bearing == 2){
     maze_x_cord--;
   }else{
     maze_y_cord--;
@@ -87,11 +88,11 @@ void pi_rat_go_back(){
   pi_rat_correct_line_position_b(start_line_position, end_line_position);
 
   //update position                                                                                     
-  if(bearing == 0){
+  if(maze_bearing == 0){
     maze_x_cord--;
-  }else if(bearing == 1){
+  }else if(maze_bearing == 1){
     maze_y_cord--;
-  }else if(bearing == 2){
+  }else if(maze_bearing == 2){
     maze_x_cord++;
   }else{
     maze_y_cord++;
@@ -150,19 +151,55 @@ void pi_rat_correct_angle(int start_line, int end_line){
   timer_delay(100);
 }
 
-void pi_rat_correct_turn();
+void pi_rat_turn_left(){
+  //do the turn
+  turn(-90);
+  timer_delay(100);
 
-void pi_rat_turn_180();
+  //correct
+  pi_rat_correct_turn();
 
-int pi_rat_get_x_coord();
+  //update the direction we're facing
+  maze_bearing = (maze_bearing - 1) % 4; 
+}
 
-int pi_rat_get_y_coord();
+/* very similar to above function */
+void pi_rat_turn_right(){
+  turn(90);
+  timer_delay(100);
 
-int pi_rat_get_maze_length();
+  pi_rat_correct_turn();
 
-int pi_rat_get_maze_width();
+  maze_bearing = (maze_bearing + 1) % 4;
+}
 
-int pi_rat_get_wall_length();
+void pi_rat_correct_turn(){
+  //if the pi rat after the turn isn't centered on the new line, spin until it is
+}
+
+int pi_rat_get_x_coord(){
+  return maze_x_cord;
+}
+
+int pi_rat_get_y_coord(){
+  return maze_y_cord;
+}
+
+int pi_rat_get_bearing(){
+  return maze_bearing;
+}
+
+int pi_rat_get_maze_height(){
+  return MAZE_HEIGHT;
+}
+
+int pi_rat_get_maze_width(){
+  return MAZE_WIDTH;
+}
+
+int pi_rat_get_wall_length(){
+  return MAZE_WALL_LENGTH_CM;
+}
 
 void test_pi_rat_movement(){
   printf("testing pi rat movement \n");
