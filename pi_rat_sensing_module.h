@@ -33,4 +33,6 @@ int pi_rat_get_wheel_circumference_mm();
 /* returns in mm the distance between sensors on the line follower */
 int pi_rat_get_line_sensor_dist_mm();
 
+void pi_rat_sensing_test(unsigned int trigger_pin, unsigned int echo_pin, unsigned int servo_pin);
+
 #endif

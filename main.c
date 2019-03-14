@@ -14,6 +14,8 @@
 #include "cr_servo_module.h"
 #include "car_control_module.h"
 #include "line_follower_module.h"
+#include "pi_rat_sensing_module.h"
+#include "pi_rat_movement_module.h"
 
 const unsigned int ULTRASONIC_TRIGGER = GPIO_PIN6;
 const unsigned int ULTRASONIC_ECHO = GPIO_PIN5;
@@ -148,18 +150,25 @@ int main(void)
   */
   
   /*test car control module */
-
+  /*
   test_car_control_module(GPIO_PIN18, GPIO_PIN21, GPIO_PIN20, GPIO_PIN16);
-
+  */
 
   /* test line follower */
-  /*
+
   line_follower_test();
-  */
+
 
   /* test wall sensing */
   /*
   test_wall_sensing(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO, GPIO_PIN12);
   */
+
+  /* test sensing module */
+  /*
+  pi_rat_sensing_test(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO, GPIO_PIN12);
+  */
+
+
   return 1;
 }

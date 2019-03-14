@@ -1,10 +1,14 @@
 #include "line_follower_module.h"
 #include "ultrasonic_module.h"
 #include "servo_module.h"
-
+#include "timer.h"
+#include "car_control_module.h"
+#include "printf.h"
 /* 20cm to inches = 7.4 inches * 149 us/inch = 1173 */
 const unsigned int WALL_THRESHOLD_US = 1173; //threshold to determine if there is a wall or not. 
 const unsigned int NUM_LINE_READINGS = 3;
+
+servo * ultrasonic_pan;
 
 void pi_rat_sensing_module_init(unsigned int trigger_pin, unsigned int echo_pin, 
 				unsigned int servo_pin){
@@ -12,7 +16,7 @@ void pi_rat_sensing_module_init(unsigned int trigger_pin, unsigned int echo_pin,
   line_follower_init();
   servo_module_init();
   
-  servo * ultrasonic_pan = servo_new(servo_pin);
+  ultrasonic_pan = servo_new(servo_pin);
   servo_auto_setup(ultrasonic_pan, 500, 2300); //I found these values beforehand
   servo_go_to_angle(ultrasonic_pan, 90);
 }
@@ -56,16 +60,16 @@ int pi_rat_line_position(){
   //make sure we get 5 of the same reading in a row for accuracy
   while(in_a_row < NUM_LINE_READINGS){
     //if we're at an invalid line position
-    if(line_pos = -1){
+    if(line_pos == -1){
       line_pos = get_line_index();
       in_a_row = 1;
-    }else if(get_line_index = line_pos){ //good value, increment in a row
+    }else if(get_line_index() == line_pos){ //good value, increment in a row
       in_a_row++;
     }else{ //inconsistent reading; reset
       line_pos = -1;
     }
-    }
   }
+  return line_pos;
 }
 
 int pi_rat_get_wheel_base_mm(){
@@ -77,6 +81,12 @@ int pi_rat_get_wheel_circumference_mm(){
 }
 
 int pi_rat_get_line_sensor_dist_mm(){
-  return get_distance_betwee_sensors();
+  return get_distance_between_sensors();
 }
 
+void pi_rat_sensing_test(unsigned int trigger_pin, unsigned int echo_pin, unsigned int servo_pin){
+  pi_rat_sensing_module_init(trigger_pin, echo_pin, servo_pin);
+  while(1){
+    printf("Line position: %d", pi_rat_line_position());
+  }
+}

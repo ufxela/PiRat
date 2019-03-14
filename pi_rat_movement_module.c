@@ -3,6 +3,7 @@
 #include "timer.h"
 #include "printf.h"
 #include "pi_rat_sensing_module.h"
+#include "pi_rat_movement_module.h"
 
 /* information about the maze */
 const unsigned int MAZE_WIDTH = 6;
@@ -24,8 +25,8 @@ const unsigned int ULTRASONIC_SENSOR_Y_MM = 100;
  *
  * (0,0) is the lower right corner, positive x is to the left, positive y is up
  */
-unsigned int maze_x_coord;
-unsigned int maze_y_coord;
+unsigned int maze_x_cord;
+unsigned int maze_y_cord;
 
 /* a bearing of zero is the facing to the left
  * 1 = forwards
@@ -34,9 +35,12 @@ unsigned int maze_y_coord;
  */
 unsigned int bearing;
 
-void pi_rat_movement_init(){
+void pi_rat_movement_init(unsigned int input1, unsigned int input2, unsigned int output1, 
+			  unsigned int output2){
   /* assumes pi_rat_sensing_module has already been initialized */
   car_control_module_init(input1, input2, output1, output2, 96, 188); 
+  maze_x_cord = 0;
+  maze_y_cord = 0;
 }
 
 /* assumes our center of rotation is centered */
@@ -55,7 +59,7 @@ void pi_rat_go_forward(){
 
   //update position
   if(bearing == 0){
-    maze_x_coord++;
+    maze_x_cord++;
   }else if(bearing == 1){
     maze_y_cord++;
   }else if(bearing == 2){
@@ -81,7 +85,7 @@ void pi_rat_go_back(){
 
   //update position                                                                                     
   if(bearing == 0){
-    maze_x_coord--;
+    maze_x_cord--;
   }else if(bearing == 1){
     maze_y_cord--;
   }else if(bearing == 2){
@@ -89,4 +93,7 @@ void pi_rat_go_back(){
   }else{
     maze_y_cord++;
   }
+}
+
+void pi_rat_correct_line_position(int start_line, int end_line){
 }
