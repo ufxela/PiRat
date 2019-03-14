@@ -5,7 +5,7 @@ CFLAGS  = -I$(CS107E)/include -g -Wall -Wpointer-arith
 CFLAGS += -Og -std=c99 -ffreestanding
 CFLAGS += -mapcs-frame -fno-omit-frame-pointer -mpoke-function-name
 LDFLAGS = -nostdlib -T memmap -L. -L$(CS107E)/lib
-LDLIBS  = -lm -lpiextra -lmypi -lpi -lgcc #-lm includes c math library
+LDLIBS  = -lm -lpiextra -lmypi -lpi -lgcc -lc #-lm includes c math library, added -lc because http://pinguino.cc/forum/showthread.php?tid=4463 told me to
 
 all : $(NAME).bin
 
