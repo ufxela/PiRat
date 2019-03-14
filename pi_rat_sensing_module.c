@@ -39,7 +39,6 @@ int pi_rat_get_walls(){
   printf("1");
   if(is_there_a_wall()){
     walls_result += 1;
-    printf("in if");
   }
   printf("2");
   servo_go_to_angle(ultrasonic_pan, 90);
