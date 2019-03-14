@@ -4,8 +4,8 @@
 #include "timer.h"
 #include "car_control_module.h"
 #include "printf.h"
-/* 20cm to inches = 7.4 inches * 149 us/inch = 1173 */
-const unsigned int WALL_THRESHOLD_US = 1173; //threshold to determine if there is a wall or not. 
+/* 20cm to inches = 7.4 inches * 149 us/inch = 1173. I'll give it a bit of extra room as well */
+const unsigned int WALL_THRESHOLD_US = 1500; //threshold to determine if there is a wall or not. 
 const unsigned int NUM_LINE_READINGS = 3;
 
 servo * ultrasonic_pan;
@@ -22,8 +22,14 @@ void pi_rat_sensing_module_init(unsigned int trigger_pin, unsigned int echo_pin,
 }
 
 static int is_there_a_wall(){
-  //if the distance is less than / equal to the wall threshold, return 1 for true
-  if(get_ultrasonic_mean(10) <= WALL_THRESHOLD_US){
+  //samples 10 times. if a significant number of samples say there is a wall, then there's a wall
+  int wall_yes_count = 0;
+  for(int i = 0; i < 10; i++){
+    if(get_ultrasonic_mean(1) <= WALL_THRESHOLD_US){
+      wall_yes_count++;
+    }
+  }
+  if(wall_yes_count >= 7){
     return 1;
   }else{
     return 0;

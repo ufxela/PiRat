@@ -31,14 +31,14 @@ unsigned int get_time_of_flight_basic(){
   
   //wait for echo to be received
   while(gpio_read(ECHO) == 0){
-    if(timer_get_ticks() - trigger_time_us > 100000){ //if there's a timeout
-      return 1000000;
+    if(timer_get_ticks() - trigger_time_us > 10000){ //if there's a timeout
+      return 10000; //return this value if we get anything higher than it. 
     }
   }
 
   while(gpio_read(ECHO) == 1){
-    if(timer_get_ticks() - trigger_time_us > 100000){
-      return 1000000;
+    if(timer_get_ticks() - trigger_time_us > 10000){
+      return 10000;
     }
   }
 
@@ -54,6 +54,9 @@ unsigned int get_ultrasonic_mean(int number_samples){
   for(int i = 0; i < number_samples; i++){
     int basic_reading = get_time_of_flight_basic();
     /* loop until we get a valid reading */
+    /* this could be bad because in the case the ultrasonic module is covered or points too far
+     * this will hold here indefinitely 
+     */
     while(basic_reading > 10000){
       basic_reading = get_time_of_flight_basic();
     }
@@ -65,7 +68,7 @@ unsigned int get_ultrasonic_mean(int number_samples){
 
 int ultrasonic_test(void){
   while(1){
-    printf("time of flight in us: %d \n", get_ultrasonic_mean(10));
+    printf("time of flight in us: %d \n", get_ultrasonic_mean(1));
   }
   return 0;
 }
