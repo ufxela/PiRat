@@ -155,9 +155,9 @@ int main(void)
   */
 
   /* test line follower */
-
+  /*
   line_follower_test();
-
+  */
 
   /* test wall sensing */
   /*
@@ -165,9 +165,9 @@ int main(void)
   */
 
   /* test sensing module */
-  /*
+
   pi_rat_sensing_test(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO, GPIO_PIN12);
-  */
+
 
 
   return 1;

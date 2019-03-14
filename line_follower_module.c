@@ -46,6 +46,7 @@ void line_follower_init(){
   MIDDLE_DISTANCE = -3 * DISTANCE_BETWEEN_SENSORS; //this is the 4th sensor, indexing from 1.
 }
 
+/* the current problem is if there's no line under the car, this will still return a value */
 int get_line_index(){
   update_line_follower_data();
 
