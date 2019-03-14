@@ -127,7 +127,7 @@ int main(void)
   //pwm_output_init();
   //pwm_output_test();
 
-  /* test pwm input module (works) */
+  /* test pwm input module */
   /*
   pwm_input_init();
   pwm_input_test();
@@ -150,9 +150,9 @@ int main(void)
   */
   
   /*test car control module */
-  /*
+
   test_car_control_module(GPIO_PIN18, GPIO_PIN21, GPIO_PIN20, GPIO_PIN16);
-  */
+
 
   /* test line follower */
   /*
@@ -165,9 +165,9 @@ int main(void)
   */
 
   /* test sensing module */
-
+  /*
   pi_rat_sensing_test(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO, GPIO_PIN12);
-
+  */
 
 
   return 1;

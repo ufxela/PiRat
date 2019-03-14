@@ -107,7 +107,7 @@ void pi_rat_correct_line_position(int start_line, int end_line){
   int lateral_shift = end_line - start_line;
   double sin_of_turn_angle = lateral_shift / MAZE_WALL_LENGTH_CM; 
  
-  int angle = (int) asin(sin_of_turn_angle);
+  int angle = 0; /*(int) asin(sin_of_turn_angle);*/
 
   turn(angle);
   timer_delay(100);

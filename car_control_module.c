@@ -387,10 +387,16 @@ int get_wheel_circumference(){
 void test_car_control_module(unsigned int input1, unsigned int input2, unsigned int output1,
                              unsigned int output2){
 
-  printf("beginning car control test in 2s\n");
-  timer_delay(2);
+  printf("beginning car control test in 5s\n");
+  timer_delay(5);
 
-  car_control_module_init(input1, input2, output1, output2, 96, 188); //estimated wheelbase/circumfrence
+  car_control_module_init(input1, input2, output1, output2, 96, 197); //estimated wheelbase/circumfrence
+
+  /* for calibrating distances */
+
+  move_forward(15);
+ 
+  timer_delay(5);
 
   /* a test to go in a L shaped path continually, with a bit of inconsequential shimmying */
   while(1){
