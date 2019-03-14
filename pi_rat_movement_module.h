@@ -57,7 +57,10 @@ void pi_rat_turn_right();
  * based on the average of start_line and end_line, shimmys either
  * left or right to center the line on the line reader
  */
-void pi_rat_correct_line_position(int start_line, int end_line);
+void pi_rat_correct_line_position_f(int start_line, int end_line);
+
+/* the backwards flavor of the above function */
+void pi_rat_correct_line_position_b(int start_line, int end_line);
 
 /* Assumes the Pi Rat was in the correct position before the turn
  * Aligns the robot with the line after the turn to make sure
@@ -78,5 +81,17 @@ int pi_rat_get_maze_length();
 int pi_rat_get_maze_width();
 
 int pi_rat_get_wall_length();
+
+/* a function which decomposes line position correcting 
+ *
+ * correct's rat's lateral error on the line
+ *
+ * in the future, I may want to do this solely with the ultrasonic sensor and remove
+ * the line sensor all together.
+ */
+void pi_rat_correct_lateral(int current_line);
+
+/* similar to correct_lateral, except corrects the angular error */
+void pi_rat_correct_angle(int start_line, int end_line);
 
 #endif

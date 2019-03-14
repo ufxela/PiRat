@@ -58,7 +58,7 @@ void pi_rat_go_forward(){
   int end_line_position = pi_rat_line_position();
 
   //correct
-  pi_rat_correct_line_position(start_line_position, end_line_position);
+  pi_rat_correct_line_position_f(start_line_position, end_line_position);
 
   //update position
   if(bearing == 0){
@@ -84,7 +84,7 @@ void pi_rat_go_back(){
   int end_line_position = pi_rat_line_position();
 
   //correct (start/end reversed because going backwards flips things                           
-  pi_rat_correct_line_position(end_line_position, start_line_position);
+  pi_rat_correct_line_position_b(start_line_position, end_line_position);
 
   //update position                                                                                     
   if(bearing == 0){
@@ -100,30 +100,33 @@ void pi_rat_go_back(){
 
 /* corrects assumming start_line is the previous point and end is the current point
  * basically, think of it as the forwards motion corrector.
- * with backwards motion, we just reverse the poisiton of start & end 
+ * with backwards motion, subtle differences.
  */
-void pi_rat_correct_line_position(int start_line, int end_line){
-  //get angle to turn
-  int lateral_shift = end_line - start_line;
-  double sin_of_turn_angle = lateral_shift / MAZE_WALL_LENGTH_CM; 
- 
-  int angle = (int) asin(sin_of_turn_angle) * 180 / 3.14; //convert from radians to degrees
+void pi_rat_correct_line_position_f(int start_line, int end_line){
+  //correct angle
+  pi_rat_correct_angle(start_line, end_line);
 
-  turn(angle);
-  timer_delay(100);
+  //correct lateral, this breaks if we're going backwards, so a separate case is needed...
+  pi_rat_correct_lateral(end_line);
 
-  //get shimmy distance. This one is tough to unify for both backwards and forwards...
-  //may have to write separate line position corrector for forwards and backwards. 
-  //for now, I'll assume we're going forwards
-  //since we have an even number of sensors, we need to choose one side
-  //something to becareful about is going backwards / if the pi rat flips 180 degrees. 
-  //and if the line is physicially off center, or if the pi has a bias to one side
-  //or the other, this adds some technical difficulty
+  //double check shimmy distance (maybe)
+  int new_line_position = pi_rat_line_position(); //ideally, this will be CENTER_LINE
+  pi_rat_correct_lateral(new_line_position); 
+}
 
-  //should I get the new end_line value right here? Because with the turn, this will potentially
-  //change
-  int shimmy_number = end_line - CENTER_LINE;
-  //correct based on shimmy_number reading
+void pi_rat_correct_line_position_b(int start_line, int end_line){
+  pi_rat_correct_angle(end_line, start_line); //reversed, cuz angles and stuff
+
+  pi_rat_correct_lateral(end_line); //not reversed
+
+  int new_line_position = pi_rat_line_position();
+  pi_rat_correct_lateral(new_line_position);
+}
+
+void pi_rat_correct_lateral(int current_line){
+  int shimmy_number = current_line - CENTER_LINE;
+
+  //correct based on shimmy_number reading                                                               
   if(shimmy_number > 0){
     for(int i = 0; i < shimmy_number; i++){
       shimmy_right();
@@ -134,7 +137,15 @@ void pi_rat_correct_line_position(int start_line, int end_line){
       shimmy_left();
       timer_delay(100);
     }
-  }
+  } 
+}
 
-  //double check shimmy distance and do an extra shimmy if needed
+void pi_rat_correct_angle(int start_line, int end_line){
+  int lateral_shift = end_line - start_line;
+  double sin_of_turn_angle = lateral_shift / MAZE_WALL_LENGTH_CM;
+
+  int angle = (int) asin(sin_of_turn_angle) * 180 / 3.14; //convert from radians to degrees      
+  
+  turn(angle);
+  timer_delay(100);
 }
