@@ -20,6 +20,9 @@ const unsigned int CENTER_OF_ROTATION_IN_BLOCK_Y_MM = 100; //measured in mm
 const unsigned int ULTRASONIC_SENSOR_X_MM = 100;
 const unsigned int ULTRASONIC_SENSOR_Y_MM = 100;
 
+/* where the center line is */
+const unsigned int CENTER_LINE = 3;
+
 /* information about Pi Rat's position within the maze. Should this module
  * keep track of this?
  *
@@ -95,5 +98,43 @@ void pi_rat_go_back(){
   }
 }
 
+/* corrects assumming start_line is the previous point and end is the current point
+ * basically, think of it as the forwards motion corrector.
+ * with backwards motion, we just reverse the poisiton of start & end 
+ */
 void pi_rat_correct_line_position(int start_line, int end_line){
+  //get angle to turn
+  int lateral_shift = end_line - start_line;
+  double sin_of_turn_angle = lateral_shift / MAZE_WALL_LENGTH_CM; 
+ 
+  int angle = (int) asin(sin_of_turn_angle);
+
+  turn(angle);
+  timer_delay(100);
+
+  //get shimmy distance. This one is tough to unify for both backwards and forwards...
+  //may have to write separate line position corrector for forwards and backwards. 
+  //for now, I'll assume we're going forwards
+  //since we have an even number of sensors, we need to choose one side
+  //something to becareful about is going backwards / if the pi rat flips 180 degrees. 
+  //and if the line is physicially off center, or if the pi has a bias to one side
+  //or the other, this adds some technical difficulty
+
+  //should I get the new end_line value right here? Because with the turn, this will potentially
+  //change
+  int shimmy_number = end_line - CENTER_LINE;
+  //correct based on shimmy_number reading
+  if(shimmy_number > 0){
+    for(int i = 0; i < shimmy_number; i++){
+      shimmy_right();
+      timer_delay(100);
+    }
+  }else{
+    for(int i = 0; i < -1*shimmy_number; i++){
+      shimmy_left();
+      timer_delay(100);
+    }
+  }
+
+  //double check shimmy distance and do an extra shimmy if needed
 }
