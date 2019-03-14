@@ -117,11 +117,11 @@ int main(void)
   timer_init();
   
   /* test the ultrasonic module */
-
+  /*
   timer_init();
   ultrasonic_init(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO);
   ultrasonic_test();
-
+  */
 
   /* test the pwm output module */
   //pwm_output_init();
@@ -165,9 +165,9 @@ int main(void)
   */
 
   /* test sensing module */
-  /*
+
   pi_rat_sensing_test(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO, GPIO_PIN12);
-  */
+
 
 
   return 1;
