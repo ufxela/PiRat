@@ -111,7 +111,7 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
   right_wheel->forwards_throttle = -24;
 
   left_wheel->backwards_throttle = -23; //prevous -21, worked to go backwards
-  right_wheel->backwards_throttle = 22; //previous 20
+  right_wheel->backwards_throttle = 23; //previous 20
   printf("4");
 
   //update internal positioning/info
@@ -380,14 +380,21 @@ void test_car_control_module(unsigned int input1, unsigned int input2, unsigned 
   printf("beginning car control test in 5s\n");
   timer_delay(5);
 
-  car_control_module_init(input1, input2, output1, output2, 96, 197); //estimated wheelbase/circumfrence
+  car_control_module_init(input1, input2, output1, output2, 98, 197); //estimated wheelbase/circumfrence
+
+  /* for calibrating turns */
+  while(1){
+        turn(90);
+    //    turn(-90);
+    timer_delay(2);
+  }
+
 
   /* for calibrating distances */
-
+  /*
   move_forward(15);
- 
   timer_delay(5);
-
+  */
   /* a test to go in a L shaped path continually, with a bit of inconsequential shimmying */
   while(1){
     shimmy_left();
