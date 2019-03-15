@@ -134,7 +134,6 @@ void pi_rat_correct_lateral(int current_line){
       timer_delay_ms(100);
     }
   }else{
-    printf("shimmy_number <= 0");
     for(int i = 0; i < -1*shimmy_number; i++){
       shimmy_right();
       timer_delay_ms(100);
@@ -144,10 +143,11 @@ void pi_rat_correct_lateral(int current_line){
 
 void pi_rat_correct_angle(int start_line, int end_line){
   int lateral_shift = end_line - start_line;
-  double sin_of_turn_angle = lateral_shift / MAZE_WALL_LENGTH_CM;
+  double sin_of_turn_angle = (0.0 + lateral_shift) / MAZE_WALL_LENGTH_CM;
 
-  int angle = (int) asin(sin_of_turn_angle) * 200 / 3.14; //convert from radians to degrees 
-  //200 and not 180, because it's better to over correct than under correct I think...
+  int angle = (int) (asin(sin_of_turn_angle) * 180.0 / 3.14); //convert from radians to degrees 
+
+  printf("angle: %d", angle);
   
   turn(angle);
   timer_delay_ms(100);

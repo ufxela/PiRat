@@ -87,19 +87,18 @@ static void motor_set_throttle(wheel * wheel, int throttle){
  */
 void car_control_module_init(unsigned int input1, unsigned int input2, unsigned int output1,
 			     unsigned int output2, unsigned int whl_base, unsigned int whl_crfnc){
-  printf("C1");
   pwm_input_init();
   cr_servo_module_init(); //wow this inconsistency hurts...
   left_wheel = malloc(sizeof(wheel));
   right_wheel = malloc(sizeof(wheel));
-  printf("2");
+
   //setup pwm inputs
   left_wheel->input_pin = input1;
   right_wheel->input_pin = input2;
 
   pwm_add_input(left_wheel->input_pin);
   pwm_add_input(right_wheel->input_pin);
-  printf("3");
+
   //setup cr servo outputs
   left_wheel->motor = cr_servo_new(output1);
   right_wheel->motor = cr_servo_new(output2);
@@ -112,7 +111,6 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
 
   left_wheel->backwards_throttle = -23; //prevous -21, worked to go backwards
   right_wheel->backwards_throttle = 23; //previous 20
-  printf("4");
 
   //update internal positioning/info
   wheel_base_mm = whl_base; //current wheelbase is 96 mm
@@ -128,7 +126,6 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
 
   left_wheel->previous_angle = left_wheel->relative_angle;
   right_wheel->previous_angle = right_wheel->relative_angle;
-  printf("5");
 }
 
 int get_wheel_angle(wheel * wheel){
@@ -361,7 +358,6 @@ void shimmy_left(){
 /*I think my left and right are mixed up lol */
 /* shimmy right 1 unit */
 void shimmy_right(){
-  printf("shimmying right");
   turn(-SHIMMY_ANGLE); 
   //should probably check out throttles later
   move_forward(SHIMMY_FORWARD_DISTANCE_CM);
