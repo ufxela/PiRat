@@ -56,17 +56,24 @@ void pi_rat_movement_init(unsigned int input1, unsigned int input2, unsigned int
 }
 
 /* assumes our center of rotation is centered */
+/* breaks down into multiple steps to ensure accuracy (hopefully) */
 void pi_rat_go_forward(){
   //measure
   int start_line_position = pi_rat_line_position();
 
   //move
-  move_forward(MAZE_WALL_LENGTH_CM);
+  move_forward(MAZE_WALL_LENGTH_CM/2);
 
   //measure
   int end_line_position = pi_rat_line_position();
 
   //correct
+  pi_rat_correct_line_position_f(start_line_position, end_line_position);
+
+  //repeat
+  start_line_position = pi_rat_line_position();
+  move_forward(MAZE_WALL_LENGTH_CM/2);
+  end_line_position = pi_rat_line_position();
   pi_rat_correct_line_position_f(start_line_position, end_line_position);
 
   //update position
@@ -87,12 +94,18 @@ void pi_rat_go_back(){
   int start_line_position = pi_rat_line_position();
 
   //move                                                                                           
-  move_forward(-MAZE_WALL_LENGTH_CM);
+  move_forward(-MAZE_WALL_LENGTH_CM/2);
 
   //measure                                                                                       
   int end_line_position = pi_rat_line_position();
 
   //correct (start/end reversed because going backwards flips things                           
+  pi_rat_correct_line_position_b(start_line_position, end_line_position);
+
+  //repeat
+  start_line_position = pi_rat_line_position();
+  move_forward(-MAZE_WALL_LENGTH_CM/2);
+  pi_rat_line_position();
   pi_rat_correct_line_position_b(start_line_position, end_line_position);
 
   //update position                                                                                     
@@ -168,9 +181,10 @@ void pi_rat_correct_lateral(int current_line){
   } 
 }
 
+//correct two times per forward movement
 void pi_rat_correct_angle(int start_line, int end_line){
   int lateral_shift = end_line - start_line;
-  double sin_of_turn_angle = (0.0 + lateral_shift) / MAZE_WALL_LENGTH_CM;
+  double sin_of_turn_angle = (0.0 + lateral_shift) / (MAZE_WALL_LENGTH_CM * 2); 
 
   int angle = (int) (asin(sin_of_turn_angle) * 180.0 / 3.14); //convert from radians to degrees 
 
@@ -203,8 +217,7 @@ void pi_rat_turn_right(){
 void pi_rat_correct_turn(){
   //ideally, the pi rat's line reader should be centered on the line. 
   int line_position = pi_rat_line_position();
-  int correctional_rotation = (line_position - CENTER_LINE) * ANGLE_PER_SENSOR; //sign may be off
-  turn(correctional_rotation);
+  pi_rat_correct_lateral(line_position);
 }
 
 int pi_rat_get_x_coord(){
