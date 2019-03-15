@@ -8,3 +8,6 @@ Pseudo code for forward motion with wheel angle feedback
 
 Line follower example code
      -ported the code pretty much directly
+     
+Notes: it would be super easy for me to make a line follower robot from this. 
+Also it wouldn't be impossible for me to make a room rover robot (like a roomba) from here too.
