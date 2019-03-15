@@ -41,7 +41,7 @@ unsigned int maze_bearing;
 void pi_rat_movement_init(unsigned int input1, unsigned int input2, unsigned int output1, 
 			  unsigned int output2){
   /* assumes pi_rat_sensing_module has already been initialized */
-  car_control_module_init(input1, input2, output1, output2, 96, 188); 
+  car_control_module_init(input1, input2, output1, output2, 96, 197); 
   maze_x_cord = 0;
   maze_y_cord = 0;
   maze_bearing = 1; //start facing forwards.
@@ -125,18 +125,24 @@ void pi_rat_correct_line_position_b(int start_line, int end_line){
 }
 
 void pi_rat_correct_lateral(int current_line){
+  printf("correcting lateral");
   int shimmy_number = current_line - CENTER_LINE;
 
   //correct based on shimmy_number reading                                                               
   if(shimmy_number > 0){
+    printf("shimmy number > 0");
     for(int i = 0; i < shimmy_number; i++){
+      printf("about to shimmy right");
       shimmy_right();
-      timer_delay(100);
+      printf("shimmy right");
+      timer_delay_ms(100);
     }
   }else{
+    printf("shimmy_number <= 0");
     for(int i = 0; i < -1*shimmy_number; i++){
       shimmy_left();
-      timer_delay(100);
+      printf("shimmy left");
+      timer_delay_ms(100);
     }
   } 
 }
@@ -148,13 +154,13 @@ void pi_rat_correct_angle(int start_line, int end_line){
   int angle = (int) asin(sin_of_turn_angle) * 180 / 3.14; //convert from radians to degrees      
   
   turn(angle);
-  timer_delay(100);
+  timer_delay_ms(100);
 }
 
 void pi_rat_turn_left(){
   //do the turn
   turn(-90);
-  timer_delay(100);
+  timer_delay_ms(100);
 
   //correct
   pi_rat_correct_turn();
@@ -166,7 +172,7 @@ void pi_rat_turn_left(){
 /* very similar to above function */
 void pi_rat_turn_right(){
   turn(90);
-  timer_delay(100);
+  timer_delay_ms(100);
 
   pi_rat_correct_turn();
 
@@ -201,12 +207,22 @@ int pi_rat_get_wall_length(){
   return MAZE_WALL_LENGTH_CM;
 }
 
-void test_pi_rat_movement(){
+void test_pi_rat_movement(unsigned int input1, unsigned int input2, unsigned int output1, 
+			  unsigned int output2, unsigned int trigger, unsigned int echo,
+			  unsigned int pan){
   printf("testing pi rat movement \n");
   printf("you have 5 seconds to place the Pi on the line\n");
+
+  pi_rat_movement_init(input1, input2, output1, output2);
+  pi_rat_sensing_module_init(trigger, echo, pan);
+
   timer_delay(5);
 
-  //check line correction
-  int line_position = pi_rat_line_position();
-  pi_rat_correct_lateral(line_position);
+  //line correction test
+  while(1){
+    int line_position = pi_rat_line_position();
+    printf("line detected at %d \n", line_position);
+    pi_rat_correct_lateral(line_position);
+    timer_delay(1);
+  }
 }

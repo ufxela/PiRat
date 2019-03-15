@@ -133,8 +133,8 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
   left_wheel->rotations = 0;
   right_wheel->rotations = 0;
 
-  left_wheel->relative_angle = get_angle_average(left_wheel);
-  right_wheel->relative_angle = get_angle_average(right_wheel);
+  left_wheel->relative_angle = get_angle(left_wheel); //used get_angle_average before, screwed thigns up
+  right_wheel->relative_angle = get_angle(right_wheel);
 
   left_wheel->previous_angle = left_wheel->relative_angle;
   right_wheel->previous_angle = right_wheel->relative_angle;
@@ -206,8 +206,8 @@ void step_forward(int degrees){
 
     /* print some debugging information to console */
     bias += left_wheel_progress-right_wheel_progress;
-    printf("bias: %d, difference: %d, wheel1 position: %d, wheel2 positon: %d \n", bias, left_wheel_progress-right_wheel_progress,
-	   left_wheel_progress, right_wheel_progress);
+    //    printf("bias: %d, difference: %d, wheel1 position: %d, wheel2 positon: %d \n", bias, left_wheel_progress-right_wheel_progress,
+    //	   left_wheel_progress, right_wheel_progress);
   }
   /* once the loop finishes, stop */
   motor_set_throttle(left_wheel, 0);
@@ -265,8 +265,8 @@ void step_backward(int degrees){
     }
 
     bias += left_wheel_progress-right_wheel_progress;
-    printf("bias: %d, difference: %d, wheel1 position: %d, wheel2 positon: %d \n", bias, left_wheel_progress-right_wheel_progress,
-	   left_wheel_progress, right_wheel_progress);
+    //    printf("bias: %d, difference: %d, wheel1 position: %d, wheel2 positon: %d \n", bias, left_wheel_progress-right_wheel_progress,
+    //	   left_wheel_progress, right_wheel_progress);
   }
 
   motor_set_throttle(left_wheel, 0);
@@ -370,6 +370,7 @@ void shimmy_left(){
 
 /* shimmy right 1 unit */
 void shimmy_right(){
+  printf("shimmying right");
   turn(-SHIMMY_ANGLE);
   move_forward(SHIMMY_FORWARD_DISTANCE_CM);
   turn(SHIMMY_ANGLE);

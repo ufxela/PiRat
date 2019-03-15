@@ -5,6 +5,8 @@
 /* sets up interrupts and all and the length of the cycle
  * Basically sets the frequency and resolution of pwm signals. TODO: write functions which allow
  * user to change time between interrupts and time spent in interrupts!
+ *
+ * IMPORTANT: this should only be called once ever. My cr servo init function currently calls it
  */
 void pwm_output_init();
 

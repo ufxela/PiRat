@@ -21,6 +21,7 @@
 typedef volatile struct cr_servo_motor cr_servo;
 
 /* sets everything up */
+/* this should only be called once ever */
 void cr_servo_module_init();
 
 /* make a new cr_servo (continuous rotation servo) object */
