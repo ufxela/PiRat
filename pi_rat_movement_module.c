@@ -183,8 +183,8 @@ void pi_rat_turn_left(){
   turn(-90);
   timer_delay_ms(100);
 
-  //correct
-  pi_rat_correct_turn();
+  //correct. Actually, I don't want this.
+  //  pi_rat_correct_turn();
 
   //update the direction we're facing
   maze_bearing = (maze_bearing - 1) % 4; 
@@ -195,7 +195,7 @@ void pi_rat_turn_right(){
   turn(90);
   timer_delay_ms(100);
 
-  pi_rat_correct_turn();
+  //  pi_rat_correct_turn();
 
   maze_bearing = (maze_bearing + 1) % 4;
 }
