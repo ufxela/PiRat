@@ -9,8 +9,8 @@
 /* information about the maze */
 const unsigned int MAZE_WIDTH = 6;
 const unsigned int MAZE_HEIGHT = 6;
-const unsigned int MAZE_WALL_LENGTH_CM = 20;
-const unsigned int CORRIDOR_END = 10; //this needs to be adjusted
+const unsigned int MAZE_WALL_LENGTH_CM = 28;
+const unsigned int CORRIDOR_END = 14; //this needs to be adjusted
 
 /* keeps track of where the COR of the car within each block should be i.e. where
  * the Pi Rat should be within a block 
@@ -263,8 +263,18 @@ void test_pi_rat_movement(unsigned int input1, unsigned int input2, unsigned int
   */
 
   /* turning and line following on turns */
+  /*
   while(1){
     pi_rat_turn_left();
+    timer_delay(1);
+    pi_rat_turn_right();
+    timer_delay(1);
+  }
+  */
+
+  /* go in a square pattern */
+  while(1){
+    pi_rat_go_forward();
     timer_delay(1);
     pi_rat_turn_right();
     timer_delay(1);
