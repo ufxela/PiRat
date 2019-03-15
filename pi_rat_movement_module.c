@@ -125,23 +125,18 @@ void pi_rat_correct_line_position_b(int start_line, int end_line){
 }
 
 void pi_rat_correct_lateral(int current_line){
-  printf("correcting lateral");
   int shimmy_number = current_line - CENTER_LINE;
 
   //correct based on shimmy_number reading                                                               
   if(shimmy_number > 0){
-    printf("shimmy number > 0");
     for(int i = 0; i < shimmy_number; i++){
-      printf("about to shimmy right");
-      shimmy_right();
-      printf("shimmy right");
+      shimmy_left();
       timer_delay_ms(100);
     }
   }else{
     printf("shimmy_number <= 0");
     for(int i = 0; i < -1*shimmy_number; i++){
-      shimmy_left();
-      printf("shimmy left");
+      shimmy_right();
       timer_delay_ms(100);
     }
   } 
@@ -223,6 +218,6 @@ void test_pi_rat_movement(unsigned int input1, unsigned int input2, unsigned int
     int line_position = pi_rat_line_position();
     printf("line detected at %d \n", line_position);
     pi_rat_correct_lateral(line_position);
-    timer_delay(1);
+    timer_delay(3);
   }
 }

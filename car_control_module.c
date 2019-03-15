@@ -78,18 +78,6 @@ static void update_wheel_positions(){
   }
 }
 
-static int get_angle_average(wheel * wheel){
-  int total = 0;
-  for(int i = 0; i < 5; i++){
-    int raw = pwm_input_get_angle(wheel->input_pin);
-    while(raw >= 400){ //make sure it's not the invalid 10000 data point
-      raw = pwm_input_get_angle(wheel->input_pin);
-    }
-    total+=raw;
-  }
-  return total / 5;
-}
-
 static void motor_set_throttle(wheel * wheel, int throttle){
     cr_servo_go_to_throttle(wheel->motor, throttle);
 }
@@ -371,9 +359,10 @@ void shimmy_left(){
 /* shimmy right 1 unit */
 void shimmy_right(){
   printf("shimmying right");
-  turn(-SHIMMY_ANGLE);
+  turn(-SHIMMY_ANGLE - 2); //I'm over turning for some reason, this is a quick fix.
+  //should probably check out throttles later
   move_forward(SHIMMY_FORWARD_DISTANCE_CM);
-  turn(SHIMMY_ANGLE);
+  turn(SHIMMY_ANGLE + 2);
   move_forward(-SHIMMY_BACKWARDS_DISTANCE_CM);
 }
 
