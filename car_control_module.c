@@ -344,25 +344,26 @@ void turn(int degrees){
 /* values of rotation and forward movement need to be adjusted to give proper behavior */
 void shimmy_left(){
   //rotate left
-  turn(SHIMMY_ANGLE);
+  turn(SHIMMY_ANGLE); 
 
   //move forward
   move_forward(SHIMMY_FORWARD_DISTANCE_CM);
 
   //rotate right
-  turn(-SHIMMY_ANGLE);
+  turn(-SHIMMY_ANGLE - 1);
 
   //move back (move back cos(SHIMMY ANGLE) * SHIMMY_FORWARD_DISTANCE
   move_forward(-SHIMMY_BACKWARDS_DISTANCE_CM);
 }
 
+/*I think my left and right are mixed up lol */
 /* shimmy right 1 unit */
 void shimmy_right(){
   printf("shimmying right");
-  turn(-SHIMMY_ANGLE - 2); //I'm over turning for some reason, this is a quick fix.
+  turn(-SHIMMY_ANGLE); 
   //should probably check out throttles later
   move_forward(SHIMMY_FORWARD_DISTANCE_CM);
-  turn(SHIMMY_ANGLE + 2);
+  turn(SHIMMY_ANGLE - 3); //comphensate for over turning
   move_forward(-SHIMMY_BACKWARDS_DISTANCE_CM);
 }
 
