@@ -146,7 +146,8 @@ void pi_rat_correct_angle(int start_line, int end_line){
   int lateral_shift = end_line - start_line;
   double sin_of_turn_angle = lateral_shift / MAZE_WALL_LENGTH_CM;
 
-  int angle = (int) asin(sin_of_turn_angle) * 180 / 3.14; //convert from radians to degrees      
+  int angle = (int) asin(sin_of_turn_angle) * 200 / 3.14; //convert from radians to degrees 
+  //200 and not 180, because it's better to over correct than under correct I think...
   
   turn(angle);
   timer_delay_ms(100);
@@ -214,10 +215,18 @@ void test_pi_rat_movement(unsigned int input1, unsigned int input2, unsigned int
   timer_delay(5);
 
   //line correction test
+  /*
   while(1){
     int line_position = pi_rat_line_position();
     printf("line detected at %d \n", line_position);
     pi_rat_correct_lateral(line_position);
     timer_delay(3);
+  }
+  */
+  while(1){
+    pi_rat_go_forward();
+    timer_delay(1);
+    pi_rat_go_back();
+    timer_delay(1);
   }
 }

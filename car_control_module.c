@@ -121,6 +121,8 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
   left_wheel->rotations = 0;
   right_wheel->rotations = 0;
 
+  timer_delay_ms(100);
+
   left_wheel->relative_angle = get_angle(left_wheel); //used get_angle_average before, screwed thigns up
   right_wheel->relative_angle = get_angle(right_wheel);
 
@@ -143,7 +145,7 @@ void step_forward(int degrees){
   update_wheel_positions();
   
   /* master throttle doesn't change, slave_throttle adjusts based on wheel positions */
-  int master_throttle = left_wheel->forwards_throttle;
+  int master_throttle = left_wheel->forwards_throttle - 2; //trim
   int slave_throttle = right_wheel->forwards_throttle;
 
   /* the angles where we want to end up */
