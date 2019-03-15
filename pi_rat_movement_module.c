@@ -147,8 +147,6 @@ void pi_rat_correct_angle(int start_line, int end_line){
 
   int angle = (int) (asin(sin_of_turn_angle) * 180.0 / 3.14); //convert from radians to degrees 
 
-  printf("angle: %d", angle);
-  
   turn(angle);
   timer_delay_ms(100);
 }

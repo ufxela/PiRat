@@ -196,8 +196,6 @@ void step_forward(int degrees){
 
     /* print some debugging information to console */
     bias += left_wheel_progress-right_wheel_progress;
-    //    printf("bias: %d, difference: %d, wheel1 position: %d, wheel2 positon: %d \n", bias, left_wheel_progress-right_wheel_progress,
-    //	   left_wheel_progress, right_wheel_progress);
   }
   /* once the loop finishes, stop */
   motor_set_throttle(left_wheel, 0);
@@ -255,8 +253,6 @@ void step_backward(int degrees){
     }
 
     bias += left_wheel_progress-right_wheel_progress;
-    //    printf("bias: %d, difference: %d, wheel1 position: %d, wheel2 positon: %d \n", bias, left_wheel_progress-right_wheel_progress,
-    //	   left_wheel_progress, right_wheel_progress);
   }
 
   motor_set_throttle(left_wheel, 0);
