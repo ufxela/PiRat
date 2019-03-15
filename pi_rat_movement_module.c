@@ -22,6 +22,12 @@ const unsigned int CENTER_OF_ROTATION_IN_BLOCK_Y_MM = 100; //measured in mm
 const unsigned int ULTRASONIC_SENSOR_X_MM = 100;
 const unsigned int ULTRASONIC_SENSOR_Y_MM = 100;
 
+/* the angle between each line sensor.
+ * calculated as follows: 1.2 cm between sensors, 7 cm from center of rotation to sensors
+ * implies arcsin(1.2/7) = 9.8 degrees
+ */
+const unsigned int ANGLE_PER_SENSOR = 10;
+
 /* where the center line is */
 const unsigned int CENTER_LINE = 3;
 
@@ -195,7 +201,10 @@ void pi_rat_turn_right(){
 }
 
 void pi_rat_correct_turn(){
-  //if the pi rat after the turn isn't centered on the new line, spin until it is
+  //ideally, the pi rat's line reader should be centered on the line. 
+  int line_position = pi_rat_line_position();
+  int correctional_rotation = (line_position - CENTER_LINE) * ANGLE_PER_SENSOR; //sign may be off
+  turn(correctional_rotation);
 }
 
 int pi_rat_get_x_coord(){
