@@ -251,10 +251,22 @@ void test_pi_rat_movement(unsigned int input1, unsigned int input2, unsigned int
     timer_delay(3);
   }
   */
+
+  /* test forwards/backwards line following */
+  /*
   while(1){
     pi_rat_go_forward();
     timer_delay(1);
     pi_rat_go_back();
+    timer_delay(1);
+  }
+  */
+
+  /* turning and line following on turns */
+  while(1){
+    pi_rat_turn_left();
+    timer_delay(1);
+    pi_rat_turn_right();
     timer_delay(1);
   }
 }
