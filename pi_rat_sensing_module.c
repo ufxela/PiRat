@@ -67,7 +67,9 @@ int pi_rat_line_position(){
   int in_a_row = 0;
   
   int line_pos = -1;
-  //make sure we get 5 of the same reading in a row for accuracy
+  //make sure we get 5 of the same reading in a row for accuracy.
+  //this is bad because what if we're right in the middle. Will loop infinitely.
+  //A better practice is to use the mode as the measure of center
   while(in_a_row < NUM_LINE_READINGS){
     //if we're at an invalid line position
     if(line_pos == -1){
