@@ -12,6 +12,8 @@ static  int wheel_circumference_mm; //measured in mm
 
 /* shimmy constants, configures shimmy unit to be equal to distance betwee
  * line sensors
+ * 
+ * These values need to be calibrated for each car
  */
 static const unsigned int SHIMMY_ANGLE = 15;
 static const unsigned int SHIMMY_FORWARD_DISTANCE_CM = 4;
@@ -19,6 +21,7 @@ static const unsigned int SHIMMY_FORWARD_DISTANCE_CM = 4;
 static const unsigned int SHIMMY_BACKWARDS_DISTANCE_CM = 4;
 
 /* for updating angles */
+/* I don't think I use this */
 static const unsigned int MAX_ANGLE_TRIES = 20;
 
 static wheel * left_wheel;
@@ -107,7 +110,7 @@ void car_control_module_init(unsigned int input1, unsigned int input2, unsigned 
   cr_servo_auto_setup(right_wheel->motor, 1509, 1286, 1732);
 
   left_wheel->forwards_throttle = 22; //default throttles
-  right_wheel->forwards_throttle = -24;
+  right_wheel->forwards_throttle = -24; //these values need to be calibrated for each car
 
   left_wheel->backwards_throttle = -23; //prevous -21, worked to go backwards
   right_wheel->backwards_throttle = 23; //previous 20
