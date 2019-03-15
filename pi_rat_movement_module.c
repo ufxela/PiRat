@@ -4,11 +4,13 @@
 #include "printf.h"
 #include "pi_rat_sensing_module.h"
 #include "pi_rat_movement_module.h"
+#include "ultrasonic_module.h"
 
 /* information about the maze */
 const unsigned int MAZE_WIDTH = 6;
 const unsigned int MAZE_HEIGHT = 6;
 const unsigned int MAZE_WALL_LENGTH_CM = 20;
+const unsigned int CORRIDOR_END = 10; //this needs to be adjusted
 
 /* keeps track of where the COR of the car within each block should be i.e. where
  * the Pi Rat should be within a block 
@@ -96,6 +98,25 @@ void pi_rat_go_back(){
     maze_x_cord++;
   }else{
     maze_y_cord++;
+  }
+}
+
+void pi_rat_go_to_corridor_end(){
+  int raw_distance_corridor_end = get_ultrasonic_mean(5); //this may not be the best way to get this...
+  int corridor_distance_cm = raw_distance_corridor_end / 378; //covert to CM
+
+  int distance_to_move = corridor_distance_cm - CORRIDOR_END;
+
+  if(distance_to_move > 0){
+    int start_line_position = pi_rat_line_position();
+    move_forward(distance_to_move);
+    int end_line_position = pi_rat_line_position();
+    pi_rat_correct_line_position_f(start_line_position, end_line_position);
+  }else{
+    int start_line_position = pi_rat_line_position();
+    move_forward(distance_to_move);
+    int end_line_position = pi_rat_line_position();
+    pi_rat_correct_line_position_b(start_line_position, end_line_position);
   }
 }
 
