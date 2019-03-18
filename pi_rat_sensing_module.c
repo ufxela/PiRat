@@ -4,6 +4,7 @@
 #include "timer.h"
 #include "car_control_module.h"
 #include "printf.h"
+
 /* 20cm to inches = 7.4 inches * 149 us/inch = 1173. I'll give it a bit of extra room as well */
 const unsigned int WALL_THRESHOLD_US = 2000; //threshold to determine if there is a wall or not. 
 const unsigned int NUM_LINE_READINGS = 3;
@@ -27,6 +28,7 @@ static int is_there_a_wall(){
   for(int i = 0; i < 10; i++){
     if(get_ultrasonic_mean(1) <= WALL_THRESHOLD_US){
       wall_yes_count++;
+      printf("%d", get_ultrasonic_mean(1));
     }
   }
   if(wall_yes_count >= 7){
@@ -38,7 +40,7 @@ static int is_there_a_wall(){
 
 int pi_rat_get_walls(){
   int walls_result = 0;
-  
+  printf("getting walls");  
   //check each of the three walls
   servo_go_to_angle(ultrasonic_pan, 0);
   timer_delay_ms(500);

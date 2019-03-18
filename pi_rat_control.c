@@ -78,13 +78,14 @@ void pi_rat_maze_wander(){
 }
 
 void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){
-  while(x_start!= x_end && y_start != y_end){
+  while(x_start != x_end || y_start != y_end){
     int walls = pi_rat_get_walls();
-    if(walls & 0b1){
+    printf("walls: %d", walls);
+    if(!(walls & 0b1)){
       pi_rat_turn_left();
-    }else if(walls & 0b10){
+    }else if(!(walls & 0b10)){
       /*do nothing, we're already facing forward */
-    }else if(walls & 0b100){
+    }else if(!(walls & 0b100)){
       pi_rat_turn_right();
     }else{ //no path, need to backtrack, turn 180
       pi_rat_turn_right();

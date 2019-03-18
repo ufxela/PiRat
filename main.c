@@ -182,7 +182,7 @@ int main(void)
   timer_delay(5);
   pi_rat_init(GPIO_PIN18, GPIO_PIN21, GPIO_PIN20, GPIO_PIN16, ULTRASONIC_TRIGGER,
 	      ULTRASONIC_ECHO, GPIO_PIN12);
-  pi_rat_wander(0,0,2,2);
+  pi_rat_wander(0,0,1,1);
 
 
   return 1;
