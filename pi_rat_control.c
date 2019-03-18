@@ -21,7 +21,7 @@ void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_e
   /* at end, traverse maze solution back and forth */
 }
 
-void recursive_maze_solver(){
+static void recursive_maze_solver(){
   /* base case: we're at x_end, y_end. Then stop. */ 
 
   /* get all possible moves */
@@ -35,3 +35,7 @@ void recursive_maze_solver(){
   /* repeat for all possible moves */
 }
 
+/* just wanders around the maze, without solving it yet, epsilon steps */
+void pi_rat_maze_wander(){
+
+}
