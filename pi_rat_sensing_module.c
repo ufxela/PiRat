@@ -5,7 +5,7 @@
 #include "car_control_module.h"
 #include "printf.h"
 /* 20cm to inches = 7.4 inches * 149 us/inch = 1173. I'll give it a bit of extra room as well */
-const unsigned int WALL_THRESHOLD_US = 1500; //threshold to determine if there is a wall or not. 
+const unsigned int WALL_THRESHOLD_US = 2000; //threshold to determine if there is a wall or not. 
 const unsigned int NUM_LINE_READINGS = 3;
 
 servo * ultrasonic_pan;
@@ -97,6 +97,7 @@ int pi_rat_get_line_sensor_dist_mm(){
 }
 
 void pi_rat_sensing_test(unsigned int trigger_pin, unsigned int echo_pin, unsigned int servo_pin){
+  pwm_output_init();
   pi_rat_sensing_module_init(trigger_pin, echo_pin, servo_pin);
   while(1){
     printf("Line position: %d ", pi_rat_line_position());

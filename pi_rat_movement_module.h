@@ -11,7 +11,8 @@
 #define PI_RAT_MOVEMENT_MODULE_H
 
 /* sets everything up */
-void pi_rat_movement_init();
+void pi_rat_movement_init(unsigned int input1, unsigned int input2, unsigned int output1,
+                          unsigned int output2);
 
 /* goes forward one step in the maze 
  * measures line position before movement and then

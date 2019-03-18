@@ -245,7 +245,7 @@ int pi_rat_get_wall_length(){
 void pi_rat_position_change(int direction){
   int valid_change = 1;
   /* first, make the bearing correct */
-  while(pi_rat_get_bearing() != change){
+  while(pi_rat_get_bearing() != direction){
     pi_rat_turn_right(); //may want to make this smarter
   }
     

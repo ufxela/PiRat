@@ -16,6 +16,7 @@
 #include "line_follower_module.h"
 #include "pi_rat_sensing_module.h"
 #include "pi_rat_movement_module.h"
+#include "pi_rat_control.h"
 
 const unsigned int ULTRASONIC_TRIGGER = GPIO_PIN6;
 const unsigned int ULTRASONIC_ECHO = GPIO_PIN5;
@@ -170,9 +171,18 @@ int main(void)
   */
 
   /* test movement module */
-
+  /*
   test_pi_rat_movement(GPIO_PIN18, GPIO_PIN21, GPIO_PIN20, GPIO_PIN16, ULTRASONIC_TRIGGER, 
 		       ULTRASONIC_ECHO, GPIO_PIN12);
+  */
+
+  /* test maze wandering */
+
+  printf("beginning test in 5 seconds \n");
+  timer_delay(5);
+  pi_rat_init(GPIO_PIN18, GPIO_PIN21, GPIO_PIN20, GPIO_PIN16, ULTRASONIC_TRIGGER,
+	      ULTRASONIC_ECHO, GPIO_PIN12);
+  pi_rat_wander(0,0,2,2);
 
 
   return 1;

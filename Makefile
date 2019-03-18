@@ -1,5 +1,5 @@
 NAME = main
-OBJECTS = ultrasonic_module.o pwm_output_module.o pwm_input_module.o servo_module.o cr_servo_module.o car_control_module.o line_follower_module.o pi_rat_movement_module.o pi_rat_sensing_module.o #includes all the modules that I made into compilation
+OBJECTS = ultrasonic_module.o pwm_output_module.o pwm_input_module.o servo_module.o cr_servo_module.o car_control_module.o line_follower_module.o pi_rat_movement_module.o pi_rat_sensing_module.o pi_rat_control.o #includes all the modules that I made into compilation
 
 CFLAGS  = -I$(CS107E)/include -g -Wall -Wpointer-arith
 CFLAGS += -Og -std=c99 -ffreestanding
