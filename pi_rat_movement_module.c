@@ -40,9 +40,9 @@ unsigned int maze_x_cord;
 unsigned int maze_y_cord;
 
 /* a bearing of zero is the facing to the left
- * 1 = forwards
+ * 1 = forwards (up)
  * 2 = right
- * 3 = backwards
+ * 3 = backwards (down)
  */
 unsigned int maze_bearing;
 
@@ -241,6 +241,20 @@ int pi_rat_get_maze_width(){
 int pi_rat_get_wall_length(){
   return MAZE_WALL_LENGTH_CM;
 }
+
+void pi_rat_position_change(int direction){
+  int valid_change = 1;
+  /* first, make the bearing correct */
+  while(pi_rat_get_bearing() != change){
+    pi_rat_turn_right(); //may want to make this smarter
+  }
+    
+  /* then, go forward */
+  if(valid_change){
+    pi_rat_go_forward();
+  }
+}
+
 
 void test_pi_rat_movement(unsigned int input1, unsigned int input2, unsigned int output1, 
 			  unsigned int output2, unsigned int trigger, unsigned int echo,
