@@ -7,20 +7,9 @@
 #include "ultrasonic_module.h"
 
 /* information about the maze */
-const unsigned int MAZE_WIDTH = 6;
-const unsigned int MAZE_HEIGHT = 6;
+unsigned int MAZE_WIDTH = 6;
+unsigned int MAZE_HEIGHT = 6;
 const unsigned int MAZE_WALL_LENGTH_CM = 28;
-const unsigned int CORRIDOR_END = 14; //this needs to be adjusted
-
-/* keeps track of where the COR of the car within each block should be i.e. where
- * the Pi Rat should be within a block 
- */
-const unsigned int CENTER_OF_ROTATION_IN_BLOCK_X_MM = 100; //is the middle of block side length
-const unsigned int CENTER_OF_ROTATION_IN_BLOCK_Y_MM = 100; //measured in mm
-
-/* keeps track of where ultrasonic sensor within the block is / should be */
-const unsigned int ULTRASONIC_SENSOR_X_MM = 100;
-const unsigned int ULTRASONIC_SENSOR_Y_MM = 100;
 
 /* the angle between each line sensor.
  * calculated as follows: 1.2 cm between sensors, 7 cm from center of rotation to sensors
@@ -255,6 +244,17 @@ void pi_rat_position_change(int direction){
   }
 }
 
+void maze_set_width(int width){
+  MAZE_WIDTH = width;
+}
+
+void maze_set_height(int height){
+  MAZE_HEIGHT = height;
+}
+
+void maze_set_bearing(int bearing){
+  maze_bearing = bearing;
+}
 
 void test_pi_rat_movement(unsigned int input1, unsigned int input2, unsigned int output1, 
 			  unsigned int output2, unsigned int trigger, unsigned int echo,

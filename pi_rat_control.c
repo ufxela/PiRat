@@ -70,9 +70,9 @@ void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_e
   y_curr = y_start;
   x_final = x_end;
   y_final = y_end;
-
-  /*Todo: write function in pi rat movement that allows bearing to be updated */
-  /*Todo: write fucntion in pi rat movement that allows for the maze dimensions to be updated */
+  maze_set_bearing(bearing);
+  maze_set_width(maze_width);
+  maze_set_height(maze_height);
 
   /* call recursive helper */
   recursive_maze_solver();

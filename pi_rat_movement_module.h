@@ -101,4 +101,11 @@ void test_pi_rat_movement(unsigned int input1, unsigned int input2, unsigned int
  */
 void pi_rat_position_change(int direction);
 
+/* setter functions */
+void maze_set_width(int width);
+
+void maze_set_height(int height);
+
+void maze_set_bearing(int bearing);
+
 #endif
