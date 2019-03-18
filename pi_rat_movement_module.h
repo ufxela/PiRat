@@ -95,4 +95,9 @@ void test_pi_rat_movement(unsigned int input1, unsigned int input2, unsigned int
                           unsigned int output2, unsigned int trigger, unsigned int echo,
                           unsigned int pan);
 
+/* will move pi rat up (0), right (1), down (2) or left (3) in the maze
+ * depending on what change (int) is. 
+ */
+void pi_rat_position_change(int change);
+
 #endif
