@@ -6,7 +6,7 @@
 #include "printf.h"
 
 /* 20cm to inches = 7.4 inches * 149 us/inch = 1173. I'll give it a bit of extra room as well */
-const unsigned int WALL_THRESHOLD_US = 2000; //threshold to determine if there is a wall or not. 
+const unsigned int WALL_THRESHOLD_US = 1800; //threshold to determine if there is a wall or not. 
 const unsigned int NUM_LINE_READINGS = 3;
 
 servo * ultrasonic_pan;

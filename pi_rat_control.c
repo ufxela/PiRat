@@ -82,11 +82,11 @@ void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){
     int walls = pi_rat_get_walls();
     printf("walls: %d", walls);
     if(!(walls & 0b1)){
-      pi_rat_turn_left();
+      pi_rat_turn_right();
     }else if(!(walls & 0b10)){
       /*do nothing, we're already facing forward */
     }else if(!(walls & 0b100)){
-      pi_rat_turn_right();
+      pi_rat_turn_left();
     }else{ //no path, need to backtrack, turn 180
       pi_rat_turn_right();
       pi_rat_turn_right();
