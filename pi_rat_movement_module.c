@@ -194,7 +194,7 @@ void pi_rat_correct_angle(int start_line, int end_line){
 
 void pi_rat_turn_left(){
   //do the turn
-  turn(-93); //trimmed, to make sure turns enough
+  turn(93); //trimmed, to make sure turns enough
   timer_delay_ms(100);
 
   //correct. Actually, I don't want this.
@@ -206,7 +206,7 @@ void pi_rat_turn_left(){
 
 /* very similar to above function */
 void pi_rat_turn_right(){
-  turn(93); //isn't turning enough, so added that trim
+  turn(-93); //isn't turning enough, so added that trim
   timer_delay_ms(100);
   pi_rat_correct_turn();
   maze_bearing = (maze_bearing + 1) % 4;

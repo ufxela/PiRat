@@ -38,15 +38,6 @@ void pi_rat_init(unsigned int input1, unsigned int input2, unsigned int output1,
   timer_delay_ms(100);
 }
 
-void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_end, 
-		       int maze_width, int maze_height){
-  /* initialize everything */
-
-  /* call recursive helper */
-
-  /* at end, traverse maze solution back and forth */
-}
-
 /* gets surroundings and updates maze data structure */
 static void update_maze(){
 
@@ -65,11 +56,19 @@ static void recursive_maze_solver(){
      * This means both physically making the movement as well as recording it into the path
      */
     
-    /* unpick that move by reversing it as well as deleting it from the path */
-
-
-    
+    /* unpick that move by reversing it as well as deleting it from the path */    
   }
+  return;
+}
+
+void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_end, 
+		       int maze_width, int maze_height){
+  /* initialize everything */
+
+  /* call recursive helper */
+  recursive_maze_solver();
+
+  /* at end, traverse maze solution back and forth */
 }
 
 /* just wanders around the maze, without solving it yet, epsilon steps */
@@ -80,13 +79,12 @@ void pi_rat_maze_wander(){
 void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){
   while(x_start != x_end || y_start != y_end){
     int walls = pi_rat_get_walls();
-    printf("walls: %d", walls);
     if(!(walls & 0b1)){
-      pi_rat_turn_right();
+      pi_rat_turn_left();
     }else if(!(walls & 0b10)){
       /*do nothing, we're already facing forward */
     }else if(!(walls & 0b100)){
-      pi_rat_turn_left();
+      pi_rat_turn_right();
     }else{ //no path, need to backtrack, turn 180
       pi_rat_turn_right();
       pi_rat_turn_right();
