@@ -1,5 +1,8 @@
 resources:
 
+3d printing/laser cutting
+      -lab64
+
 Pat's ultrasonic sensor
       -just for conversion for inches / reference. Didn't use any of his code
 
