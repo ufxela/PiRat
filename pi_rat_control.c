@@ -3,13 +3,13 @@
 #include "pi_rat_movement_module.h"
 #include "pi_rat_sensing_module.h"
 
-struct maze_node{
+typedef struct maze_node{
   int visited; //0 for no 1 for yes
   int left; //only makes sense if visited is 1. 1 for wall, 0 for no wall
   int up;
   int right;
   int down;
-};
+} node;
 
 /* needs some internal data structure to keep track of the Pi Rat's path */
 /* path stores as an array the moves made. 0 is go left, 1 is go forwards, 2 go right, 3 go back */
@@ -23,7 +23,7 @@ int path_length;
  */
 
 /* 2D array of maze_nodes. Very similar to frame buffer 2d array */
-struct maze_node** maze;
+void * maze;
 
 int x_final;
 int y_final;
@@ -46,6 +46,7 @@ static void update_maze(){
 static void recursive_maze_solver(){
   if(x_curr == x_final && y_curr == y_final){
     /* base case: we've solved the maze */
+    return; 
   }else{ /* recursive case: explore, backtracking */
     update_maze();
     
@@ -64,16 +65,20 @@ static void recursive_maze_solver(){
 void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_end, 
 		       int maze_width, int maze_height){
   /* initialize everything */
+  maze = malloc(sizeof(struct maze_node) * maze_width * maze_height);
+  x_curr = x_start;
+  y_curr = y_start;
+  x_final = x_end;
+  y_final = y_end;
+
+  /*Todo: write function in pi rat movement that allows bearing to be updated */
+  /*Todo: write fucntion in pi rat movement that allows for the maze dimensions to be updated */
 
   /* call recursive helper */
   recursive_maze_solver();
 
   /* at end, traverse maze solution back and forth */
-}
-
-/* just wanders around the maze, without solving it yet, epsilon steps */
-void pi_rat_maze_wander(){
-
+  
 }
 
 void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){
