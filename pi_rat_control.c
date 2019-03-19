@@ -85,24 +85,88 @@ static void update_maze(){
   /* if we've visited the node before, we don't need to do anything */
 }
 
-static void recursive_maze_solver(){
+/* returns true if maze path is found */
+static bool recursive_maze_solver(){
   /* get our current position */
   x_curr = pi_rat_get_x_cord();
   y_curr = pi_rat_get_y_cord();
 
+  /* probably need another base case for if we've visited the node before */
   /* base case: we've solved the maze */
   if(x_curr == x_final && y_curr == y_final){
-    return; 
+    return true; 
   }else{ /* recursive case: explore, backtracking */
     update_maze();
     
-    /* get all possible moves */
-    
+    /* get access to possible moves at current state */
+    /* this code can probably be reduced somehow, as I do the exact thing in the update maze function */
+    Maze_Node * (*current_maze)[maze_square_dimension] = (Maze_Node * (*)[maze_square_dimension]) maze;
+    Maze_Node * current_node = current_maze[y_curr][x_curr];
+
     /* pick one possible move and perform it 
      * This means both physically making the movement as well as recording it into the path
      */
+    /* this is super ugly, I should have put more thought into my maze data structure. oh well */
+    if(current_node->left == 0){
+      /* execute move */
+      pi_rat_position_change(0);
+
+      /* add move to path */
+      path[path_length] = 0;
+      path_length++; //should this check if path is too big?
+
+      /* recurse */
+      if(recursive_maze_solver()){
+	return true;
+      }
+
+      /* backtrack (undo move, remove move from path) */
+      pi_rat_position_change(2); //0 + 2 (mod 4)
+      path_length--;
+    }
+    if(current_node->up == 0){
+      pi_rat_position_change(1);
+
+      path[path_length] = 1;
+      path_length++;
+
+      if(recursive_maze_solver()){
+	return true;
+      }
+
+      pi_rat_position_change(3);
+      path_length--;
+    }
+
+    if(current_node->right == 0){
+      pi_rat_position_change(2);
+
+      path[path_length] = 2;
+      path_length++;
+
+      if(recursive_maze_solver()){
+	return true;
+      }
     
-    /* unpick that move by reversing it as well as deleting it from the path */    
+      pi_rat_position_change(0);
+      path_length--;
+    }
+    if(current_node->down == 0){
+      pi_rat_position_change(3);
+
+      path[path_length] = 3;
+      path_length++;
+    
+      if(recursive_maze_solver()){
+	return true;
+      }
+
+      pi_rat_position_change(1);
+      path_length--;
+    }
+    
+    /* nothing was found */
+    return false;
   }
   return;
 }
@@ -110,6 +174,8 @@ static void recursive_maze_solver(){
 void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_end, 
 		       int maze_width, int maze_height){
   /* initialize everything */
+  path = malloc(4 * maze_width*maze_height); //max size of path is maze_width*maze_height
+  path_length = 0;
   maze = malloc(sizeof(struct maze_node) * maze_width * maze_height);
   memset(maze, 0, sizeof(struct maze_node) * maze_width * maze_height);
   x_curr = x_start;
