@@ -120,6 +120,10 @@ void pi_rat_correct_line_position(int start_line, int end_line){
   pi_rat_correct_angle(start_line, end_line);
 
   pi_rat_correct_lateral(); 
+
+  /* ideally after this, it should add some forward movement to make up for the 
+   * lateral movement's contamination of forward movement
+   */
 }
 
 void pi_rat_correct_lateral(){
