@@ -32,9 +32,6 @@ void pi_rat_go_forward();
  */
 void pi_rat_go_back();
 
-/* goes to end of corridor, by making measurements with the ultrasonic sensor to determine 
- * how far to go.
- */
 void pi_rat_go_to_corridor_end();
 
 /* turns left 90 degrees to setup exploration of a left corridor 

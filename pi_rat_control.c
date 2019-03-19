@@ -2,6 +2,8 @@
 #include "timer.h"
 #include "pi_rat_movement_module.h"
 #include "pi_rat_sensing_module.h"
+#include "malloc.h"
+#include "strings.h"
 
 typedef struct maze_node{
   int visited; //0 for no 1 for yes

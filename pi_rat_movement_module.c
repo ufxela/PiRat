@@ -109,25 +109,6 @@ void pi_rat_go_back(){
   }
 }
 
-void pi_rat_go_to_corridor_end(){
-  int raw_distance_corridor_end = get_ultrasonic_mean(5); //this may not be the best way to get this...
-  int corridor_distance_cm = raw_distance_corridor_end / 378; //covert to CM
-
-  int distance_to_move = corridor_distance_cm - CORRIDOR_END;
-
-  if(distance_to_move > 0){
-    int start_line_position = pi_rat_line_position();
-    move_forward(distance_to_move);
-    int end_line_position = pi_rat_line_position();
-    pi_rat_correct_line_position_f(start_line_position, end_line_position);
-  }else{
-    int start_line_position = pi_rat_line_position();
-    move_forward(distance_to_move);
-    int end_line_position = pi_rat_line_position();
-    pi_rat_correct_line_position_b(start_line_position, end_line_position);
-  }
-}
-
 /* corrects assumming start_line is the previous point and end is the current point
  * basically, think of it as the forwards motion corrector.
  * with backwards motion, subtle differences.
