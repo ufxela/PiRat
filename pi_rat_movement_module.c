@@ -15,7 +15,7 @@ const unsigned int MAZE_WALL_LENGTH_CM = 28;
  * calculated as follows: 1.2 cm between sensors, 7 cm from center of rotation to sensors
  * implies arcsin(1.2/7) = 9.8 degrees
  */
-const unsigned int ANGLE_PER_SENSOR = 10;
+const unsigned int ANGLE_PER_SENSOR = 12;
 
 /* where the center line is */
 const unsigned int CENTER_LINE = 3;
