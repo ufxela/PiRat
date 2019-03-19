@@ -134,6 +134,9 @@ void pi_rat_correct_line_position_b(int start_line, int end_line){
   pi_rat_correct_lateral(new_line_position);
 }
 
+/* this function should ideally make one movement at a time, then recheck the line position
+ * and then make another movement and repeat until the line is at the correct position 
+ */
 void pi_rat_correct_lateral(int current_line){
   int shimmy_number = current_line - CENTER_LINE;
 
@@ -154,7 +157,7 @@ void pi_rat_correct_lateral(int current_line){
 //correct two times per forward movement
 void pi_rat_correct_angle(int start_line, int end_line){
   int lateral_shift = end_line - start_line;
-  double sin_of_turn_angle = (0.0 + lateral_shift) / (MAZE_WALL_LENGTH_CM * 2); 
+  double sin_of_turn_angle = (0.0 + lateral_shift) * 2 / MAZE_WALL_LENGTH_CM; //every half step, correct 
 
   int angle = (int) (asin(sin_of_turn_angle) * 180.0 / 3.14); //convert from radians to degrees 
 
