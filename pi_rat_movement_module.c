@@ -57,13 +57,13 @@ void pi_rat_go_forward(){
   int end_line_position = pi_rat_line_position();
 
   //correct
-  pi_rat_correct_line_position_f(start_line_position, end_line_position);
+  pi_rat_correct_line_position(start_line_position, end_line_position);
 
   //repeat
   start_line_position = pi_rat_line_position();
   move_forward(MAZE_WALL_LENGTH_CM/2);
   end_line_position = pi_rat_line_position();
-  pi_rat_correct_line_position_f(start_line_position, end_line_position);
+  pi_rat_correct_line_position(start_line_position, end_line_position);
 
   //update position
   if(maze_bearing == 0){
@@ -77,7 +77,9 @@ void pi_rat_go_forward(){
   }
 }
 
-/* very similar to go_forward() */
+/* very similar to go_forward()
+ * I never actually call this function 
+ */
 void pi_rat_go_back(){
   //measure                                                                                         
   int start_line_position = pi_rat_line_position();
@@ -89,13 +91,13 @@ void pi_rat_go_back(){
   int end_line_position = pi_rat_line_position();
 
   //correct (start/end reversed because going backwards flips things                           
-  pi_rat_correct_line_position_b(start_line_position, end_line_position);
+  pi_rat_correct_line_position(end_line_position, start_line_position);
 
   //repeat
   start_line_position = pi_rat_line_position();
   move_forward(-MAZE_WALL_LENGTH_CM/2);
-  pi_rat_line_position();
-  pi_rat_correct_line_position_b(start_line_position, end_line_position);
+  end_line_position = pi_rat_line_position();
+  pi_rat_correct_line_position(end_line_position, start_line_position); //reversed
 
   //update position                                                                                     
   if(maze_bearing == 0){
@@ -113,44 +115,26 @@ void pi_rat_go_back(){
  * basically, think of it as the forwards motion corrector.
  * with backwards motion, subtle differences.
  */
-void pi_rat_correct_line_position_f(int start_line, int end_line){
+void pi_rat_correct_line_position(int start_line, int end_line){
   //correct angle
   pi_rat_correct_angle(start_line, end_line);
 
-  //correct lateral, this breaks if we're going backwards, so a separate case is needed...
-  pi_rat_correct_lateral(end_line);
-
-  //double check shimmy distance (maybe)
-  int new_line_position = pi_rat_line_position(); //ideally, this will be CENTER_LINE
-  pi_rat_correct_lateral(new_line_position); 
+  pi_rat_correct_lateral(); 
 }
 
-void pi_rat_correct_line_position_b(int start_line, int end_line){
-  pi_rat_correct_angle(end_line, start_line); //reversed, cuz angles and stuff
+void pi_rat_correct_lateral(){
+  int current_line = pi_rat_line_position();
 
-  pi_rat_correct_lateral(end_line); //not reversed
-
-  int new_line_position = pi_rat_line_position();
-  pi_rat_correct_lateral(new_line_position);
-}
-
-/* this function should ideally make one movement at a time, then recheck the line position
- * and then make another movement and repeat until the line is at the correct position 
- */
-void pi_rat_correct_lateral(int current_line){
-  int shimmy_number = current_line - CENTER_LINE;
-
-  //correct based on shimmy_number reading                                                               
-  if(shimmy_number > 0){
-    for(int i = 0; i < shimmy_number; i++){
+  /* correct the line */
+  while(current_line != CENTER_LINE){
+    if(current_line > CENTER_LINE){
       shimmy_left();
       timer_delay_ms(100);
-    }
-  }else{
-    for(int i = 0; i < -1*shimmy_number; i++){
+    }else{
       shimmy_right();
       timer_delay_ms(100);
     }
+    current_line = pi_rat_line_position();
   } 
 }
 
