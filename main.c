@@ -166,9 +166,9 @@ int main(void)
   */
 
   /* test sensing module */
-
+  /*
   pi_rat_sensing_test(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO, GPIO_PIN12);
-
+  */
 
   /* test movement module */
   /*
@@ -177,13 +177,12 @@ int main(void)
   */
 
   /* test maze wandering */
-  /*
+
   printf("beginning test in 5 seconds \n");
   timer_delay(5);
   pi_rat_init(GPIO_PIN18, GPIO_PIN21, GPIO_PIN20, GPIO_PIN16, ULTRASONIC_TRIGGER,
 	      ULTRASONIC_ECHO, GPIO_PIN12);
   pi_rat_wander(0,0,0,2); //(0,2) is our destination
-  */
 
   return 1;
 }
