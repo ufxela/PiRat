@@ -91,7 +91,6 @@ static int recursive_maze_solver(){
   x_curr = pi_rat_get_x_cord();
   y_curr = pi_rat_get_y_cord();
 
-  /* probably need another base case for if we've visited the node before */
   /* base case: we've solved the maze */
   if(x_curr == x_final && y_curr == y_final){
     return 1; 
@@ -103,70 +102,76 @@ static int recursive_maze_solver(){
     Maze_Node * (*current_maze)[maze_square_dimension] = (Maze_Node * (*)[maze_square_dimension]) maze;
     Maze_Node * current_node = current_maze[y_curr][x_curr];
 
-    /* pick one possible move and perform it 
-     * This means both physically making the movement as well as recording it into the path
-     */
-    /* this is super ugly, I should have put more thought into my maze data structure. oh well */
-    if(current_node->left == 0){
-      /* execute move */
-      pi_rat_position_change(0);
-
-      /* add move to path */
-      path[path_length] = 0;
-      path_length++; //should this check if path is too big?
-
-      /* recurse */
-      if(recursive_maze_solver()){
-	return 1;
+    /* if we haven't explored this before */
+    if(current_node->visited != 1){
+      /* pick one possible move and perform it 
+       * This means both physically making the movement as well as recording it into the path
+       */
+      /* this is super ugly, I should have put more thought into my maze data structure. oh well */
+      if(current_node->left == 0){
+	/* execute move */
+	pi_rat_position_change(0);
+	
+	/* add move to path */
+	path[path_length] = 0;
+	path_length++; //should this check if path is too big?
+	
+	/* recurse */
+	if(recursive_maze_solver()){
+	  return 1;
       }
-
-      /* backtrack (undo move, remove move from path) */
-      pi_rat_position_change(2); //0 + 2 (mod 4)
-      path_length--;
-    }
-    if(current_node->up == 0){
-      pi_rat_position_change(1);
-
-      path[path_length] = 1;
-      path_length++;
-
-      if(recursive_maze_solver()){
-	return 1;
+	
+	/* backtrack (undo move, remove move from path) */
+	pi_rat_position_change(2); //0 + 2 (mod 4)
+	path_length--;
       }
-
-      pi_rat_position_change(3);
+      if(current_node->up == 0){
+	pi_rat_position_change(1);
+	
+	path[path_length] = 1;
+	path_length++;
+	
+	if(recursive_maze_solver()){
+	  return 1;
+	}
+	
+	pi_rat_position_change(3);
       path_length--;
-    }
-
-    if(current_node->right == 0){
-      pi_rat_position_change(2);
-
-      path[path_length] = 2;
-      path_length++;
-
-      if(recursive_maze_solver()){
-	return 1;
+      }
+      
+      if(current_node->right == 0){
+	pi_rat_position_change(2);
+	
+	path[path_length] = 2;
+	path_length++;
+	
+	if(recursive_maze_solver()){
+	  return 1;
+	}
+	
+	pi_rat_position_change(0);
+	path_length--;
+      }
+      if(current_node->down == 0){
+	pi_rat_position_change(3);
+	
+	path[path_length] = 3;
+	path_length++;
+	
+	if(recursive_maze_solver()){
+	  return 1;
+	}
+	
+	pi_rat_position_change(1);
+	path_length--;
       }
     
-      pi_rat_position_change(0);
-      path_length--;
+      /* nothing was found */
+      return 0; //0 for false
     }
-    if(current_node->down == 0){
-      pi_rat_position_change(3);
 
-      path[path_length] = 3;
-      path_length++;
-    
-      if(recursive_maze_solver()){
-	return 1;
-      }
-
-      pi_rat_position_change(1);
-      path_length--;
-    }
-    
-    /* nothing was found */
-    return 0; //0 for false
+    /* otherwise, if we've been here before, do nothing */
+    return 0;
   }
   return 0; //just in case....
 }
