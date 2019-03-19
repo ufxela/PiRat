@@ -205,9 +205,15 @@ int pi_rat_get_wall_length(){
 
 void pi_rat_position_change(int direction){
   /* first, make the bearing correct */
-  printf("direction: %d", direction);
+  printf("direction: %d ", direction);
   int bearing_change = (pi_rat_get_bearing() - direction) % 4;
-  printf("bearing change: %d", bearing_change);
+
+  /* make bearing_change the least positive representative of it's equivalence class */
+  while(bearing_change < 0){
+    bearing_change += 4;
+  }
+
+  printf("bearing change: %d\n", bearing_change);
   /* fastest way is to turn left */
   if(bearing_change < 3){
     for(int i = 0; i < bearing_change; i++){
