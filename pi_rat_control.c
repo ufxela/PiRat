@@ -50,6 +50,39 @@ static void update_maze(){
   /* put maze into a workable form (a pointer to each row of the maze) */
   Maze_Node * (*current_maze)[maze_square_dimension] = (Maze_Node * (*)[maze_square_dimension]) maze;
   Maze_Node * current_node = current_maze[y_curr][x_curr]; //index by row first then col. 
+
+  /* if we haven't been here before */
+  if(current_node->visited != 1){
+    current_node->visited = 1;
+
+    /* now update walls */
+    int current_bearing = pi_rat_get_bearing();
+    int walls = pi_rat_get_walls(); /* this is the time suck of the function, limited physically */
+    /* this is super ugly */
+    if(current_bearing == 0){
+      current_node->right = 0;
+      current_node->down = (walls & 0b1 == 0b1);
+      current_node->left = (walls & 0b10 == 0b10);
+      current_node ->up = (walls & 0b100 == 0b100);
+    }
+    else if(current_bearing == 1){
+      current_node->down = 0;
+      current_node->left = (walls & 0b1 == 0b1);
+      current_node->up = (walls & 0b10 == 0b10);
+      current_node->right = (walls & 0b100 == 0b100);
+    }else if(current_bearing == 2){
+      current_node->left = 0;
+      current_node->up = (walls & 0b1 == 0b1);
+      current_node->right = (walls & 0b10 == 0b10);
+      current_node->down = (walls & 0b100 == 0b100);
+    }else{
+      current_node->up = 0;
+      current_node->right = (walls & 0b1 == 0b1);
+      current_node->down = (walls & 0b10 == 0b10);
+      current_node->left = (walls & 0b100 == 0b100);
+    }
+  }
+  /* if we've visited the node before, we don't need to do anything */
 }
 
 static void recursive_maze_solver(){
@@ -99,11 +132,11 @@ void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_e
 void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){
   while(x_start != x_end || y_start != y_end){
     int walls = pi_rat_get_walls();
-    if(!(walls & 0b1)){
+    if(walls & 0b1 == 0){
       pi_rat_turn_left();
-    }else if(!(walls & 0b10)){
+    }else if(walls & 0b10 == 0){
       /*do nothing, we're already facing forward */
-    }else if(!(walls & 0b100)){
+    }else if(walls & 0b100 == 0){
       pi_rat_turn_right();
     }else{ //no path, need to backtrack, turn 180
       pi_rat_turn_right();
