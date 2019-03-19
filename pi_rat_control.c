@@ -47,7 +47,9 @@ void pi_rat_init(unsigned int input1, unsigned int input2, unsigned int output1,
 
 /* gets surroundings and updates maze data structure */
 static void update_maze(){
-  
+  /* put maze into a workable form (a pointer to each row of the maze) */
+  Maze_Node * (*current_maze)[maze_square_dimension] = (Maze_Node * (*)[maze_square_dimension]) maze;
+  Maze_Node * current_node = current_maze[y_curr][x_curr]; //index by row first then col. 
 }
 
 static void recursive_maze_solver(){
@@ -111,8 +113,8 @@ void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){
     //execute the forward movement. 
     pi_rat_go_forward();
     timer_delay_ms(100);
-    x_start = pi_rat_get_x_coord();
-    y_start = pi_rat_get_y_coord();
+    x_start = pi_rat_get_x_cord();
+    y_start = pi_rat_get_y_cord();
   }
   
   //once done, spin to indicate success
