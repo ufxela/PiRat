@@ -205,8 +205,9 @@ int pi_rat_get_wall_length(){
 
 void pi_rat_position_change(int direction){
   /* first, make the bearing correct */
+  printf("direction: %d", direction);
   int bearing_change = (pi_rat_get_bearing() - direction) % 4;
-  
+  printf("bearing change: %d", bearing_change);
   /* fastest way is to turn left */
   if(bearing_change < 3){
     for(int i = 0; i < bearing_change; i++){
@@ -274,10 +275,24 @@ void test_pi_rat_movement(unsigned int input1, unsigned int input2, unsigned int
   */
 
   /* go in a square pattern */
+  /*
   while(1){
     pi_rat_go_forward();
     timer_delay(1);
-    pi_rat_turn_right();
+    pi_rat_turn_right(); //for some reason, my turning is reversed here, but it seems to be working
+    //whel maze solving. Maybe my ultrasonic sensor is reversed?
     timer_delay(1);
+  }
+  */
+
+  /* test the new movement function 
+   * 
+   * Should go in a square, counterclockwise
+   */
+  while(1){
+    pi_rat_position_change(1); //go forwards
+    pi_rat_position_change(0); //go left
+    pi_rat_position_change(3); //go back
+    pi_rat_position_change(2); //go right
   }
 }
