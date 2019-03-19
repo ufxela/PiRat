@@ -11,10 +11,14 @@ typedef struct maze_node{
   int up;
   int right;
   int down;
-} node;
+} Maze_Node;
 
 /* needs some internal data structure to keep track of the Pi Rat's path */
 /* path stores as an array the moves made. 0 is go left, 1 is go forwards, 2 go right, 3 go back */
+/* or should I store path as coordinates. A smart way to keep it as an int while doing this
+ * is to store 2 digit numbers, base maze width. the first number can represent the x coordinate and the
+ * second can represent the y coordinate 
+ */
 int * path;
 int path_length;
 
@@ -26,6 +30,7 @@ int path_length;
 
 /* 2D array of maze_nodes. Very similar to frame buffer 2d array */
 void * maze;
+int maze_square_dimension;
 
 int x_final;
 int y_final;
@@ -42,17 +47,20 @@ void pi_rat_init(unsigned int input1, unsigned int input2, unsigned int output1,
 
 /* gets surroundings and updates maze data structure */
 static void update_maze(){
-
+  
 }
 
 static void recursive_maze_solver(){
+  /* get our current position */
+  x_curr = pi_rat_get_x_cord();
+  y_curr = pi_rat_get_y_cord();
+
+  /* base case: we've solved the maze */
   if(x_curr == x_final && y_curr == y_final){
-    /* base case: we've solved the maze */
     return; 
   }else{ /* recursive case: explore, backtracking */
     update_maze();
     
-
     /* get all possible moves */
     
     /* pick one possible move and perform it 
@@ -68,6 +76,7 @@ void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_e
 		       int maze_width, int maze_height){
   /* initialize everything */
   maze = malloc(sizeof(struct maze_node) * maze_width * maze_height);
+  memset(maze, 0, sizeof(struct maze_node) * maze_width * maze_height);
   x_curr = x_start;
   y_curr = y_start;
   x_final = x_end;
@@ -76,11 +85,13 @@ void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_e
   maze_set_width(maze_width);
   maze_set_height(maze_height);
 
+  /* assumes maze is a square */
+  maze_square_dimension = maze_width;
   /* call recursive helper */
   recursive_maze_solver();
 
   /* at end, traverse maze solution back and forth */
-  
+
 }
 
 void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){

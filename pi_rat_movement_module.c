@@ -216,16 +216,20 @@ int pi_rat_get_wall_length(){
 }
 
 void pi_rat_position_change(int direction){
-  int valid_change = 1;
   /* first, make the bearing correct */
-  while(pi_rat_get_bearing() != direction){
-    pi_rat_turn_right(); //may want to make this smarter
+  int bearing_change = (pi_rat_get_bearing() - direction) % 4;
+  
+  /* fastest way is to turn left */
+  if(bearing_change < 3){
+    for(int i = 0; i < bearing_change; i++){
+      pi_rat_turn_left();
+    }
+  }else{ /* fastest route is to turn right */
+    pi_rat_turn_right();
   }
     
   /* then, go forward */
-  if(valid_change){
-    pi_rat_go_forward();
-  }
+  pi_rat_go_forward();
 }
 
 void maze_set_width(int width){
