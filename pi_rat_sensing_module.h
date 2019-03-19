@@ -9,7 +9,8 @@ void pi_rat_sensing_module_init(unsigned int trigger_pin, unsigned int echo_pin,
  * corresponding to it
  * The return value is a 3 bit number, with LSB representing left wall and MSB representing right wall
  * 
- * ex) return of 5 = 101 means there's a left wall, right wall and no center wall
+ * ex1) return of 5 = 101 means there's a left wall, right wall and no center wall
+ * ex2) return of 3 = 011 means left and forward walls
  */
 int pi_rat_get_walls();
 

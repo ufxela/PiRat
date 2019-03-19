@@ -166,15 +166,15 @@ int main(void)
   */
 
   /* test sensing module */
-  /*
+
   pi_rat_sensing_test(ULTRASONIC_TRIGGER, ULTRASONIC_ECHO, GPIO_PIN12);
-  */
+
 
   /* test movement module */
-
+  /*
   test_pi_rat_movement(GPIO_PIN18, GPIO_PIN21, GPIO_PIN20, GPIO_PIN16, ULTRASONIC_TRIGGER, 
 		       ULTRASONIC_ECHO, GPIO_PIN12);
-
+  */
 
   /* test maze wandering */
   /*

@@ -29,8 +29,7 @@ static int is_there_a_wall(){
   for(int i = 0; i < 10; i++){
     if(get_ultrasonic_mean(1) <= WALL_THRESHOLD_US){
       wall_yes_count++;
-      printf("%d", get_ultrasonic_mean(1));
-    }
+   }
   }
   if(wall_yes_count >= 7){
     return 1;
@@ -41,28 +40,22 @@ static int is_there_a_wall(){
 
 int pi_rat_get_walls(){
   int walls_result = 0;
-  printf("getting walls");  
   //check each of the three walls
   servo_go_to_angle(ultrasonic_pan, 0);
-  timer_delay_ms(500);
-  printf("1");
-  if(is_there_a_wall()){
-    walls_result += 1;
-  }
-  printf("2");
-  servo_go_to_angle(ultrasonic_pan, 90);
-  timer_delay_ms(500);
-  printf("3");
-  if(is_there_a_wall()){
-    walls_result += 2;
-  }
-  printf("4");
-  servo_go_to_angle(ultrasonic_pan, 180);
   timer_delay_ms(500);
   if(is_there_a_wall()){
     walls_result += 4;
   }
-  
+  servo_go_to_angle(ultrasonic_pan, 90);
+  timer_delay_ms(500);
+  if(is_there_a_wall()){
+    walls_result += 2;
+  }
+  servo_go_to_angle(ultrasonic_pan, 180);
+  timer_delay_ms(500);
+  if(is_there_a_wall()){
+    walls_result += 1;
+  }  
   return walls_result;
 }
 
@@ -105,6 +98,6 @@ void pi_rat_sensing_test(unsigned int trigger_pin, unsigned int echo_pin, unsign
   while(1){
     printf("Line position: %d ", pi_rat_line_position());
     int walls = pi_rat_get_walls();
-    printf("walls: %d", walls);
+    printf("walls: %d\n", walls);
   }
 }
