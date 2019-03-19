@@ -71,6 +71,8 @@ int pi_rat_get_x_cord();
 
 int pi_rat_get_y_cord();
 
+int pi_rat_get_bearing();
+
 int pi_rat_get_maze_height();
 
 int pi_rat_get_maze_width();
