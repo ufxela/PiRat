@@ -61,32 +61,32 @@ static void update_maze(){
     /* this is super ugly */
     if(current_bearing == 0){
       current_node->right = 0;
-      current_node->down = (walls & 0b1 == 0b1);
-      current_node->left = (walls & 0b10 == 0b10);
-      current_node ->up = (walls & 0b100 == 0b100);
+      current_node->down = ((walls & 0b1) == 0b1);
+      current_node->left = ((walls & 0b10) == 0b10);
+      current_node ->up = ((walls & 0b100) == 0b100);
     }
     else if(current_bearing == 1){
       current_node->down = 0;
-      current_node->left = (walls & 0b1 == 0b1);
-      current_node->up = (walls & 0b10 == 0b10);
-      current_node->right = (walls & 0b100 == 0b100);
+      current_node->left = ((walls & 0b1) == 0b1);
+      current_node->up = ((walls & 0b10) == 0b10);
+      current_node->right = ((walls & 0b100) == 0b100);
     }else if(current_bearing == 2){
       current_node->left = 0;
-      current_node->up = (walls & 0b1 == 0b1);
-      current_node->right = (walls & 0b10 == 0b10);
-      current_node->down = (walls & 0b100 == 0b100);
+      current_node->up = ((walls & 0b1) == 0b1);
+      current_node->right = ((walls & 0b10) == 0b10);
+      current_node->down = ((walls & 0b100) == 0b100);
     }else{
       current_node->up = 0;
-      current_node->right = (walls & 0b1 == 0b1);
-      current_node->down = (walls & 0b10 == 0b10);
-      current_node->left = (walls & 0b100 == 0b100);
+      current_node->right = ((walls & 0b1) == 0b1);
+      current_node->down = ((walls & 0b10) == 0b10);
+      current_node->left = ((walls & 0b100) == 0b100);
     }
   }
   /* if we've visited the node before, we don't need to do anything */
 }
 
-/* returns true if maze path is found */
-static bool recursive_maze_solver(){
+/* returns true (1) if maze path is found */
+static int recursive_maze_solver(){
   /* get our current position */
   x_curr = pi_rat_get_x_cord();
   y_curr = pi_rat_get_y_cord();
@@ -94,7 +94,7 @@ static bool recursive_maze_solver(){
   /* probably need another base case for if we've visited the node before */
   /* base case: we've solved the maze */
   if(x_curr == x_final && y_curr == y_final){
-    return true; 
+    return 1; 
   }else{ /* recursive case: explore, backtracking */
     update_maze();
     
@@ -117,7 +117,7 @@ static bool recursive_maze_solver(){
 
       /* recurse */
       if(recursive_maze_solver()){
-	return true;
+	return 1;
       }
 
       /* backtrack (undo move, remove move from path) */
@@ -131,7 +131,7 @@ static bool recursive_maze_solver(){
       path_length++;
 
       if(recursive_maze_solver()){
-	return true;
+	return 1;
       }
 
       pi_rat_position_change(3);
@@ -145,7 +145,7 @@ static bool recursive_maze_solver(){
       path_length++;
 
       if(recursive_maze_solver()){
-	return true;
+	return 1;
       }
     
       pi_rat_position_change(0);
@@ -158,7 +158,7 @@ static bool recursive_maze_solver(){
       path_length++;
     
       if(recursive_maze_solver()){
-	return true;
+	return 1;
       }
 
       pi_rat_position_change(1);
@@ -166,9 +166,9 @@ static bool recursive_maze_solver(){
     }
     
     /* nothing was found */
-    return false;
+    return 0; //0 for false
   }
-  return;
+  return 0; //just in case....
 }
 
 void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_end, 
@@ -198,11 +198,11 @@ void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_e
 void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){
   while(x_start != x_end || y_start != y_end){
     int walls = pi_rat_get_walls();
-    if(walls & 0b1 == 0){
+    if((walls & 0b1) == 0){
       pi_rat_turn_left();
-    }else if(walls & 0b10 == 0){
+    }else if((walls & 0b10) == 0){
       /*do nothing, we're already facing forward */
-    }else if(walls & 0b100 == 0){
+    }else if((walls & 0b100) == 0){
       pi_rat_turn_right();
     }else{ //no path, need to backtrack, turn 180
       pi_rat_turn_right();
