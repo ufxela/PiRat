@@ -67,9 +67,9 @@ void pi_rat_correct_line_position_b(int start_line, int end_line);
 void pi_rat_correct_turn();
 
 /* a bunch of positioning / maze spec functions */
-int pi_rat_get_x_coord();
+int pi_rat_get_x_cord();
 
-int pi_rat_get_y_coord();
+int pi_rat_get_y_cord();
 
 int pi_rat_get_maze_height();
 

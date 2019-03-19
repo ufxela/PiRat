@@ -191,11 +191,11 @@ void pi_rat_correct_turn(){
   pi_rat_correct_lateral(line_position);
 }
 
-int pi_rat_get_x_coord(){
+int pi_rat_get_x_cord(){
   return maze_x_cord;
 }
 
-int pi_rat_get_y_coord(){
+int pi_rat_get_y_cord(){
   return maze_y_cord;
 }
 
