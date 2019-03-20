@@ -4,6 +4,7 @@
 #include "pi_rat_sensing_module.h"
 #include "malloc.h"
 #include "strings.h"
+#include "printf.h"
 
 typedef struct maze_node{
   int visited; //0 for no 1 for yes
@@ -181,23 +182,44 @@ void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_e
   /* initialize everything */
   path = malloc(4 * maze_width*maze_height); //max size of path is maze_width*maze_height
   path_length = 0;
+
   maze = malloc(sizeof(struct maze_node) * maze_width * maze_height);
   memset(maze, 0, sizeof(struct maze_node) * maze_width * maze_height);
+
   x_curr = x_start;
   y_curr = y_start;
   x_final = x_end;
   y_final = y_end;
+
   maze_set_bearing(bearing);
   maze_set_width(maze_width);
   maze_set_height(maze_height);
 
-  /* assumes maze is a square */
+  /* assumes maze is a square
+   * This is actually not necessary, since PiRat movement module has getter functions for maze dimensions
+   */
   maze_square_dimension = maze_width;
+
   /* call recursive helper */
   recursive_maze_solver();
 
   /* at end, traverse maze solution back and forth */
 
+}
+
+/* a helper function / debugging helper function which prints out the maze to 
+ * make the program more transparent 
+ */
+static void print_maze(){
+  Maze_Node * (*current_maze)[maze_square_dimension] = (Maze_Node * (*)[maze_square_dimension]) maze;
+  for(int i = 0; i < 4; i++){
+    for(int j = 0; j < 4; j++){
+      Maze_Node * current_node = current_maze[i][j];
+      printf("Node %d%d visited: %d\n", i, j, current_node->visited);
+      printf("walls: left %d up %d right %d down %d", current_node->left, current_node->up, 
+	     current_node->right, current_node->down); 
+    }
+  }
 }
 
 void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){
@@ -224,5 +246,24 @@ void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){
   //once done, spin to indicate success
   while(1){
     pi_rat_turn_right();
+  }
+}
+
+void pi_rat_control_test_maze_nodes(){
+  printf("beginning maze node test \n");
+  /* setup a 4x4 maze */
+  maze = malloc(sizeof(struct maze_node) * 4 * 4);
+  memset(maze, 0, sizeof(struct maze_node) * 4 * 4);
+  x_curr = 0;
+  y_curr = 0;
+  for(int i = 0; i < 4; i++){
+    for(int j = 0; j < 4; j++){
+      x_curr = i;
+      y_curr = j;
+      printf("you have 2 seconds to put up the wall(s) \n");
+      timer_delay(2);
+      update_maze();
+      print_maze();
+    }
   }
 }
