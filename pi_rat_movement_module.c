@@ -9,7 +9,7 @@
 /* information about the maze */
 unsigned int MAZE_WIDTH = 6;
 unsigned int MAZE_HEIGHT = 6;
-const unsigned int MAZE_WALL_LENGTH_CM = 28;
+const unsigned int MAZE_WALL_LENGTH_CM = 29;
 
 /* the angle between each line sensor.
  * calculated as follows: 1.2 cm between sensors, 7 cm from center of rotation to sensors
