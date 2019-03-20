@@ -13,4 +13,7 @@ void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_e
 /* just wanders around until end position is reached */
 void pi_rat_wander(int x_start, int y_start, int x_end, int y_end);
 
+/* to help make the program more transparent so I can see what's going on */
+void pi_rat_control_test_maze_nodes();
+
 #endif
