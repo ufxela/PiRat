@@ -119,8 +119,6 @@ static int recursive_maze_solver(){
     return 1; 
   }else{ /* recursive case: explore, backtracking */
     update_maze();
-    print_maze();    
-    print_path();
 
     /* get access to possible moves at current state */
     Maze_Node * current_node = (Maze_Node * )((int *)maze) + 
@@ -157,7 +155,6 @@ static int recursive_maze_solver(){
 	x_curr = pi_rat_get_x_cord();
 	y_curr = pi_rat_get_y_cord();
 	path_length--;
-	print_maze();
       }
     }
     if(current_node->up == 0){
@@ -175,7 +172,6 @@ static int recursive_maze_solver(){
 	if(recursive_maze_solver()){
 	    return 1;
 	}
-	print_maze();
 
 	pi_rat_position_change(3);
 	x_curr = pi_rat_get_x_cord();
@@ -200,7 +196,6 @@ static int recursive_maze_solver(){
 	if(recursive_maze_solver()){
 	  return 1;
 	}
-	print_maze();
 
 	pi_rat_position_change(0);
 	x_curr = pi_rat_get_x_cord();
@@ -229,7 +224,6 @@ static int recursive_maze_solver(){
 	if(recursive_maze_solver()){
 	  return 1;
 	}
-	print_maze();
 
 	pi_rat_position_change(1);
 	x_curr = pi_rat_get_x_cord();
@@ -237,12 +231,7 @@ static int recursive_maze_solver(){
 	path_length--;
       }
     }
-    
-    /* unchose the exploration */
-    //current_node->explored = 0;
-    
-    /* nothing was found */
-    return 0; //0 for false
+    return 0;
   }
   return 0; //just in case....
 }
