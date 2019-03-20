@@ -186,10 +186,17 @@ int main(void)
   */
   
   /* test maze data structure */
+  /*
   pi_rat_init(GPIO_PIN18, GPIO_PIN21, GPIO_PIN20, GPIO_PIN16, ULTRASONIC_TRIGGER, 
               ULTRASONIC_ECHO, GPIO_PIN12);   
   pi_rat_control_test_maze_nodes();
+  */
 
+  /* test the maze solver on a 4x4 maze */
+
+  pi_rat_init(GPIO_PIN18, GPIO_PIN21, GPIO_PIN20, GPIO_PIN16, ULTRASONIC_TRIGGER,
+              ULTRASONIC_ECHO, GPIO_PIN12);                                           
+  pi_rat_solve_maze(0, 0, 1, 2, 2, 4, 4); // solution is at (2,2), start is at (0,0), facing forwards
 
   return 1;
 }

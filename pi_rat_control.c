@@ -8,6 +8,7 @@
 
 typedef struct maze_node{
   int visited; //0 for no 1 for yes
+  int explored; //0 for no, 1 for yes, useful for backtracking
   int left; //only makes sense if visited is 1. 1 for wall, 0 for no wall
   int up;
   int right;
@@ -37,6 +38,21 @@ int x_final;
 int y_final;
 int x_curr;
 int y_curr;
+
+/* a helper function / debugging helper function which prints out the maze to 
+ * make the program more transparent 
+ */
+static void print_maze(){
+  for(int i = 0; i < 4; i++){
+    for(int j = 0; j < 4; j++){
+      Maze_Node * current_node = (Maze_Node *) ((int *)maze) + 
+	sizeof(Maze_Node)*(i*maze_square_dimension + j);
+      printf("Node %d%d visited: %d ", i, j, current_node->visited);
+      printf("walls: left %d up %d right %d down %d\n", current_node->left, current_node->up, 
+	     current_node->right, current_node->down); 
+    }
+  }
+}
 
 void pi_rat_init(unsigned int input1, unsigned int input2, unsigned int output1,
 		 unsigned int output2, unsigned int trigger, unsigned int echo,
@@ -94,19 +110,22 @@ static int recursive_maze_solver(){
   x_curr = pi_rat_get_x_cord();
   y_curr = pi_rat_get_y_cord();
 
+  /* what do we do if the x or y coordinate go out of bounds? Just stop? */
+
   /* base case: we've solved the maze */
   if(x_curr == x_final && y_curr == y_final){
     return 1; 
   }else{ /* recursive case: explore, backtracking */
     update_maze();
-    
+    print_maze();    
     /* get access to possible moves at current state */
     /* this code can probably be reduced somehow, as I do the exact thing in the update maze function */
     Maze_Node * current_node = (Maze_Node * )((int *)maze) + 
       sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr);
     
     /* if we haven't explored this before */
-    if(current_node->visited != 1){
+    if(current_node->explored != 1){
+      current_node->explored = 1;
       /* pick one possible move and perform it 
        * This means both physically making the movement as well as recording it into the path
        */
@@ -169,6 +188,9 @@ static int recursive_maze_solver(){
 	path_length--;
       }
     
+      /* unchose the exploration */
+      current_node->explored = 0;
+
       /* nothing was found */
       return 0; //0 for false
     }
@@ -207,21 +229,6 @@ void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_e
 
   /* at end, traverse maze solution back and forth */
 
-}
-
-/* a helper function / debugging helper function which prints out the maze to 
- * make the program more transparent 
- */
-static void print_maze(){
-  for(int i = 0; i < 4; i++){
-    for(int j = 0; j < 4; j++){
-      Maze_Node * current_node = (Maze_Node *) ((int *)maze) + 
-	sizeof(Maze_Node)*(i*maze_square_dimension + j);
-      printf("Node %d%d visited: %d ", i, j, current_node->visited);
-      printf("walls: left %d up %d right %d down %d\n", current_node->left, current_node->up, 
-	     current_node->right, current_node->down); 
-    }
-  }
 }
 
 void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){
