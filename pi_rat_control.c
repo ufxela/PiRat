@@ -134,8 +134,6 @@ static int recursive_maze_solver(){
      */
     if(current_node->left == 0){
       /* first check if we've explored the node before */
-      x_curr = pi_rat_get_x_cord();
-      y_curr = pi_rat_get_y_cord();
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*(y_curr*maze_square_dimension + (x_curr + 1)); //this pointer arithmetic could be dangerous, in the case that it goes out of the bounds of the maze dimesnion...
 
@@ -163,9 +161,6 @@ static int recursive_maze_solver(){
       }
     }
     if(current_node->up == 0){
-      x_curr = pi_rat_get_x_cord();
-      y_curr = pi_rat_get_y_cord();
-
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*((y_curr+1)*maze_square_dimension + (x_curr));
 
@@ -182,18 +177,14 @@ static int recursive_maze_solver(){
 	}
 	print_maze();
 
+	pi_rat_position_change(3);
 	x_curr = pi_rat_get_x_cord();
 	y_curr = pi_rat_get_y_cord();
-
-	pi_rat_position_change(3);
 	path_length--;
       }
     }
     
     if(current_node->right == 0){
-      x_curr = pi_rat_get_x_cord();
-      y_curr = pi_rat_get_y_cord();
-
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*(y_curr*maze_square_dimension + (x_curr - 1));
 
@@ -210,17 +201,14 @@ static int recursive_maze_solver(){
 	  return 1;
 	}
 	print_maze();
-	x_curr = pi_rat_get_x_cord();
-	y_curr = pi_rat_get_y_cord();
 
 	pi_rat_position_change(0);
+	x_curr = pi_rat_get_x_cord();
+	y_curr = pi_rat_get_y_cord();
 	path_length--;
       }
     }
     if(current_node->down == 0){
-      x_curr = pi_rat_get_x_cord();
-      y_curr = pi_rat_get_y_cord();
-
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*((y_curr-1)*maze_square_dimension + (x_curr));
 
@@ -243,10 +231,9 @@ static int recursive_maze_solver(){
 	}
 	print_maze();
 
+	pi_rat_position_change(1);
 	x_curr = pi_rat_get_x_cord();
 	y_curr = pi_rat_get_y_cord();
-
-	pi_rat_position_change(1);
 	path_length--;
       }
     }
