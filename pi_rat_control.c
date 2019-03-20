@@ -216,7 +216,7 @@ static int recursive_maze_solver(){
       }
     
       /* unchose the exploration */
-      current_node->explored = 0;
+      //      current_node->explored = 0;
 
       /* nothing was found */
       return 0; //0 for false
