@@ -54,14 +54,10 @@ static void update_maze(){
   /* put maze into a workable form (a pointer to each row of the maze) */
   Maze_Node * current_node = (Maze_Node *)((int *)maze) + 
     sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr);
-  printf("AHRIAGR %d", sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr));
-  printf("\n\nupdate maze called, %d, %d", x_curr, y_curr);
-  printf("update maze_current_node_pointer %p", current_node);
 
   /* if we haven't been here before */
   if(current_node->visited != 1){
     current_node->visited = 1;
-    printf("current node updating");
     /* now update walls */
     int current_bearing = pi_rat_get_bearing();
     int walls = pi_rat_get_walls(); /* this is the time suck of the function, limited physically */
@@ -221,9 +217,8 @@ static void print_maze(){
     for(int j = 0; j < 4; j++){
       Maze_Node * current_node = (Maze_Node *) ((int *)maze) + 
 	sizeof(Maze_Node)*(i*maze_square_dimension + j);
-      printf("current node pointer %p", current_node);
-      printf("Node %d%d visited: %d\n", i, j, current_node->visited);
-      printf("walls: left %d up %d right %d down %d", current_node->left, current_node->up, 
+      printf("Node %d%d visited: %d ", i, j, current_node->visited);
+      printf("walls: left %d up %d right %d down %d\n", current_node->left, current_node->up, 
 	     current_node->right, current_node->down); 
     }
   }
@@ -271,6 +266,7 @@ void pi_rat_control_test_maze_nodes(){
   y_curr = 0;
   for(int i = 0; i < 4; i++){
     for(int j = 0; j < 4; j++){
+      maze_set_bearing(j);
       x_curr = j;
       y_curr = i;
       printf("you have 2 seconds to put up the wall(s) \n");
