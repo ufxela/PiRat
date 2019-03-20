@@ -132,98 +132,93 @@ static int recursive_maze_solver(){
     Maze_Node * current_node = (Maze_Node * )((int *)maze) + 
       sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr);
     
-    /* if we haven't explored this before */
-    if(current_node->explored != 1){
-      current_node->explored = 1;
-      /* pick one possible move and perform it 
-       * This means both physically making the movement as well as recording it into the path
-       */
-      /* this is super ugly, I should have put more thought into my maze data structure. oh well */
-      /* also checks if we have explored the left node */
-      if(current_node->left == 0){
-	/* first check if we've explored the node before */
-	Maze_Node * next_node = (Maze_Node * )((int *)maze) +
-	  sizeof(Maze_Node)*(y_curr*maze_square_dimension + (x_curr + 1)); //this pointer arithmetic could be dangerous, in the case that it goes out of the bounds of the maze dimesnion...
-	if(next_node->explored != 1){
-	  /* execute move */
-	  pi_rat_position_change(0);
-	  
-	  /* add move to path */
-	  path[path_length] = 0;
-	  path_length++; //should this check if path is too big?
-	  
-	  /* recurse */
-	  if(recursive_maze_solver()){
-	    return 1;
-	  }
+    /* mark the node as explored */
+    current_node->explored = 1;
+    /* pick one possible move and perform it 
+     * This means both physically making the movement as well as recording it into the path
+     */
+    /* this is super ugly, I should have put more thought into my maze data structure. oh well */
+    /* also checks if we have explored the left node */
+    if(current_node->left == 0){
+      /* first check if we've explored the node before */
+      Maze_Node * next_node = (Maze_Node * )((int *)maze) +
+	sizeof(Maze_Node)*(y_curr*maze_square_dimension + (x_curr + 1)); //this pointer arithmetic could be dangerous, in the case that it goes out of the bounds of the maze dimesnion...
+      if(next_node->explored != 1){
+	/* execute move */
+	pi_rat_position_change(0);
 	
-	  /* backtrack (undo move, remove move from path) */
-	  pi_rat_position_change(2); //0 + 2 (mod 4)
-	  path_length--;
+	/* add move to path */
+	path[path_length] = 0;
+	path_length++; //should this check if path is too big?
+	
+	/* recurse */
+	if(recursive_maze_solver()){
+	  return 1;
 	}
+	
+	/* backtrack (undo move, remove move from path) */
+	pi_rat_position_change(2); //0 + 2 (mod 4)
+	path_length--;
       }
-      if(current_node->up == 0){
-	Maze_Node * next_node = (Maze_Node * )((int *)maze) +
-          sizeof(Maze_Node)*((y_curr+1)*maze_square_dimension + (x_curr));
-        if(next_node->explored != 1){
-	  pi_rat_position_change(1);
-	  
-	  path[path_length] = 1;
-	  path_length++;
-	  
-	  if(recursive_maze_solver()){
-	    return 1;
-	  }
-	  
-	  pi_rat_position_change(3);
-	  path_length--;
-	}
-      }
-      
-      if(current_node->right == 0){
-	Maze_Node * next_node = (Maze_Node * )((int *)maze) +
-          sizeof(Maze_Node)*(y_curr*maze_square_dimension + (x_curr - 1));
-        if(next_node->explored != 1){
-	  pi_rat_position_change(2);
-	  
-	  path[path_length] = 2;
-	  path_length++;
-	  
-	  if(recursive_maze_solver()){
-	    return 1;
-	  }
-	  
-	  pi_rat_position_change(0);
-	  path_length--;
-	}
-      }
-      if(current_node->down == 0){
-	Maze_Node * next_node = (Maze_Node * )((int *)maze) +
-          sizeof(Maze_Node)*((y_curr-1)*maze_square_dimension + (x_curr));
-        if(next_node->explored != 1){
-	  pi_rat_position_change(3);
-	  
-	  path[path_length] = 3;
-	  path_length++;
-	  
-	  if(recursive_maze_solver()){
-	    return 1;
-	  }
-	  
-	  pi_rat_position_change(1);
-	  path_length--;
-	}
-      }
-    
-      /* unchose the exploration */
-      //      current_node->explored = 0;
-
-      /* nothing was found */
-      return 0; //0 for false
     }
-
-    /* otherwise, if we've been here before, do nothing */
-    return 0;
+    if(current_node->up == 0){
+      Maze_Node * next_node = (Maze_Node * )((int *)maze) +
+	sizeof(Maze_Node)*((y_curr+1)*maze_square_dimension + (x_curr));
+      if(next_node->explored != 1){
+	pi_rat_position_change(1);
+	
+	path[path_length] = 1;
+	path_length++;
+	
+	if(recursive_maze_solver()){
+	    return 1;
+	}
+	
+	pi_rat_position_change(3);
+	path_length--;
+      }
+    }
+    
+    if(current_node->right == 0){
+      Maze_Node * next_node = (Maze_Node * )((int *)maze) +
+	sizeof(Maze_Node)*(y_curr*maze_square_dimension + (x_curr - 1));
+      if(next_node->explored != 1){
+	pi_rat_position_change(2);
+	  
+	path[path_length] = 2;
+	path_length++;
+	
+	if(recursive_maze_solver()){
+	  return 1;
+	}
+	
+	pi_rat_position_change(0);
+	path_length--;
+      }
+    }
+    if(current_node->down == 0){
+      Maze_Node * next_node = (Maze_Node * )((int *)maze) +
+	sizeof(Maze_Node)*((y_curr-1)*maze_square_dimension + (x_curr));
+      if(next_node->explored != 1){
+	pi_rat_position_change(3);
+	
+	path[path_length] = 3;
+	path_length++;
+	
+	if(recursive_maze_solver()){
+	  return 1;
+	}
+	  
+	pi_rat_position_change(1);
+	path_length--;
+      }
+    }
+    
+    /* unchose the exploration */
+    //      current_node->explored = 0;
+    
+    /* nothing was found */
+    return 0; //0 for false
   }
   return 0; //just in case....
 }
