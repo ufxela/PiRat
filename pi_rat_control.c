@@ -6,6 +6,7 @@
 #include "strings.h"
 #include "printf.h"
 
+/* represents a node in the graph representing the maze */
 typedef struct maze_node{
   int visited; //0 for no 1 for yes
   int explored; //0 for no, 1 for yes, useful for backtracking
@@ -15,20 +16,9 @@ typedef struct maze_node{
   int down;
 } Maze_Node;
 
-/* needs some internal data structure to keep track of the Pi Rat's path */
 /* path stores as an array the moves made. 0 is go left, 1 is go forwards, 2 go right, 3 go back */
-/* or should I store path as coordinates. A smart way to keep it as an int while doing this
- * is to store 2 digit numbers, base maze width. the first number can represent the x coordinate and the
- * second can represent the y coordinate 
- */
 int * path;
 int path_length;
-
-/* needs another internal data structure to keep track of the known elements of the maze 
- * 
- * Should be a 2d array of ints, with 1 representing a wall, 0 representing no wall
- * and -1 representing unknown. 
- */
 
 /* 2D array of maze_nodes. Very similar to frame buffer 2d array */
 void * maze;
@@ -47,7 +37,8 @@ static void print_maze(){
     for(int j = 0; j < 4; j++){
       Maze_Node * current_node = (Maze_Node *) ((int *)maze) + 
 	sizeof(Maze_Node)*(i*maze_square_dimension + j);
-      printf("Node %d%d pointer %p visited: %d explored: %d", i, j, current_node, current_node->visited, current_node->explored);
+      printf("Node %d%d pointer %p visited: %d explored: %d", i, j, current_node, 
+	     current_node->visited, current_node->explored);
       printf("walls: left %d up %d right %d down %d\n", current_node->left, current_node->up, 
 	     current_node->right, current_node->down); 
     }
@@ -82,9 +73,11 @@ static void update_maze(){
   /* if we haven't been here before */
   if(current_node->visited != 1){
     current_node->visited = 1;
+
     /* now update walls */
     int current_bearing = pi_rat_get_bearing();
     int walls = pi_rat_get_walls(); /* this is the time suck of the function, limited physically */
+    
     /* this is super ugly */
     if(current_bearing == 0){
       current_node->right = 0;
@@ -109,7 +102,6 @@ static void update_maze(){
       current_node->left = ((walls & 0b100) == 0b100);
     }
   }
-  /* if we've visited the node before, we don't need to do anything */
 }
 
 /* returns true (1) if maze path is found */
@@ -118,24 +110,21 @@ static int recursive_maze_solver(){
   x_curr = pi_rat_get_x_cord();
   y_curr = pi_rat_get_y_cord();
 
-  printf("Current position: (%d,%d)\n", x_curr, y_curr);
-
-  /* what do we do if the x or y coordinate go out of bounds? Just stop? */
+  /* what do we do if the x or y coordinate go out of bounds? Just stop? In a properly
+   * setup maze, this will never happen, so I will just not do anything 
+   */
 
   /* base case: we've solved the maze */
   if(x_curr == x_final && y_curr == y_final){
-    printf("A solution was found!");
     return 1; 
   }else{ /* recursive case: explore, backtracking */
     update_maze();
     print_maze();    
     print_path();
+
     /* get access to possible moves at current state */
-    /* this code can probably be reduced somehow, as I do the exact thing in the update maze function */
     Maze_Node * current_node = (Maze_Node * )((int *)maze) + 
       sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr);
-    
-    printf("current_node: %p\n", current_node);
 
     /* mark the node as explored */
     current_node->explored = 1;
@@ -143,20 +132,14 @@ static int recursive_maze_solver(){
     /* pick one possible move and perform it 
      * This means both physically making the movement as well as recording it into the path
      */
-    /* this is super ugly, I should have put more thought into my maze data structure. oh well */
-    /* also checks if we have explored the node already */
     if(current_node->left == 0){
-      printf("left is open \n");
       /* first check if we've explored the node before */
       x_curr = pi_rat_get_x_cord();
       y_curr = pi_rat_get_y_cord();
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*(y_curr*maze_square_dimension + (x_curr + 1)); //this pointer arithmetic could be dangerous, in the case that it goes out of the bounds of the maze dimesnion...
 
-      printf("next_node: %p\n", next_node);
-
       if(next_node->explored != 1){
-	printf("Left is open to exploration\n");
 	/* execute move */
 	pi_rat_position_change(0);
 	x_curr = pi_rat_get_x_cord();
@@ -177,22 +160,16 @@ static int recursive_maze_solver(){
 	y_curr = pi_rat_get_y_cord();
 	path_length--;
 	print_maze();
-	printf("backtracking to the right\n");
       }
     }
     if(current_node->up == 0){
-      printf("up is open \n");
       x_curr = pi_rat_get_x_cord();
       y_curr = pi_rat_get_y_cord();
 
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*((y_curr+1)*maze_square_dimension + (x_curr));
 
-      printf("next_node: %p\n", next_node);
-
       if(next_node->explored != 1){
-	printf("up is open to exploration\n");
-
 	pi_rat_position_change(1);
 	x_curr = pi_rat_get_x_cord();
 	y_curr = pi_rat_get_y_cord();
@@ -205,7 +182,6 @@ static int recursive_maze_solver(){
 	}
 	print_maze();
 
-	printf("backtracking down\n");
 	x_curr = pi_rat_get_x_cord();
 	y_curr = pi_rat_get_y_cord();
 
@@ -215,17 +191,13 @@ static int recursive_maze_solver(){
     }
     
     if(current_node->right == 0){
-      printf("right is open \n");
       x_curr = pi_rat_get_x_cord();
       y_curr = pi_rat_get_y_cord();
 
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*(y_curr*maze_square_dimension + (x_curr - 1));
 
-      printf("next_node: %p\n", next_node);
-
       if(next_node->explored != 1){
-        printf("right is open to exploration\n");
 
 	pi_rat_position_change(2);
 	x_curr = pi_rat_get_x_cord();
@@ -241,25 +213,21 @@ static int recursive_maze_solver(){
 	x_curr = pi_rat_get_x_cord();
 	y_curr = pi_rat_get_y_cord();
 
-        printf("backtracking left\n");
 	pi_rat_position_change(0);
 	path_length--;
       }
     }
     if(current_node->down == 0){
-      printf("down is open \n");
       x_curr = pi_rat_get_x_cord();
       y_curr = pi_rat_get_y_cord();
 
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*((y_curr-1)*maze_square_dimension + (x_curr));
 
-      printf("next_node: %p\n", next_node);
       x_curr = pi_rat_get_x_cord();
       y_curr = pi_rat_get_y_cord();
 
       if(next_node->explored != 1){
-        printf("down is open to exploration\n");
 	x_curr = pi_rat_get_x_cord();
 	y_curr = pi_rat_get_y_cord();
 
@@ -275,7 +243,6 @@ static int recursive_maze_solver(){
 	}
 	print_maze();
 
-        printf("backtracking up\n");
 	x_curr = pi_rat_get_x_cord();
 	y_curr = pi_rat_get_y_cord();
 
