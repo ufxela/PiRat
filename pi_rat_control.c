@@ -47,15 +47,21 @@ void pi_rat_init(unsigned int input1, unsigned int input2, unsigned int output1,
 }
 
 /* gets surroundings and updates maze data structure */
+/* for some reason, my array indexing isn't working, so I will have to do manual
+ * pointer arithmetic 
+ */
 static void update_maze(){
   /* put maze into a workable form (a pointer to each row of the maze) */
-  Maze_Node * (*current_maze)[maze_square_dimension] = (Maze_Node * (*)[maze_square_dimension]) maze;
-  Maze_Node * current_node = current_maze[y_curr][x_curr]; //index by row first then col. 
+  int * current_int_node = ((int *)maze) + sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr);
+  printf("AHRIAGR %d", sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr));
+  Maze_Node * current_node = (Maze_Node * ) current_int_node;
+  printf("\n\nupdate maze called, %d, %d", x_curr, y_curr);
+  printf("update maze_current_node_pointer %p", current_node);
 
   /* if we haven't been here before */
   if(current_node->visited != 1){
     current_node->visited = 1;
-
+    printf("current node updating");
     /* now update walls */
     int current_bearing = pi_rat_get_bearing();
     int walls = pi_rat_get_walls(); /* this is the time suck of the function, limited physically */
@@ -100,8 +106,9 @@ static int recursive_maze_solver(){
     
     /* get access to possible moves at current state */
     /* this code can probably be reduced somehow, as I do the exact thing in the update maze function */
-    Maze_Node * (*current_maze)[maze_square_dimension] = (Maze_Node * (*)[maze_square_dimension]) maze;
-    Maze_Node * current_node = current_maze[y_curr][x_curr];
+    int * current_int_node = ((int *)maze) + 
+      sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr);
+    Maze_Node * current_node = (Maze_Node * ) current_int_node;
 
     /* if we haven't explored this before */
     if(current_node->visited != 1){
@@ -211,10 +218,12 @@ void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_e
  * make the program more transparent 
  */
 static void print_maze(){
-  Maze_Node * (*current_maze)[maze_square_dimension] = (Maze_Node * (*)[maze_square_dimension]) maze;
   for(int i = 0; i < 4; i++){
     for(int j = 0; j < 4; j++){
-      Maze_Node * current_node = current_maze[i][j];
+      int * current_int_node = ((int *)maze) + 
+	sizeof(Maze_Node)*(i*maze_square_dimension + j);
+      Maze_Node * current_node = (Maze_Node * ) current_int_node;
+      printf("current node pointer %p", current_node);
       printf("Node %d%d visited: %d\n", i, j, current_node->visited);
       printf("walls: left %d up %d right %d down %d", current_node->left, current_node->up, 
 	     current_node->right, current_node->down); 
@@ -250,16 +259,22 @@ void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){
 }
 
 void pi_rat_control_test_maze_nodes(){
-  printf("beginning maze node test \n");
+  printf("beginning maze node test in 3 seconds \n");
+
+  timer_delay(3);
+
   /* setup a 4x4 maze */
   maze = malloc(sizeof(struct maze_node) * 4 * 4);
   memset(maze, 0, sizeof(struct maze_node) * 4 * 4);
+
+  maze_square_dimension = 4;
+
   x_curr = 0;
   y_curr = 0;
   for(int i = 0; i < 4; i++){
     for(int j = 0; j < 4; j++){
-      x_curr = i;
-      y_curr = j;
+      x_curr = j;
+      y_curr = i;
       printf("you have 2 seconds to put up the wall(s) \n");
       timer_delay(2);
       update_maze();
