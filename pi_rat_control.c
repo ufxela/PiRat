@@ -52,9 +52,9 @@ void pi_rat_init(unsigned int input1, unsigned int input2, unsigned int output1,
  */
 static void update_maze(){
   /* put maze into a workable form (a pointer to each row of the maze) */
-  int * current_int_node = ((int *)maze) + sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr);
+  Maze_Node * current_node = (Maze_Node *)((int *)maze) + 
+    sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr);
   printf("AHRIAGR %d", sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr));
-  Maze_Node * current_node = (Maze_Node * ) current_int_node;
   printf("\n\nupdate maze called, %d, %d", x_curr, y_curr);
   printf("update maze_current_node_pointer %p", current_node);
 
@@ -106,10 +106,9 @@ static int recursive_maze_solver(){
     
     /* get access to possible moves at current state */
     /* this code can probably be reduced somehow, as I do the exact thing in the update maze function */
-    int * current_int_node = ((int *)maze) + 
+    Maze_Node * current_node = (Maze_Node * )((int *)maze) + 
       sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr);
-    Maze_Node * current_node = (Maze_Node * ) current_int_node;
-
+    
     /* if we haven't explored this before */
     if(current_node->visited != 1){
       /* pick one possible move and perform it 
@@ -220,9 +219,8 @@ void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_e
 static void print_maze(){
   for(int i = 0; i < 4; i++){
     for(int j = 0; j < 4; j++){
-      int * current_int_node = ((int *)maze) + 
+      Maze_Node * current_node = (Maze_Node *) ((int *)maze) + 
 	sizeof(Maze_Node)*(i*maze_square_dimension + j);
-      Maze_Node * current_node = (Maze_Node * ) current_int_node;
       printf("current node pointer %p", current_node);
       printf("Node %d%d visited: %d\n", i, j, current_node->visited);
       printf("walls: left %d up %d right %d down %d", current_node->left, current_node->up, 
