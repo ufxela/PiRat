@@ -193,6 +193,7 @@ int main(void)
   */
 
   /* test the maze solver on a 4x4 maze */
+
   printf("beginning maze solving test in 7 seconds \n");
   timer_delay(7);
   pi_rat_init(GPIO_PIN18, GPIO_PIN21, GPIO_PIN20, GPIO_PIN16, ULTRASONIC_TRIGGER,

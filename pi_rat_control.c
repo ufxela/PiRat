@@ -47,7 +47,7 @@ static void print_maze(){
     for(int j = 0; j < 4; j++){
       Maze_Node * current_node = (Maze_Node *) ((int *)maze) + 
 	sizeof(Maze_Node)*(i*maze_square_dimension + j);
-      printf("Node %d%d visited: %d ", i, j, current_node->visited);
+      printf("Node %d%d pointer %p visited: %d explored: %d", i, j, current_node, current_node->visited, current_node->explored);
       printf("walls: left %d up %d right %d down %d\n", current_node->left, current_node->up, 
 	     current_node->right, current_node->down); 
     }
@@ -59,6 +59,7 @@ static void print_path(){
   for(int i = 0; i < path_length; i++){
     printf("Step %d: %d", i, path[i]);
   }
+  printf("\n");
 }
 
 void pi_rat_init(unsigned int input1, unsigned int input2, unsigned int output1,
@@ -117,6 +118,8 @@ static int recursive_maze_solver(){
   x_curr = pi_rat_get_x_cord();
   y_curr = pi_rat_get_y_cord();
 
+  printf("Current position: (%d,%d)\n", x_curr, y_curr);
+
   /* what do we do if the x or y coordinate go out of bounds? Just stop? */
 
   /* base case: we've solved the maze */
@@ -132,21 +135,33 @@ static int recursive_maze_solver(){
     Maze_Node * current_node = (Maze_Node * )((int *)maze) + 
       sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr);
     
+    printf("current_node: %p\n", current_node);
+
     /* mark the node as explored */
     current_node->explored = 1;
+
     /* pick one possible move and perform it 
      * This means both physically making the movement as well as recording it into the path
      */
     /* this is super ugly, I should have put more thought into my maze data structure. oh well */
-    /* also checks if we have explored the left node */
+    /* also checks if we have explored the node already */
     if(current_node->left == 0){
+      printf("left is open \n");
       /* first check if we've explored the node before */
+      x_curr = pi_rat_get_x_cord();
+      y_curr = pi_rat_get_y_cord();
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*(y_curr*maze_square_dimension + (x_curr + 1)); //this pointer arithmetic could be dangerous, in the case that it goes out of the bounds of the maze dimesnion...
+
+      printf("next_node: %p\n", next_node);
+
       if(next_node->explored != 1){
+	printf("Left is open to exploration\n");
 	/* execute move */
 	pi_rat_position_change(0);
-	
+	x_curr = pi_rat_get_x_cord();
+	y_curr = pi_rat_get_y_cord();
+
 	/* add move to path */
 	path[path_length] = 0;
 	path_length++; //should this check if path is too big?
@@ -158,14 +173,29 @@ static int recursive_maze_solver(){
 	
 	/* backtrack (undo move, remove move from path) */
 	pi_rat_position_change(2); //0 + 2 (mod 4)
+	x_curr = pi_rat_get_x_cord();
+	y_curr = pi_rat_get_y_cord();
 	path_length--;
+	print_maze();
+	printf("backtracking to the right\n");
       }
     }
     if(current_node->up == 0){
+      printf("up is open \n");
+      x_curr = pi_rat_get_x_cord();
+      y_curr = pi_rat_get_y_cord();
+
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*((y_curr+1)*maze_square_dimension + (x_curr));
+
+      printf("next_node: %p\n", next_node);
+
       if(next_node->explored != 1){
+	printf("up is open to exploration\n");
+
 	pi_rat_position_change(1);
+	x_curr = pi_rat_get_x_cord();
+	y_curr = pi_rat_get_y_cord();
 	
 	path[path_length] = 1;
 	path_length++;
@@ -173,17 +203,33 @@ static int recursive_maze_solver(){
 	if(recursive_maze_solver()){
 	    return 1;
 	}
-	
+	print_maze();
+
+	printf("backtracking down\n");
+	x_curr = pi_rat_get_x_cord();
+	y_curr = pi_rat_get_y_cord();
+
 	pi_rat_position_change(3);
 	path_length--;
       }
     }
     
     if(current_node->right == 0){
+      printf("right is open \n");
+      x_curr = pi_rat_get_x_cord();
+      y_curr = pi_rat_get_y_cord();
+
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*(y_curr*maze_square_dimension + (x_curr - 1));
+
+      printf("next_node: %p\n", next_node);
+
       if(next_node->explored != 1){
+        printf("right is open to exploration\n");
+
 	pi_rat_position_change(2);
+	x_curr = pi_rat_get_x_cord();
+	y_curr = pi_rat_get_y_cord();
 	  
 	path[path_length] = 2;
 	path_length++;
@@ -191,16 +237,35 @@ static int recursive_maze_solver(){
 	if(recursive_maze_solver()){
 	  return 1;
 	}
-	
+	print_maze();
+	x_curr = pi_rat_get_x_cord();
+	y_curr = pi_rat_get_y_cord();
+
+        printf("backtracking left\n");
 	pi_rat_position_change(0);
 	path_length--;
       }
     }
     if(current_node->down == 0){
+      printf("down is open \n");
+      x_curr = pi_rat_get_x_cord();
+      y_curr = pi_rat_get_y_cord();
+
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*((y_curr-1)*maze_square_dimension + (x_curr));
+
+      printf("next_node: %p\n", next_node);
+      x_curr = pi_rat_get_x_cord();
+      y_curr = pi_rat_get_y_cord();
+
       if(next_node->explored != 1){
+        printf("down is open to exploration\n");
+	x_curr = pi_rat_get_x_cord();
+	y_curr = pi_rat_get_y_cord();
+
 	pi_rat_position_change(3);
+	x_curr = pi_rat_get_x_cord();
+	y_curr = pi_rat_get_y_cord();
 	
 	path[path_length] = 3;
 	path_length++;
@@ -208,14 +273,19 @@ static int recursive_maze_solver(){
 	if(recursive_maze_solver()){
 	  return 1;
 	}
-	  
+	print_maze();
+
+        printf("backtracking up\n");
+	x_curr = pi_rat_get_x_cord();
+	y_curr = pi_rat_get_y_cord();
+
 	pi_rat_position_change(1);
 	path_length--;
       }
     }
     
     /* unchose the exploration */
-    //      current_node->explored = 0;
+    //current_node->explored = 0;
     
     /* nothing was found */
     return 0; //0 for false
@@ -233,8 +303,8 @@ void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_e
   path = malloc(4 * maze_width*maze_height); //max size of path is maze_width*maze_height
   path_length = 0;
 
-  maze = malloc(sizeof(struct maze_node) * maze_width * maze_height);
-  memset(maze, 0, sizeof(struct maze_node) * maze_width * maze_height);
+  maze = malloc(sizeof(struct maze_node) * maze_width * maze_height * 4); //malloc extra space just in case
+  memset(maze, 0, sizeof(struct maze_node) * maze_width * maze_height * 4); //same
 
   x_curr = x_start;
   y_curr = y_start;
