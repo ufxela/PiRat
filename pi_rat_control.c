@@ -54,6 +54,13 @@ static void print_maze(){
   }
 }
 
+/* for transparency */
+static void print_path(){
+  for(int i = 0; i < path_length; i++){
+    printf("Step %d: %d", i, path[i]);
+  }
+}
+
 void pi_rat_init(unsigned int input1, unsigned int input2, unsigned int output1,
 		 unsigned int output2, unsigned int trigger, unsigned int echo,
 		 unsigned int pan){
@@ -114,10 +121,12 @@ static int recursive_maze_solver(){
 
   /* base case: we've solved the maze */
   if(x_curr == x_final && y_curr == y_final){
+    printf("A solution was found!");
     return 1; 
   }else{ /* recursive case: explore, backtracking */
     update_maze();
     print_maze();    
+    print_path();
     /* get access to possible moves at current state */
     /* this code can probably be reduced somehow, as I do the exact thing in the update maze function */
     Maze_Node * current_node = (Maze_Node * )((int *)maze) + 
@@ -201,6 +210,10 @@ static int recursive_maze_solver(){
   return 0; //just in case....
 }
 
+/* does nothing for now */
+static void traverse_path(){
+}
+
 void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_end, 
 		       int maze_width, int maze_height){
   /* initialize everything */
@@ -225,10 +238,18 @@ void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_e
   maze_square_dimension = maze_width;
 
   /* call recursive helper */
-  recursive_maze_solver();
+  int path_found = recursive_maze_solver();
 
-  /* at end, traverse maze solution back and forth */
+  /* at end, traverse maze solution back and forth 
+   * I'll do this later. For now, just spin in circles
+   */
+  while(1){
+    pi_rat_turn_left();
+  }
 
+  if(path_found == 1){
+    traverse_path();
+  }
 }
 
 void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){
