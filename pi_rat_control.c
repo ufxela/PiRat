@@ -58,6 +58,8 @@ void pi_rat_init(unsigned int input1, unsigned int input2, unsigned int output1,
 		 unsigned int pan){
   pi_rat_movement_init(input1, input2, output1, output2);
   pi_rat_sensing_module_init(trigger, echo, pan);
+  path = malloc(4); //just to get them initialized
+  maze = malloc(4);
   timer_delay_ms(100);
 }
 
@@ -256,21 +258,22 @@ static void traverse_path(){
 
 /* resets for another run */
 void pi_rat_reset(){
-  path = malloc(4 * maze_width*maze_height);
+  path = memset(path, 0, 4 * maze_square_dimension * maze_square_dimension);
   path_length = 0;
   x_curr = 0;
   y_curr = 0;
   maze_set_bearing(1);
-  memset(maze, 0, sizeof(struct maze_node) * maze_width * maze_height * 4);
+  memset(maze, 0, sizeof(struct maze_node) * maze_square_dimension * maze_square_dimension * 4);
 }
 
 void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_end,
 		       int maze_width, int maze_height){
   /* initialize everything */
-  path = malloc(4 * maze_width*maze_height); //max size of path is maze_width*maze_height
+  path = realloc(path, 4 * maze_width*maze_height); //max size of path is maze_width*maze_height
+  memset(path, 0, 4 * maze_width * maze_height);
   path_length = 0;
 
-  maze = malloc(sizeof(struct maze_node) * maze_width * maze_height * 4); //malloc extra space just in case
+  maze = realloc(maze, sizeof(struct maze_node) * maze_width * maze_height * 4); //malloc extra space just in case
   memset(maze, 0, sizeof(struct maze_node) * maze_width * maze_height * 4); //same
 
   x_curr = x_start;
@@ -335,7 +338,7 @@ void pi_rat_control_test_maze_nodes(){
   timer_delay(3);
 
   /* setup a 4x4 maze */
-  maze = malloc(sizeof(struct maze_node) * 4 * 4);
+  maze = realloc(maze, sizeof(struct maze_node) * 4 * 4);
   memset(maze, 0, sizeof(struct maze_node) * 4 * 4);
 
   maze_square_dimension = 4;
