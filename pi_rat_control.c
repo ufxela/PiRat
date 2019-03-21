@@ -327,9 +327,11 @@ void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){
   }
 
   //once done, spin to indicate success
-  while(1){
+  for(int i = 0; i < 4; i++){
     pi_rat_turn_right();
   }
+  //delay for 4 5 seconds to allow for button push
+  timer_delay(5);
 }
 
 void pi_rat_control_test_maze_nodes(){
