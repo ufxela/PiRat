@@ -154,7 +154,19 @@ any rectangular maze of any dimensions, configuration and wall length!
 [Video Links!](https://github.com/cs107e/ufxela-project/blob/master/images/video_links.md)
 
 ### Pictures!
+The Maze:
 ![The Maze](/images/4x4_maze_1.jpeg)
+Another Maze:
+![Another Maze](/images/4x4_maze_2.jpeg)
+The Maze, deconstructed
+![Deconstructed Maze](/images/maze_compact.jpeg)
+The Pi Rat: 
+![Pi Rat 1](/images/new_chassis_1.jpeg)
+![Pi Rat 2](/images/new_chassis_2.jpeg)
+![Pi Rat 3](/images/new_chassis_3.jpeg)
+![Pi Rat 4](/images/new_chassis_4.jpeg)
+![Pi Rat 5](/images/new_chassis_5.jpeg)
+
 
 ## Notable Challenges
 -pwm outputs weren't working
