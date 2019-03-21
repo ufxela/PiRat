@@ -9,6 +9,7 @@ https://youtu.be/DRGpogpsr9c
 https://youtu.be/bLoTvPB6kH4
 
 A demonstration of the greedy maze solving algo (maze wander):
+https://youtu.be/0Kkx2tyrhKI
 
 A working version of my Pi Rat (spins once solution is found):
 https://www.youtube.com/watch?v=yOJA3LaLt3Q
