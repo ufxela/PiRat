@@ -194,11 +194,15 @@ int main(void)
 
   /* test the maze solver on a 4x4 maze */
 
-  printf("beginning maze solving test in 7 seconds \n");
+  /*set up button interrupts so that any time the button is pushed, it will reset and start again
+   * in 10 seconds 
+   */
+  printf("beginning maze solving in 7 seconds \n");
   timer_delay(7);
   pi_rat_init(GPIO_PIN18, GPIO_PIN21, GPIO_PIN20, GPIO_PIN16, ULTRASONIC_TRIGGER,
               ULTRASONIC_ECHO, GPIO_PIN12);                                           
-  pi_rat_solve_maze(0, 0, 1, 2, 3, 4, 4); // solution is at (0,2), start is at (0,0), facing forwards
+  pi_rat_solve_maze(0, 0, 1, 5, 5, 4, 4); // solution is at (5,5) (impossible value as it
+  //  looks for an opening which indicates an exit, start is at (0,0), facing forwards
 
   return 1;
 }

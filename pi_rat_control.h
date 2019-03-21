@@ -7,6 +7,10 @@ void pi_rat_init(unsigned int input1, unsigned int input2, unsigned int output1,
 		 unsigned int pan);
 
 /* place the Pi at a given location and bearing, and ask it to solve a maze */
+/* if x_end and y_end are invalid values, this will search for an opening in the maze which will 
+ * indicate the exit
+ * otherwise, it will go to the position of x_end and y_end and spin in place there
+ */
 void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_end,
                        int maze_width, int maze_height);
 		       
