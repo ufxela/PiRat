@@ -35,6 +35,11 @@ Through this project, I've prided doing as much as I can by myself. It's meant t
 opportunity to learn new, unexpected things, like 3D modelling with CAD, laser cutting and 3D printing. 
 I've also learned that I suck at painting (I can't paint straight, clean lines haha).
 
+My junior year of high school, I tried to control servos with a Raspberry Pi running an OS. I quickly discovered
+that this was not as straightforward as I would wish: apparently, the Raspberry Pi wasn't able perform time
+sensitive actions well. I'm really glad that I've been able to come back to that and be able to control servos
+with the Raspberry Pi with no extraneous hardware helping me.
+
 ### The Steps
 
 The work I've done in this project can be broken down into bit sized steps. In approcimate cronological 
@@ -223,20 +228,32 @@ The Pi Rat:
 In summary, the hardest part of this assignment was definitely visibility & understanding the hardware.
 
 ## Things learned
--planning is super critical, and possibly the most difficult part of it all. 
-(many modules were generally easy (aside from some road bumps talked about above, but 
-finding the right order to write them in / determining what modules to even right in 
-the first place was not as trivial).
--do things in the right order: you may find yourself in a situation where you can either
-write tests to debug / make information more transparent and make the mechanisms behind
-things more visible, or you can try to brute force things and try to solve things without 
-that information helping your strategy. Sometimes the latter is faster. However, other times 
-it is not, and it can get very frustrating, because you just feel like you don't know what is
-going on. I have more appreciation for the advice that it's worth your time to write tests
-and make code more visible. Even if it takes 30 minutes, it will save your butt later. 
--include some of the things I talked about in the proposal
+1. Planning is critical, and possibly the most difficult part of it all. Many modules were easy to implement, aside from
+  a few roadbumps (like the ones I talked about above). The hard part was finding the right order to write them in and 
+  determining what modules to even have, and what to have inside them. 
+1. Do things in the right order: you may find yourself in a situation where you can either
+  write tests to debug and make information more transparent and make the mechanisms behind
+  things more visible, or you can try to brute force things and try to solve things without 
+  that information helping your strategy. Sometimes the latter is faster. However, other times 
+  it is not, and it can get very frustrating, because you just feel like you don't know what is
+  going on. I have more appreciation for the advice that it's worth your time to write tests
+  and make code more visible. Even if it takes 30 minutes, it will save your butt later. 
+1. Some other things I learned are in my proposal
 
 ## Extensions
+There were a few things that I had ideas for, and wanted to implement if I had the time, but I never ended up getting to them
+
+Here are a few of them:
+1. Remove more information about the maze. I talked more about this above.
+1. Make a better interface to the Pi Rat. What if the user could tell the Pi Rat where it's start position should be, 
+  with just buttons or something? What if the Pi Rat could display information on a 7 segment display or screen?
+1. More maze traversing options: go from point A to point B once a maze is mapped out; after a maze is solved, continually
+  traverse the optimal path from start to finish.
+1. Remove the line follower sensor completely. Instead use the ultrasonic sensor for all orientation corrections.
+1. Move past just mazes and into rooms. Explore a room, kind of line a Roomba. Maybe even keep track of
+  data about the room. A simple version of this would be really easy to make. 
+1. Remote control abilities, maybe over WiFi?
+1. Make a white board robot. I have all of the hardware setup to do this.
 
 ## Files
 1. Images is a folder which includes photos & a markdown file video_links.md to video links
@@ -282,25 +299,16 @@ I did it all myself (with the advice of others, listed below, of course)!
 
 ## Resources/Citations
 
-Pat helping me solve pwm problems
+Pat's ultrasonic sensor [sample code](https://github.com/cs107e/cs107e.github.io/blob/master/lectures/Sensors/code/sonar/sonar.c) 
 
-Julie / Jennifer / Ashwin for helping me in office hours and lab
+-I used this to get the conversion from microseconds to inches.
 
-Michal for giving me some EE advice. 
+[Pseudo code](http://www.robotc.net/wikiarchive/Tutorials/Arduino_Projects/Mobile_Robotics/VEX/Using_encoders_to_drive_straight) for forward motion with wheel angle feedback.
+ 
+ -just followed the pseudo code, adding in limits for wheel throttles and fine tuning for my car
 
-Roommate, for getting excited about the project, and experienceing successes/falls w/ me.
+Line follower [example code](http://wiki.sunfounder.cc/index.php?title=Line_Follower_Module)
 
-3d printing/laser cutting
-      -lab64
+-borrowed the code pretty much directly
 
-Pat's ultrasonic sensor
-      -just for conversion for inches / reference. Didn't use any of his code
-
-Pseudo code for forward motion with wheel angle feedback
-       -just followed the pseudo code, adding in limits for wheel throttles and fine tuning for my car
-
-Line follower example code
-     -ported the code pretty much directly
-     
-Notes: it would be super easy for me to make a line follower robot from this. 
-Also it wouldn't be impossible for me to make a room rover robot (like a roomba) from here too.
+[i2c code](https://github.com/cs107e/cs107e.github.io/blob/master/cs107e/src/i2c.c) to communicate to line follower module
