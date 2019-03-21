@@ -6,6 +6,8 @@ of the robot in action!**
 ## Project Description
 
 ### Introduction
+The Pi Rat
+
 I had the idea for the Pi Rat during parents weekend, when I was talking with my mom and my
 dad. My initial impression of the robot was pretty wrong. I thought that it would be able to 
 maintain it's position well enough that I wouldn't have to have a line sensor 
