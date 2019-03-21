@@ -1,4 +1,34 @@
-resources:
+# Pi Rat!
+
+**Take a look at the video_links.md file in the images folder to see some videos 
+of the robot in action!**
+
+## Project Description
+
+### Introduction
+
+### The steps
+
+**Software**
+
+**Hardware**
+
+### The steps, in more detail
+
+**Software**
+
+**Hardware**
+
+## Challenges
+
+## Things learned
+
+## Citations
+
+## Team member work outline
+I did it all myself!
+
+## Resources
 
 3d printing/laser cutting
       -lab64
