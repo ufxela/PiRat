@@ -254,6 +254,16 @@ static int recursive_maze_solver(){
 static void traverse_path(){
 }
 
+/* resets for another run */
+void pi_rat_reset(){
+  path = malloc(4 * maze_width*maze_height);
+  path_length = 0;
+  x_curr = 0;
+  y_curr = 0;
+  maze_set_bearing(1);
+  memset(maze, 0, sizeof(struct maze_node) * maze_width * maze_height * 4);
+}
+
 void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_end,
 		       int maze_width, int maze_height){
   /* initialize everything */

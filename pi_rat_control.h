@@ -6,6 +6,11 @@ void pi_rat_init(unsigned int input1, unsigned int input2, unsigned int output1,
 		 unsigned int output2, unsigned int trigger, unsigned int echo,
 		 unsigned int pan);
 
+/* resets the state of the board & aends pi rat back to position (0,0) for
+ * the next solving of a board */
+void pi_rat_reset();
+
+
 /* place the Pi at a given location and bearing, and ask it to solve a maze */
 /* if x_end and y_end are invalid values, this will search for an opening in the maze which will 
  * indicate the exit
