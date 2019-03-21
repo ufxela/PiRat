@@ -55,6 +55,44 @@ and make code more visible. Even if it takes 30 minutes, it will save your butt 
 
 ## Extensions
 
+## Files
+1. Images is a folder which includes photos & a markdown file video_links.md to video links
+1. 3d wall plate pi rat maze.stl is a stl file for my wall holder plates. I cut 200 of these out
+   (25 wall holders * 8 plates per holder)
+1. 8x pi rat maze wall plates.dxf is the file I opened with inkscape on Lab 64's laser cutter computer
+   Note that you might need to delete some lines, as some are doubled up (my bad).
+1. Chassis_Bottom.stl is the part I 3D printed to make the bottom half of the chassis. I'm not currently
+   using this one. 
+1. Chassis_Top.stl is the final part I 3D printed to make the top half of the chassis
+1. Makefile is self explanatory
+1. README is this!
+1. better_bottom_chassis.stl is the final part I 3D printed to make the bottom half of chassis
+1. car_control_module.c/h provide for basic, non corrective car movements for a differential drive car.
+   They use cr_servo_module.c/h and pwm_input_module.c/h
+1. cr_servo_module.c/h control continuous rotation servos. Uses pwm_output_module.c/h
+1. cstart.c is some code that sets a few things up and calls main
+1. libmypi.a is the library I wrote for the first 8 weeks of cs107e
+1. line_follower_module.c/h is the module which interfaces with the line follower hardware over i2c
+1. main.c is the centerpiece of the program. Contains a lot of test code. 
+1. memmap is for linking
+1. pi rat maze bottom:top plate 3d.stl is the 3d version of the top/bottom plates of wall holder
+1. pi rat maze top:bottom plate.dxf is the inkscape openable file I used to laser cut the wall holder 
+   plates
+1. pi_rat_control.c/h implement different control functions. Uses pi_rat_movement.c/h and 
+   pi_rat_sensing.c/h 
+1. pi_rat_movement_module.c is the corrective movement module which moves the car in a way which is 
+   specific to the setup of a given maze. Uses car_control_module.c/h and pi_rat_sensing.c/h
+1. pi_rat_sensing_module.c/h combines ultrasonic_module.c/h and line_follower_module.c/h into one
+   centralized module
+1. proposal.md was the description that I wrote up on the first lab for this project, and added to
+   as I was working in the first week.
+1. pwm_input_module.c/h read in pwm signals through interrupts. Uses pwm_output_module.c/h for proper
+   timing
+1. pwm_output_module.c/h output pwm signals using timer interrupts
+1. servo_module.c/h use pwm_output_module.c/h to make a more intuitive servo control library
+1. start.s is the first file that gets called when running
+1. ultrasonic_module.c/h interface with the ultrasonic sensor. 
+1. updated_bottom_chassis.stl was an internediary between my original bottom chassis and the one I used
 
 ## Team member work outline
 I did it all myself (with the advice of others, listed below, of course)!
