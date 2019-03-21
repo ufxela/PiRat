@@ -154,7 +154,7 @@ any rectangular maze of any dimensions, configuration and wall length!
 [Video Links!](https://github.com/cs107e/ufxela-project/blob/master/images/video_links.md)
 
 ### Pictures!
-[The Maze](/images/4x4_maze_1.jpeg)
+![The Maze](/images/4x4_maze_1.jpeg)
 
 ## Notable Challenges
 -pwm outputs weren't working
