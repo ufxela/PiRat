@@ -153,7 +153,7 @@ any rectangular maze of any dimensions, configuration and wall length!
 
 [Video Links!](https://github.com/cs107e/ufxela-project/blob/master/images/video_links.md)
 
-### Pictures!
+### Pictures! (A Lot More in Images Folder)
 The Maze:
 ![The Maze](/images/4x4_maze_1.jpeg)
 Another Maze:
@@ -169,19 +169,58 @@ The Pi Rat:
 
 
 ## Notable Challenges
--pwm outputs weren't working
-   (1) first strategy didn't work (but I think I know where it went wrong). 
-   (2) servos weren't responding to pwm outputs, even though with a logic analyzer, I knew they were good. Ended up being that they weren't grounded. 
--pwm inputs worked, but then stopped working (reason: wasn't grounded). 
--going straight is harder than I thought
--Accurately reading wheel positions (and avoiding rotation counting skips!)
--DFS maze solver (it's one thing to simulate it on a computer, and another to do it in real life)
-Wasn't as simple as 106b, unfortunately, because (1) maze was slightly more complex (walls are
-not the same width as paths) and (2) you have to physically move. Ideally, (2) should be solved
-with a layer of abstraction. I guess I got lazy, though, and though I could deal with it. It bit
-me in the end, but I got over it. (Describe in more detail the problem here)
--By far the hardest part of this assignment was visibility & understadning the hardware
-Ex w/ visibility: for the past 5 hours, I've been trying to figure out why my backtracking wasn't working. I finally ifugred it out. It was an easy fix. But discovering what was going on was extremeely difficult because when the rat is solving the maze, it's very difficult to know what it's thinking. What I ended up doing was getting a few extra jumper wires and connecting the rat to my computer while it was solving the maze and walking along with the rat as it was solving the maze. super tiring on my arms. but it worked.
+1. *PWM Outputs:* This was a big hurdle. My first implementation of PWM outputs failed. It seemed to hog all the CPU time.
+  I now relaize that I probably wrote it wrong (forgot to clear timer events). I haven't had the effort to check if this is
+  why, since the current version works. However, the reason I think this is because, when set to have cycle length 20ms, 
+  the actual cycle length turned out to be ~7ms (measured with a logic analyzer). I think this is because the interrupt 
+  handler was just being called nonstop. Once I did switch to the current implementation of the code, however, the servos
+  still weren't working, even though the logic analyzer showed valid PWM signals. Initially, I thought this was because
+  the signals weren't precise enough. However, it turned out that it was because I didn't connect all of my grounds. 
+  Throughout the process of solving PWM outputs, Pat helped me a lot. One suggestion he gave me was to use a task queue, which
+  although I didn't end up implementing, inspired me to switch to the current implementation of PWM. 
+1. *PWM Inputs:* While solving PWM outputs, I reached a point where I felt I was in too deep and couldn't think freshly any
+  more, so I switched to solving PWM inputs. My initial implementation of these worked, and I was super excited! Then,
+  fifteen minutes later, with no changes to the code, I tried again, and it had stopped working! This was heartbreaking,  
+  especially since I wasn't able to get PWM outputs to work. I spent an hour digging through the code, seeing what might
+  have gone wrong. This didn't lead anywhere. Then had the idea to physically reconstruct my successful setup exactly,
+  to see if that would change anything. It did! It turned out that I didn't connect my ground lines properly. That was
+  one of the most confusing hours of this project, and one of the most frustrating.
+1. *Going straight & accurately reading wheel positions* These two problems were highly entangled. My inital wheel position
+  reader was very imperfect. I regularly got very wonky data from the pwm input reader. My inital strategy to solve this
+  was to just deal with it by adding in data filters. This gave limited success, but every once in a while, there was an edge
+  case of bad data which would break everything. This meant the wheels would track well for maybe a minute of movement, but
+  break after that. I could have added more filters to cover more and more edge cases. Maybe I could have even gotten a 
+  perfect filter. However, my filtering code was only getting longer and more convoluted. The right way to do things was to
+  dig into the PWM inputs and see why they were so wonky. Once I solved that, I didn't need any filters, and my code worked
+  better than ever, with more simplicity than ever. Inaccurate wheel positions also meant that my movements were all wrong.
+  At the time, I was simply trying to perfect straight forward movement, so we'll focus on that. My initial implementation of
+  forward movement was to spin each wheel independently to a set angle, and assume that each wheel was spinning at the same 
+  speed. This failed initially because the poor wheel tracking meant I couldn't consistently bring a wheel to a given angle, 
+  without "rotation count slipping" which caused wheels to turn a few rotations too much or too little. Once I solved
+  the wheel angles, I thought that would solve the issues with my forward motions. They did not. Although each wheel was set
+  to spin a different amount, each wheel span at a different rate, which meant at the end of the motion, one wheel would stop
+  and the other would continue spinning. This lead to turning. So I decided to switch to a different, more complex forward
+  motion function, which made the wheel throttles dependent on eachother's angles. This worked, after some fine tuning.
+  It goes to show that not everything is as simple/straightforward as you may initially think.
+1. *DFS maze solver:* Unfortunately, this was not as simple as 106b, mostly because of my own fault. In 106b, our mazes
+  had walls being area containing squares, instead of one dimensional lines. We also had better data structures. We also
+  didn't have to physically move an object and worry about that. Nor did we have to sense the environment as we went. Now,
+  I know I could have written more layers of abstraction early on to resolve these differences. But I am naive and didn't
+  anticipate these issues coming up. As a result, my code is very verbose, has some arms length recursion, and is pretty ugly
+  overall. Furthermore, I had one big bug in my first draft of the code that took me a while to figure out. The bug was that
+  I didn't update the position of the Pi Rat enough, which meant it often thought it was in the wrong spot. As a result,
+  when testing, the Pi Rat would seemingly ignore certain paths (and presumably, I'd see it run into walls, if I tested it on
+  more mazes). This bug would be simple to fix if everything was simulated on my computer. However, since the Pi Rat was 
+  physically solving the maze, visibility of the code and program was terrible while the Pi Rat was in the process of solving
+  the maze. This is because while the Pi Rat was solving the maze, it couldn't communicate with my computer and therefore,
+  I could only speculate as to what it was thinking. To solve this, I spent a couple of hours playing around with the code
+  and then re testing, true to a trial and error approach. However, since I had no idea what the Pi Rat was thinking, this
+  was very difficult and ultimately unsuccessful (it did get me closer to the end solution, however). Eventually, I 
+  succumbed to using extra long jumper wires to connect the Pi Rat to my computer, and then I basically "walked" the Pi Rat
+  by following it through the maze with my computer that was connected to it. It was a funny sight to see, but it worked. I 
+  was able to get the data I needed to tell me what I was doing wrong (not updating enough). 
+
+In summary, the hardest part of this assignment was definitely visibility & understanding the hardware.
 
 ## Things learned
 -planning is super critical, and possibly the most difficult part of it all. 
