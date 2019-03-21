@@ -106,7 +106,7 @@ static void update_maze(){
 
 /* returns true (1) if maze path is found */
 static int recursive_maze_solver(){
-  /* get our current position */
+  /* update position */
   x_curr = pi_rat_get_x_cord();
   y_curr = pi_rat_get_y_cord();
 
@@ -142,8 +142,6 @@ static int recursive_maze_solver(){
       if(next_node->explored != 1){
 	/* execute move */
 	pi_rat_position_change(0);
-	x_curr = pi_rat_get_x_cord();
-	y_curr = pi_rat_get_y_cord();
 
 	/* add move to path */
 	path[path_length] = 0;
@@ -156,8 +154,6 @@ static int recursive_maze_solver(){
 
 	/* backtrack (undo move, remove move from path) */
 	pi_rat_position_change(2); //0 + 2 (mod 4)
-	x_curr = pi_rat_get_x_cord();
-	y_curr = pi_rat_get_y_cord();
 	path_length--;
       }
     }
@@ -169,8 +165,6 @@ static int recursive_maze_solver(){
 
       if(next_node->explored != 1){
 	pi_rat_position_change(1);
-	x_curr = pi_rat_get_x_cord();
-	y_curr = pi_rat_get_y_cord();
 
 	path[path_length] = 1;
 	path_length++;
@@ -180,8 +174,6 @@ static int recursive_maze_solver(){
 	}
 
 	pi_rat_position_change(3);
-	x_curr = pi_rat_get_x_cord();
-	y_curr = pi_rat_get_y_cord();
 	path_length--;
       }
     }
@@ -195,8 +187,6 @@ static int recursive_maze_solver(){
       if(next_node->explored != 1){
 
 	pi_rat_position_change(2);
-	x_curr = pi_rat_get_x_cord();
-	y_curr = pi_rat_get_y_cord();
 
 	path[path_length] = 2;
 	path_length++;
@@ -206,8 +196,6 @@ static int recursive_maze_solver(){
 	}
 
 	pi_rat_position_change(0);
-	x_curr = pi_rat_get_x_cord();
-	y_curr = pi_rat_get_y_cord();
 	path_length--;
       }
     }
@@ -217,16 +205,8 @@ static int recursive_maze_solver(){
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*((y_curr-1)*maze_square_dimension + (x_curr));
 
-      x_curr = pi_rat_get_x_cord();
-      y_curr = pi_rat_get_y_cord();
-
       if(next_node->explored != 1){
-	x_curr = pi_rat_get_x_cord();
-	y_curr = pi_rat_get_y_cord();
-
 	pi_rat_position_change(3);
-	x_curr = pi_rat_get_x_cord();
-	y_curr = pi_rat_get_y_cord();
 
 	path[path_length] = 3;
 	path_length++;
@@ -236,8 +216,6 @@ static int recursive_maze_solver(){
 	}
 
 	pi_rat_position_change(1);
-	x_curr = pi_rat_get_x_cord();
-	y_curr = pi_rat_get_y_cord();
 	path_length--;
       }
     }
