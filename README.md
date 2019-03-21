@@ -35,7 +35,7 @@ Through this project, I've prided doing as much as I can by myself. It's meant t
 opportunity to learn new, unexpected things, like 3D modelling with CAD, laser cutting and 3D printing. 
 I've also learned that I suck at painting (I can't paint straight, clean lines haha).
 
-### The steps
+### The Steps
 
 The work I've done in this project can be broken down into bit sized steps. In approcimate cronological 
 order for each category of work (I did software and hardware simultaneously): 
@@ -62,7 +62,7 @@ order for each category of work (I did software and hardware simultaneously):
    1. For walls, uses cut manilla folders which slot into wall holder posts
    1. For the ground, used a giant sheet of paper with a painted grid. 
 
-### The steps, in more detail
+### The Steps, in More Detail
 
 **Software**
 1. *Write a module to interface with the ultrasonic module:* This was relatively simple, doesn't 
@@ -130,7 +130,7 @@ order for each category of work (I did software and hardware simultaneously):
    to cover all the black blotches that weren't supposed to be there (on the maze, not my body... thankfully the paint was
    easily washable). 
 
-### The product
+### The Product
 The end result of all of this work was that I had a Pi Rat that can solve a maze in two ways!
 
 The first way is with a really basic algorithm which follows this procedure:
@@ -152,6 +152,9 @@ The program is for the most part modular: by chaning a few constants, the maze s
 any rectangular maze of any dimensions, configuration and wall length!
 
 [Video Links!](https://github.com/cs107e/ufxela-project/blob/master/images/video_links.md)
+
+### Pictures!
+[The Maze](/images/4x4_maze_1.jpeg)
 
 ## Notable Challenges
 -pwm outputs weren't working
