@@ -131,11 +131,27 @@ order for each category of work (I did software and hardware simultaneously):
    easily washable). 
 
 ### The product
-The end result of all of this work was
-Position correcting (robust)
-Modular (can be adjusted to any size maze, dimensions, configuration & wall length)
-Two modes: basic wandering, depth first search.
-Usage description
+The end result of all of this work was that I had a Pi Rat that can solve a maze in two ways!
+
+The first way is with a really basic algorithm which follows this procedure:
+`
+for each direction:
+  if open:
+    go that direction
+    recur
+`
+The nice thing is that this algorithm needs very little information about the maze. The bad thing is that it doesn't work
+always. To use this, just call the maze wander function, place the rat in the maze, and watch it solve the maze!
+
+The second way is with a depth first search. This algorithm needs a little more information about the maze, like
+where the Pi Rat starts in the maze, and the dimensions of the maze. It always works when there is a path, however. To use 
+this, update some constants in main.c (as well as wall lengths in the car control module), then call the maze solver
+function and watch as the Pi Rat solves the maze!
+
+The program is for the most part modular: by chaning a few constants, the maze solving is generalizable to 
+any rectangular maze of any dimensions, configuration and wall length!
+
+[Video Links!](https://github.com/cs107e/ufxela-project/blob/master/images/video_links.md)
 
 ## Notable Challenges
 -pwm outputs weren't working
