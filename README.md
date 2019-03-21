@@ -6,31 +6,142 @@ of the robot in action!**
 ## Project Description
 
 ### Introduction
-The Pi Rat
+The Pi Rat is a robot that can solve a maze autonomously. It does this with two abilities: 
+sensing and movement. Sensing comes through the form of an ultrasonic sensor (which is mounted
+on a servo so it can look around) as well as a line follower module. The ultrasonic sensor
+detects walls and the line follower module keeps the robot from veering off path (allows the robot
+to go straight over long distances without hitting a side wall). The movement abilities come through 
+two continuous rotation servos with hall effect sensors to provide rotational feedback. Each of these
+has a wheel mounted to them, to create a differential drive car. Also, as I mentioned previously,
+there's a servo which pans around to detect walls in combination with the utlrasonic sensor. 
+
+The idea of the Pi Rat is to know as little information as possible about the maze. So far, I've been able
+to eliminate the need for where the exit of the maze is, as well as any information about how the maze 
+is set up. The information that I still require, and can be elimiated are the following: 
+* The wall length / size of the maze
+   * can be eliminated by sampling wall sizes with the ultrasonic sensor
+* The dimension of the maze
+   * With the basic wandering algorithm this actually isn't required information
+* The starting position & bearing of the Pi Rat
+* The need for a black line under each square of the maze to keep the Pi Rat from veering off path
+   * Can use the ultrasonic sensor to measure where the Rat is relative to walls, in order to correct 
+     position. Is more complex, however, than having black lines, as there won't always be walls present.
 
 I had the idea for the Pi Rat during parents weekend, when I was talking with my mom and my
 dad. My initial impression of the robot was pretty wrong. I thought that it would be able to 
-maintain it's position well enough that I wouldn't have to have a line sensor 
+maintain it's position well enough that I wouldn't have to have a line sensor.
+
+Through this project, I've prided doing as much as I can by myself. It's meant that I've gotten the 
+opportunity to learn new, unexpected things, like 3D modelling with CAD, laser cutting and 3D printing. 
+I've also learned that I suck at painting (I can't paint straight, clean lines haha).
 
 ### The steps
 
+The work I've done in this project can be broken down into bit sized steps. In approcimate cronological 
+order for each category of work (I did software and hardware simultaneously): 
+
 **Software**
+1. Write a module to interface with the ultrasonic module 
+1. Write a module to output pwm signals
+1. Write a module to read pwm inputs
+1. Write a module to control servos with the pwm output module
+1. Write a module to control continuous rotation servos with the pwm output module
+1. Write a module to interface with the line detecting sensor
+1. Write a module to provide for basic differential drive car controls
+1. Write a module to bundle all of the Pi Rat sensing into a single unified location
+1. Write a module to bundle all Pi Rat movements into a single unified location, also add 
+   movement correction, to ensure the Pi Rat is properly oriented
+1. Write a module to use Pi Rat sensing and movement modules as well as maze solving algorithms
+   to create functions which provide the robot with it's highest level of functionality
+1. Combine everything neatly with a button which can be used to start / stop Pi Rat maze solving.
 
 **Hardware**
+1. Design Pi Rat robot chassis & 3D print it
+1. Create a maze
+   1. For portability, uses laser cut & self designed wall holder posts
+   1. For walls, uses cut manilla folders which slot into wall holder posts
+   1. For the ground, used a giant sheet of paper with a painted grid. 
 
 ### The steps, in more detail
 
 **Software**
+1. *Write a module to interface with the ultrasonic module:* This was relatively simple, doesn't 
+   use interrupts. I referenced Pat's ultrasonic code. Initially, this function returned values in 
+   inches. However, I wanted more accuracy, so I changed that to microseconds. One big issue I've had 
+   with the ultrasonic sensor is the power line coming out, and making me think that my maze solving
+   algorithms were broken. Make sure everything's plugged in!
+1. *Write a module to output pwm signals:* This was one of the more challenging modules to write. I used
+   interrupts to do it. My initial strategy was to step a timer up, and have thresholds where if a timer step
+   counter was past that threshold, the output would switch. It ended up hogging up all CPU time, but I think
+   it may be because I forgot to clear timer events. Regardless, I ended up switching to the current strategy
+   of taking up 4 ms of every 20 ms of CPU time for a dedicated PWM output period. Bit banging. 
+1. *Write a module to read pwm inputs:* This was an easy module to write initially, but some bad planning came
+   back to bite me. The initial problem was that since pwm outputs hogged a big chunk of CPU time, if inputs
+   clashed with outputs, bad things would happen. I fixed this by timing input reads around outputs. Another issue
+   here was I forgot to ground things.
+1. *Write a module to control servos with the pwm output module:* pretty straightforward, just tedious. 
+1. *Write a module to control continuous rotation servos with the pwm output module:* A regret that I have is
+   not leveraging the servo control module to make this. If I care enough in the future, I may fix this, but it
+   functions perfectly right now. 
+1. *Write a module to interface with the line detecting sensor:* Pretty straight forward, as I had the reference 
+   from the manufacturer which included Arduino code. 
+1. *Write a module to provide for basic differential drive car controls* This was one of the harder modules to
+   write. The issue was that going straight means you need to move each wheel the same amount at the same speed.
+   This is difficult when you use continuous rotation servos, which by nature are very inaccurate. Luckily, my
+   continuous rotation servos had rotary encoders which made straight forward motion actually possible. However,
+   I had to change my strategy for moving forward to a more complex one in order to get things working well.
+1. *Write a module to bundle all of the Pi Rat sensing into a single unified location* Pretty straight forward. Uses
+   a couple of different methods to filter through data from sensors, to make sure they're accurate. A problem is
+   if a line is right in between two sensors of the line detector, it will hold indefinitely, or at least for a noticable
+   time. This can be fixed with a better data getter function.
+1. *Write a module to bundle all Pi Rat movements into a single unified location, also add* 
+   *movement correction, to ensure the Pi Rat is properly oriented:* This module works really well in its current form.
+   To correct forwards motions, it corrects any lateral error as well as angular error based on a measurement it makes 
+   before movement as well as a measurement it makes after movement. To correct turns, the Pi Rat will turn, then fix the
+   lateral error. These corrections are really nice because it allows for a lot of leeway in the maze design. For example,
+   walls don't all have to be the perfect size, as after each turn, any error should be corrected. Furthermore, the turns
+   don't have to be perfectly 90 degrees, as the forwards motion correction will soften offsets.
+1. *Write a module to use Pi Rat sensing and movement modules as well as maze solving algorithms*
+   *to create functions which provide the robot with it's highest level of functionality:* This was the final step
+   in my mind, and used my cs106b maze solving knowledge.
+1. *Combine everything neatly with a button which can be used to start / stop Pi Rat maze solving:* icing on the cake; to
+   the in class demonstration a lot more approacable to interaction. 
 
 **Hardware**
+1. *Design Pi Rat robot chassis & 3D print it:* Went through three iterations of design. The first did not account
+   for the line follower, as I didn't expect to need it. The second fixed this and the third added additional supports
+   between the top and bottom pieces to make the fit cleaner. I really liked the way my chassis turned out. My idea
+   behind it was to make it as small as possible, so I could make the maze size as small as possible. I also didn't want
+   anything permanent, so there's no glue holding anything together: everthing is friction fit (well, wires are taped down).
+   Some things just worked out in the design, like routing the continuous rotation servo's wires, or making sure the 
+   wheels fit in the chassis. Also, I got to learn (well, sorta...) fusion 360. I don't say that confidently because all
+   I did was make a bunch of rectangles and extrude them to various heights. 
+1. *Create a maze:* In fashion with the rest of my project, I wanted to complete this myself. I also wanted it
+   to be portable, for convenience. 
+   1. *For portability, uses laser cut & self designed wall holder posts:* I designed these in fusion 360, and discovered
+   that laser cutters are really scary. I also had to assemble the flat pieces into non-flat structures. I used a lot
+   of hot glue for this.
+   1. *For walls, uses cut manilla folders which slot into wall holder posts:* Manilla folders are actually an amazing
+   building material. I got a bunch super cheap for their conventional purpose, but I had extras, so why not put them to use?
+   Fun fact: I prototyped a chassis with only manilla folders, tape and hot glue. 
+   1. *For the ground, used a giant sheet of paper with a painted grid:* I painted this, using long manilla folder
+   strips to make sure I didn't paint in the wrong places. That ended up not really working because paint got on the
+   bottom of those strips, and ended up spreading paint all over, including on my body. As a result, I had to use white paint
+   to cover all the black blotches that weren't supposed to be there (on the maze, not my body... thankfully the paint was
+   easily washable). 
 
 ### The product
+The end result of all of this work was
 Position correcting (robust)
 Modular (can be adjusted to any size maze, dimensions, configuration & wall length)
 Two modes: basic wandering, depth first search.
+Usage description
 
-## Challenges
+## Notable Challenges
 -pwm outputs weren't working
+   (1) first strategy didn't work (but I think I know where it went wrong). 
+   (2) servos weren't responding to pwm outputs, even though with a logic analyzer, I knew they were good. Ended up being that they weren't grounded. 
+-pwm inputs worked, but then stopped working (reason: wasn't grounded). 
 -going straight is harder than I thought
 -Accurately reading wheel positions (and avoiding rotation counting skips!)
 -DFS maze solver (it's one thing to simulate it on a computer, and another to do it in real life)
