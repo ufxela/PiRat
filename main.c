@@ -71,7 +71,7 @@ int main(void)
   printf("beginning maze solving in 7 seconds \n");
   timer_delay(7);
   pi_rat_init(IN_1, IN_2, OUT_1, OUT_2, ULTRASONIC_TRIGGER, ULTRASONIC_ECHO, PAN);
-  while(1){
+  while(1){ //loop so that once we finish and the button is pressed, it will begin again
     pi_rat_solve_maze(START_X, START_Y, START_BEARING, END_X, END_Y, MAZE_DIMENSION_X, MAZE_DIMENSION_Y);
   }
   return 1;
