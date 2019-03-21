@@ -312,3 +312,5 @@ Line follower [example code](http://wiki.sunfounder.cc/index.php?title=Line_Foll
 -borrowed the code pretty much directly
 
 [i2c code](https://github.com/cs107e/cs107e.github.io/blob/master/cs107e/src/i2c.c) to communicate to line follower module
+
+Thanks to Ashwin, Jennifer, Julie, and Pat for providing confidence inspiring guidance throughout my project!
