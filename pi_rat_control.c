@@ -29,18 +29,18 @@ int y_final;
 int x_curr;
 int y_curr;
 
-/* a helper function / debugging helper function which prints out the maze to 
- * make the program more transparent 
+/* a helper function / debugging helper function which prints out the maze to
+ * make the program more transparent
  */
 static void print_maze(){
   for(int i = 0; i < 4; i++){
     for(int j = 0; j < 4; j++){
-      Maze_Node * current_node = (Maze_Node *) ((int *)maze) + 
+      Maze_Node * current_node = (Maze_Node *) ((int *)maze) +
 	sizeof(Maze_Node)*(i*maze_square_dimension + j);
-      printf("Node %d%d pointer %p visited: %d explored: %d", i, j, current_node, 
+      printf("Node %d%d pointer %p visited: %d explored: %d", i, j, current_node,
 	     current_node->visited, current_node->explored);
-      printf("walls: left %d up %d right %d down %d\n", current_node->left, current_node->up, 
-	     current_node->right, current_node->down); 
+      printf("walls: left %d up %d right %d down %d\n", current_node->left, current_node->up,
+	     current_node->right, current_node->down);
     }
   }
 }
@@ -63,11 +63,11 @@ void pi_rat_init(unsigned int input1, unsigned int input2, unsigned int output1,
 
 /* gets surroundings and updates maze data structure */
 /* for some reason, my array indexing isn't working, so I will have to do manual
- * pointer arithmetic 
+ * pointer arithmetic
  */
 static void update_maze(){
   /* put maze into a workable form (a pointer to each row of the maze) */
-  Maze_Node * current_node = (Maze_Node *)((int *)maze) + 
+  Maze_Node * current_node = (Maze_Node *)((int *)maze) +
     sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr);
 
   /* if we haven't been here before */
@@ -77,7 +77,7 @@ static void update_maze(){
     /* now update walls */
     int current_bearing = pi_rat_get_bearing();
     int walls = pi_rat_get_walls(); /* this is the time suck of the function, limited physically */
-    
+
     /* this is super ugly */
     if(current_bearing == 0){
       current_node->right = 0;
@@ -111,27 +111,31 @@ static int recursive_maze_solver(){
   y_curr = pi_rat_get_y_cord();
 
   /* what do we do if the x or y coordinate go out of bounds? Just stop? In a properly
-   * setup maze, this will never happen, so I will just not do anything 
+   * setup maze, this will never happen, so I will just not do anything
    */
 
   /* base case: we've solved the maze */
   if(x_curr == x_final && y_curr == y_final){
-    return 1; 
+    return 1;
   }else{ /* recursive case: explore, backtracking */
     update_maze();
 
     /* get access to possible moves at current state */
-    Maze_Node * current_node = (Maze_Node * )((int *)maze) + 
+    x_curr = pi_rat_get_x_cord();
+    y_curr = pi_rat_get_y_cord();
+    Maze_Node * current_node = (Maze_Node * )((int *)maze) +
       sizeof(Maze_Node)*(y_curr*maze_square_dimension + x_curr);
 
     /* mark the node as explored */
     current_node->explored = 1;
 
-    /* pick one possible move and perform it 
+    /* pick one possible move and perform it
      * This means both physically making the movement as well as recording it into the path
      */
     if(current_node->left == 0){
       /* first check if we've explored the node before */
+      x_curr = pi_rat_get_x_cord();
+      y_curr = pi_rat_get_y_cord();
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*(y_curr*maze_square_dimension + (x_curr + 1)); //this pointer arithmetic could be dangerous, in the case that it goes out of the bounds of the maze dimesnion...
 
@@ -144,12 +148,12 @@ static int recursive_maze_solver(){
 	/* add move to path */
 	path[path_length] = 0;
 	path_length++; //should this check if path is too big?
-	
+
 	/* recurse */
 	if(recursive_maze_solver()){
 	  return 1;
 	}
-	
+
 	/* backtrack (undo move, remove move from path) */
 	pi_rat_position_change(2); //0 + 2 (mod 4)
 	x_curr = pi_rat_get_x_cord();
@@ -158,6 +162,8 @@ static int recursive_maze_solver(){
       }
     }
     if(current_node->up == 0){
+      x_curr = pi_rat_get_x_cord();
+      y_curr = pi_rat_get_y_cord();
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*((y_curr+1)*maze_square_dimension + (x_curr));
 
@@ -165,10 +171,10 @@ static int recursive_maze_solver(){
 	pi_rat_position_change(1);
 	x_curr = pi_rat_get_x_cord();
 	y_curr = pi_rat_get_y_cord();
-	
+
 	path[path_length] = 1;
 	path_length++;
-	
+
 	if(recursive_maze_solver()){
 	    return 1;
 	}
@@ -179,8 +185,10 @@ static int recursive_maze_solver(){
 	path_length--;
       }
     }
-    
+
     if(current_node->right == 0){
+      x_curr = pi_rat_get_x_cord();
+      y_curr = pi_rat_get_y_cord();
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*(y_curr*maze_square_dimension + (x_curr - 1));
 
@@ -189,10 +197,10 @@ static int recursive_maze_solver(){
 	pi_rat_position_change(2);
 	x_curr = pi_rat_get_x_cord();
 	y_curr = pi_rat_get_y_cord();
-	  
+
 	path[path_length] = 2;
 	path_length++;
-	
+
 	if(recursive_maze_solver()){
 	  return 1;
 	}
@@ -204,6 +212,8 @@ static int recursive_maze_solver(){
       }
     }
     if(current_node->down == 0){
+      x_curr = pi_rat_get_x_cord();
+      y_curr = pi_rat_get_y_cord();
       Maze_Node * next_node = (Maze_Node * )((int *)maze) +
 	sizeof(Maze_Node)*((y_curr-1)*maze_square_dimension + (x_curr));
 
@@ -217,10 +227,10 @@ static int recursive_maze_solver(){
 	pi_rat_position_change(3);
 	x_curr = pi_rat_get_x_cord();
 	y_curr = pi_rat_get_y_cord();
-	
+
 	path[path_length] = 3;
 	path_length++;
-	
+
 	if(recursive_maze_solver()){
 	  return 1;
 	}
@@ -240,7 +250,7 @@ static int recursive_maze_solver(){
 static void traverse_path(){
 }
 
-void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_end, 
+void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_end,
 		       int maze_width, int maze_height){
   /* initialize everything */
   path = malloc(4 * maze_width*maze_height); //max size of path is maze_width*maze_height
@@ -266,7 +276,7 @@ void pi_rat_solve_maze(int x_start, int y_start, int bearing, int x_end, int y_e
   /* call recursive helper */
   int path_found = recursive_maze_solver();
 
-  /* at end, traverse maze solution back and forth 
+  /* at end, traverse maze solution back and forth
    * I'll do this later. For now, just spin in circles
    */
   while(1){
@@ -292,13 +302,13 @@ void pi_rat_wander(int x_start, int y_start, int x_end, int y_end){
       pi_rat_turn_right();
     }
     timer_delay_ms(100);
-    //execute the forward movement. 
+    //execute the forward movement.
     pi_rat_go_forward();
     timer_delay_ms(100);
     x_start = pi_rat_get_x_cord();
     y_start = pi_rat_get_y_cord();
   }
-  
+
   //once done, spin to indicate success
   while(1){
     pi_rat_turn_right();
