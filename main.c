@@ -25,7 +25,7 @@ const unsigned int ULTRASONIC_ECHO = GPIO_PIN5;
 const unsigned int RESET_BUTTON = GPIO_PIN13;
 const unsigned int START_X = 0;
 const unsigned int START_Y = 0;
-const unsigned int START_BEARING;
+const unsigned int START_BEARING = 1; //start facing forwards
 const unsigned int END_X = 5; //invalid so that maze will search for any opening
 const unsigned int END_Y = 5;
 const unsigned int MAZE_DIMENSION_X = 4;
