@@ -237,7 +237,8 @@ In summary, the hardest part of this assignment was definitely visibility & unde
   that information helping your strategy. Sometimes the latter is faster. However, other times 
   it is not, and it can get very frustrating, because you just feel like you don't know what is
   going on. I have more appreciation for the advice that it's worth your time to write tests
-  and make code more visible. Even if it takes 30 minutes, it will save your butt later. 
+  and make code more visible. Even if it takes 30 minutes, it will save your butt later.
+1. Don't change things at the last minute, and if you do, be sure to verify that they don't break anything. The night before the project demos, I did some code cleanup, and ended up changing the Pi Rat's internally kept starting position. This meant that when I placed the Rat in the maze, it thought it was somewhere other than where it actually was. This meant that it thought it solved the maze when really it hadn't. And so the project demo did not go as planned, unfortunately. 
 1. Some other things I learned are in my proposal
 
 ## Extensions
